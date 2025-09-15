@@ -16,16 +16,16 @@ public final class TestAuto extends LinearOpMode {
         Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        Robot robot = new Robot(this,true);
+//        Robot robot = new Robot(this,true);
 
         waitForStart();
 
         /* -------------------------------------------------------------------------------------- */
 
-        beginPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(10, 10), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(0, 20), Math.toRadians(180))
                 .build());
     }
 }
