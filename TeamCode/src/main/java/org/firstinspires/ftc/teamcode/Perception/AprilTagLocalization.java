@@ -27,13 +27,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Perception;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -66,7 +66,7 @@ import java.util.List;
  */
 @TeleOp(name = "Concept: AprilTag Localization", group = "Concept")
 
-public class ConceptAprilTagLocalization extends LinearOpMode {
+public class AprilTagLocalization extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -147,7 +147,10 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
      * Initialize the AprilTag processor.
      */
     private void initAprilTag() {
-
+        double fx = 916.2281; // Placeholder value
+        double fy = 912.3546; // Placeholder value
+        double cx = 643.6486 ; // Placeholder value
+        double cy = 400.8249; // Placeholder value
         // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
 
@@ -159,7 +162,7 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
                 //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
                 //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .setCameraPose(cameraPosition, cameraOrientation)
-
+                .setLensIntrinsics(fx, fy, cx, cy) //1280 x 800
                 // == CAMERA CALIBRATION ==
                 // If you do not manually specify calibration parameters, the SDK will attempt
                 // to load a predefined calibration for your camera.
@@ -176,16 +179,24 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
         // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second (default)
         // Note: Decimation can be changed on-the-fly to adapt during a match.
         //aprilTag.setDecimation(3);
+        // **-- YOUR CALIBRATION VALUES GO HERE --**
+
+
+        // Use the setLensIntrinsics() method to apply your calibration values.
 
         // Create the vision portal by using a builder.
-        VisionPortal.Builder builder = new VisionPortal.Builder();
-
-        // Set the camera (webcam vs. built-in RC phone camera).
-        if (USE_WEBCAM) {
-            builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        } else {
-            builder.setCamera(BuiltinCameraDirection.BACK);
-        }
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1")) // Get camera from hardware map
+                //.setCameraResolution(new Size(1280, 800)) // Set camera resolution
+                .setCameraResolution(new Size(1280, 800)) // Set camera resolution
+                // Setting the stream format to MJPEG is the primary way to achieve a high frame rate.
+                // The SDK will automatically negotiate the highest possible FPS from the camera
+                // based on the requested resolution and this stream format.
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // Set stream format to MJPEG for higher FPS
+                .enableLiveView(true) // Enable live view on Robot Controller screen
+                .setAutoStopLiveView(true) // Automatically stop live view when OpMode is stopped
+                .addProcessor(aprilTag)    // Set and enable the processor.
+                .build(); // Build the VisionPortal
 
         // Choose a camera resolution. Not all cameras support all resolutions.
         //builder.setCameraResolution(new Size(640, 480));
@@ -200,13 +211,6 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
         // If set "true", monitor shows solid orange screen if no processors enabled.
         // If set "false", monitor shows camera view without annotations.
         //builder.setAutoStopLiveView(false);
-
-        // Set and enable the processor.
-        builder.addProcessor(aprilTag);
-
-        // Build the Vision Portal, using the above settings.
-        visionPortal = builder.build();
-
         // Disable or re-enable the aprilTag processor at any time.
         //visionPortal.setProcessorEnabled(aprilTag, true);
 
