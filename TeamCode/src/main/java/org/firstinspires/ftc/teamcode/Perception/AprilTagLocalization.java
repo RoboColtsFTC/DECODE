@@ -41,6 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
@@ -64,7 +65,7 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Concept: AprilTag Localization", group = "Concept")
+@TeleOp(name = "Perception: AprilTag Localization", group = "Perception")
 
 public class AprilTagLocalization extends LinearOpMode {
 
@@ -94,10 +95,10 @@ public class AprilTagLocalization extends LinearOpMode {
      * it's pointing straight left, -90 degrees for straight right, etc. You can also set the roll
      * to +/-90 degrees if it's vertical, or 180 degrees if it's upside-down.
      */
-    private Position cameraPosition = new Position(DistanceUnit.INCH,
+   private Position cameraPosition = new Position(DistanceUnit.INCH,
+           0, 0, 0, 0);
+   private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             0, 0, 0, 0);
-    private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0, -90, 0, 0);
 
     /**
      * The variable to store our instance of the AprilTag processor.
@@ -135,7 +136,7 @@ public class AprilTagLocalization extends LinearOpMode {
             }
 
             // Share the CPU.
-            sleep(20);
+           // sleep(20);
         }
 
         // Save more CPU resources when camera is no longer needed.
@@ -147,26 +148,34 @@ public class AprilTagLocalization extends LinearOpMode {
      * Initialize the AprilTag processor.
      */
     private void initAprilTag() {
-        double fx = 916.2281; // Placeholder value
-        double fy = 912.3546; // Placeholder value
-        double cx = 643.6486 ; // Placeholder value
-        double cy = 400.8249; // Placeholder value
+
         // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
 
                 // The following default settings are available to un-comment and edit as needed.
-                //.setDrawAxes(false)
+                .setDrawAxes(false)
                 //.setDrawCubeProjection(false)
-                //.setDrawTagOutline(true)
+                .setDrawTagOutline(true)
                 //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-                //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+                .setTagLibrary(AprilTagGameDatabase.getDecodeTagLibrary())
+                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                 .setCameraPose(cameraPosition, cameraOrientation)
-                .setLensIntrinsics(fx, fy, cx, cy) //1280 x 800
+                //.setLensIntrinsics(fx, fy, cx, cy) //1280 x 800
                 // == CAMERA CALIBRATION ==
                 // If you do not manually specify calibration parameters, the SDK will attempt
                 // to load a predefined calibration for your camera.
-                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
+                //      **************** Camera Calibration results *************************
+                //      Image Resolution: 640 x 480 pixels
+                //      /*  Focals (pixels) - Fx: 543.913 Fy: 543.913
+                //        Optical center - Cx: 321.431 Cy: 223.814
+                //        Radial distortion (Brown's Model)
+                //        K1: 0.0457029 K2: -0.10388 K3: 0.0854565
+                //        P1: -0.00442754 P2: 0.00173836
+                //        Skew: 0*/
+
+               .setLensIntrinsics(543.913, 543.913, 321.431, 223.814)
+
+                //.setLensIntrinsics(916.2281, 912.3546, 643.6486, 400.8249)
                 // ... these parameters are fx, fy, cx, cy.
 
                 .build();
@@ -188,7 +197,8 @@ public class AprilTagLocalization extends LinearOpMode {
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1")) // Get camera from hardware map
                 //.setCameraResolution(new Size(1280, 800)) // Set camera resolution
-                .setCameraResolution(new Size(1280, 800)) // Set camera resolution
+                //.setCameraResolution(new Size(1280, 800)) // Set camera resolution
+                .setCameraResolution(new Size(640, 480))
                 // Setting the stream format to MJPEG is the primary way to achieve a high frame rate.
                 // The SDK will automatically negotiate the highest possible FPS from the camera
                 // based on the requested resolution and this stream format.
@@ -231,13 +241,15 @@ public class AprilTagLocalization extends LinearOpMode {
                 // Only use tags that don't have Obelisk in them
                 if (!detection.metadata.name.contains("Obelisk")) {
                     telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
-                            detection.robotPose.getPosition().x,
-                            detection.robotPose.getPosition().y,
-                            detection.robotPose.getPosition().z));
+                            detection.rawPose.x,
+                            detection.rawPose.y,
+                            detection.rawPose.z));
                     telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
                             detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
                             detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
                             detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
+                    telemetry.addData("Range",  "%5.1f inches", detection.ftcPose.range);
+                    telemetry.addData("Bearing","%3.0f degrees", detection.ftcPose.bearing);
                 }
             } else {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));

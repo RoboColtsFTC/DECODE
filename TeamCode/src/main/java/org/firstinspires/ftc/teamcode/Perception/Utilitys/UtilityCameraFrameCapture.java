@@ -31,12 +31,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode.Perception.Utilitys;
 
 import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -58,7 +60,7 @@ import java.util.Locale;
  */
 
 @TeleOp(name = "Utility: Camera Frame Capture", group = "Utility")
-@Disabled
+
 public class UtilityCameraFrameCapture extends LinearOpMode
 {
     /*
@@ -84,16 +86,17 @@ public class UtilityCameraFrameCapture extends LinearOpMode
             portal = new VisionPortal.Builder()
                     .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                     .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
-                    .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+                    //.setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                     .build();
-       }
-        else {
+        }
+        else
+        {
             portal = new VisionPortal.Builder()
                     .setCamera(INTERNAL_CAM_DIR)
                     .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
                     .build();
-
         }
+
         while (!isStopRequested())
         {
             boolean x = gamepad1.x;
