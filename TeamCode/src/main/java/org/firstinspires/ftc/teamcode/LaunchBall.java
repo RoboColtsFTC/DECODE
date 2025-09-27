@@ -29,7 +29,7 @@ public class LaunchBall extends LinearOpMode {
         // Wait for the start button
         telemetry.addData(">", "Press Start to start Ball Launcher.");
         telemetry.update();
-motor.
+
         waitForStart();
 
         while (opModeIsActive() ) {
