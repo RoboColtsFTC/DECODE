@@ -12,6 +12,9 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.Perception.AprilTag;
+import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
+
 public class Drivetrain {
     MecanumDrive drive;
 
@@ -44,11 +47,12 @@ public class Drivetrain {
 
     PIDController controller = new PIDController(.025,.0025,0);
 
-    public Drivetrain(LinearOpMode opMode){
+    public AprilTagData TagData;
+    public Drivetrain(LinearOpMode opMode, AprilTagData TagData){
         this.opMode = opMode;
 
         this.driver = opMode.gamepad1;
-
+        this.TagData = TagData;
         drive = new MecanumDrive(this.opMode.hardwareMap, new Pose2d(0,0,0));
 
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -68,8 +72,12 @@ public class Drivetrain {
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, -45 + 180);
         } else if(driver.x){
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, 90);
-        } else if(driver.b){
+        } else if(driver.b) {
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, -90);
+        } else if (driver.circle&!TagData.color){
+            thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, TagData.Blue.Bearing.Average);
+        } else if (driver.circle&TagData.color){
+            thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, TagData.Red.Bearing.Average);
         } else {
             thetaPower = -driver.right_stick_x * Math.PI;
         }

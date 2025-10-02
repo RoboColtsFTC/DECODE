@@ -9,7 +9,7 @@ public class BlueTeleop extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot robot = new Robot(this, false, false, true);
+        Robot robot = new Robot(this, false, false, true,false);
 
         waitForStart();
 
