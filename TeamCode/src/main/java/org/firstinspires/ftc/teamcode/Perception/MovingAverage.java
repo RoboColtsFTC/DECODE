@@ -28,6 +28,7 @@ public class MovingAverage {
             if ((currentTimeMillis()-PreviousTimestamp)>DeltaT){
                 window.clear();
             }
+            PreviousTimestamp = currentTimeMillis();
             // Add the new value to the sum and the window
             sum += newValue;
             window.add(newValue);
