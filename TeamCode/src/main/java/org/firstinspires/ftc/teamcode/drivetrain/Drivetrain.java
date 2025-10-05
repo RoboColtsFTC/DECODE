@@ -76,8 +76,10 @@ public class Drivetrain {
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, -90);
         } else if (driver.y && !TagData.color){
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, TagData.Blue.Bearing.Average);
+            opMode.telemetry.addData("IMU Reading", "%5.1f inches",imu.getAngularOrientation().firstAngle);
         } else if (driver.y && TagData.color){
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, TagData.Red.Bearing.Average);
+            opMode.telemetry.addData("IMU Reading", "%5.1f inches",imu.getAngularOrientation().firstAngle);
         } else {
             thetaPower = -driver.right_stick_x * Math.PI;
         }

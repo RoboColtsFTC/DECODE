@@ -57,14 +57,14 @@ public class AprilTagData {
         public long timestamp;
         public MovingAverage Bearing;
         public MovingAverage Range;
-        public int windowsize=10;
+        public int windowsize=3;
         public goal(){
 
             Bearing=new MovingAverage(windowsize);
             Range=new MovingAverage(windowsize);
 
         }
-        public void addValue(double Bearing, double Range){
+        public void addValue( double Range,double Bearing){
             this.Bearing.addData(Bearing);
             this.Range.addData(Range);
         }

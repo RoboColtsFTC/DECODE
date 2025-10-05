@@ -18,7 +18,7 @@ public class MovingAverage {
             this.windowSize = windowSize;
             this.window = new LinkedList<>();
             this.sum = 0.0;
-            this.DeltaT=5;  // time before the buffer resets
+            this.DeltaT=500;  // time before the buffer resets ms
         }  // end of MovingAverage Constructor
 
       // Returns the moving average and reset if data is old.

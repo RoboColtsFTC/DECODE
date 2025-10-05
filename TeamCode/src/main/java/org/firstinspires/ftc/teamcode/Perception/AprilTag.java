@@ -115,15 +115,17 @@ public class AprilTag {
 
 
         switch (detection.id) {
-            case 20:  //Red April Tag ID
+            case 20:  //Blue April Tag ID
 
                 Data.SetBlue(detection.ftcPose.range, detection.ftcPose.bearing);
-                opMode.telemetry.addData("Rangeavg", "%5.1f inches",Data.Red.Range);
-                opMode.telemetry.addData("Bearingavg", "%3.0f degrees", Data.Red.Bearing);
+                opMode.telemetry.addData("Rangeavg", "%5.1f inches",Data.Blue.Range.Average);
+                opMode.telemetry.addData("Bearingavg", "%3.0f degrees", Data.Blue.Bearing.Average);
 
                 break; // Exits the switch statement
-            case 24: //Blue April Tag ID
+            case 24: //Red April Tag ID
                 Data.SetRed(detection.ftcPose.range, detection.ftcPose.bearing);
+                opMode.telemetry.addData("Rangeavg", "%5.1f inches",Data.Red.Range.Average);
+                opMode.telemetry.addData("Bearingavg", "%3.0f degrees", Data.Red.Bearing.Average);
                 break;
             // ... more cases
             default:

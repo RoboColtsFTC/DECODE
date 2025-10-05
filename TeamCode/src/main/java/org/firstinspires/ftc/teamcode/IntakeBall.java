@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp(name = "Actuation:Launch Ball", group = "Actuation")
+@TeleOp(name = "Actuation:IntakeBall", group = "Actuation")
 public class IntakeBall extends LinearOpMode {
 
     DcMotor motor;
