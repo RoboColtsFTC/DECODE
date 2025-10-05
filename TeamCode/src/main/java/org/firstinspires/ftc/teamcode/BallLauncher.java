@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class BallLauncher {
@@ -22,6 +23,7 @@ public BallLauncher(LinearOpMode opMode){
 
     this.opMode=opMode;
     this.gamepad2=opMode.gamepad2;
+    motor = opMode.hardwareMap.get(DcMotorEx.class, "launcher_motor");
 
 
 
@@ -32,20 +34,19 @@ public void run(){
 
             Power += Increment;
         }
-        dpad_up_Debounce=gamepad2.dpad_up; // Debouncing Game Controller
+        dpad_up_Debounce = gamepad2.dpad_up; // Debouncing Game Controller
 
-        if (gamepad2.dpad_down & !dpad_down_Debounce  ) {
+        if (gamepad2.dpad_down & !dpad_down_Debounce) {
 
             Power -= Increment;
         }
-        dpad_down_Debounce=gamepad2.dpad_down; // Debouncing Game Controller
+        dpad_down_Debounce = gamepad2.dpad_down; // Debouncing Game Controller
 
-        if (Math.abs(Power)>MaxPower){
-            if (Power>0) {
+        if (Math.abs(Power) > MaxPower) {
+            if (Power > 0) {
                 Power = MaxPower;
-            }
-            else {
-                Power=-MaxPower;
+            } else {
+                Power = -MaxPower;
             }
 
         }

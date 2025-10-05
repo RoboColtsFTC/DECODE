@@ -27,23 +27,16 @@ public class AprilTag {
             0, 0, 0, 0);
     private AprilTagData Data;
 
-    public  AprilTag(LinearOpMode opMode,AprilTagData Data){
-        this.opMode=opMode;
-        this.Data=Data;
+    public AprilTag(LinearOpMode opMode, AprilTagData Data) {
+        this.opMode = opMode;
+        this.Data = Data;
         initAprilTag();
-
     }
 
-    public void run(){
-
-        while (this.opMode.opModeIsActive()) {
-
-            telemetryAprilTag();
+    public void run() {
+            ProcessAprilTags();
             // Push telemetry to the Driver Station.
-            telemetry.update();
-
-            // sleep(20);
-        }
+             opMode.telemetry.update();
 
     }
 
@@ -90,7 +83,7 @@ public class AprilTag {
 
         // Create the vision portal by using a builder.
         visionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1")) // Get camera from hardware map
+                .setCamera(opMode.hardwareMap.get(WebcamName.class, "Webcam 1")) // Get camera from hardware map
                 .setCameraResolution(new Size(640, 480)) // Setting resolution
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // Set stream format to MJPEG for higher FPS
                 .enableLiveView(true) // Enable live view on Robot Controller screen
@@ -115,56 +108,69 @@ public class AprilTag {
         //visionPortal.setProcessorEnabled(aprilTag, true);
 
     }   // end method initAprilTag()
-    private void telemetryAprilTag() {
 
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        telemetry.addData("# AprilTags Detected", currentDetections.size());
-
+    // Process Detections and storing in AprilTagData to be used with other classes
+    private void ProcessDetections(AprilTagDetection detection, AprilTagData Data) {
         // Step through the list of detections and display info for each one.
+
+
+        switch (detection.id) {
+            case 20:  //Red April Tag ID
+
+                Data.SetBlue(detection.ftcPose.range, detection.ftcPose.bearing);
+                opMode.telemetry.addData("Rangeavg", "%5.1f inches",Data.Red.Range);
+                opMode.telemetry.addData("Bearingavg", "%3.0f degrees", Data.Red.Bearing);
+
+                break; // Exits the switch statement
+            case 24: //Blue April Tag ID
+                Data.SetRed(detection.ftcPose.range, detection.ftcPose.bearing);
+                break;
+            // ... more cases
+            default:
+                // Code to execute if no case matches (optional)
+                break;
+        }
+    }
+
+    private void ProcessAprilTags() {
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        opMode.telemetry.addData("# AprilTags Detected", currentDetections.size());
+
         for (AprilTagDetection detection : currentDetections) {
+            ProcessDetections(detection, Data);
+            telemetryAprilTag(detection);
+        }
 
-            switch (detection.id) {
-                case 20:  //Red April Tag ID
 
-                    Data.SetBlue(detection.ftcPose.range,detection.ftcPose.bearing);
+//        // Add "key" information to telemetry
+//        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+//        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
 
-                    break; // Exits the switch statement
-                case 24: //Blue April Tag ID
-                    Data.SetRed(detection.ftcPose.range,detection.ftcPose.bearing);
-                    break;
-                // ... more cases
-                default:
-                    // Code to execute if no case matches (optional)
-                    break;
+    }
+
+    // function that displays telemetry on the drivers station
+    private void telemetryAprilTag(AprilTagDetection detection) {
+
+        if (detection.metadata != null) {
+            opMode.telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+            // Only use tags that don't have Obelisk in them
+            if (!detection.metadata.name.contains("Obelisk")) {
+                opMode.telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
+                        detection.rawPose.x,
+                        detection.rawPose.y,
+                        detection.rawPose.z));
+                opMode.telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
+                        detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
+                        detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
+                        detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
+                opMode.telemetry.addData("Range", "%5.1f inches", detection.ftcPose.range);
+                opMode.telemetry.addData("Bearing", "%3.0f degrees", detection.ftcPose.bearing);
             }
+        } else {
+            opMode.telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+            opMode.telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+        }
 
-
-            if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                // Only use tags that don't have Obelisk in them
-                if (!detection.metadata.name.contains("Obelisk"))
-
-                {
-                    telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
-                            detection.rawPose.x,
-                            detection.rawPose.y,
-                            detection.rawPose.z));
-                    telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)",
-                            detection.robotPose.getOrientation().getPitch(AngleUnit.DEGREES),
-                            detection.robotPose.getOrientation().getRoll(AngleUnit.DEGREES),
-                            detection.robotPose.getOrientation().getYaw(AngleUnit.DEGREES)));
-                    telemetry.addData("Range",  "%5.1f inches", detection.ftcPose.range);
-                    telemetry.addData("Bearing","%3.0f degrees", detection.ftcPose.bearing);
-                }
-            } else {
-                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-            }
-        }   // end for() loop
-
-        // Add "key" information to telemetry
-        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
 
     }   // end method telemetryAprilTag()
-}
+}// end aprilTag class

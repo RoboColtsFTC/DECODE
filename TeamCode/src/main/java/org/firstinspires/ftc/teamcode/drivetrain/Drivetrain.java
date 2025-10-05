@@ -37,7 +37,7 @@ public class Drivetrain {
     //    public static IMU imu;
     public static BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+    RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
     RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
     RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
@@ -74,9 +74,9 @@ public class Drivetrain {
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, 90);
         } else if(driver.b) {
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, -90);
-        } else if (driver.circle&!TagData.color){
+        } else if (driver.y && !TagData.color){
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, TagData.Blue.Bearing.Average);
-        } else if (driver.circle&TagData.color){
+        } else if (driver.y && TagData.color){
             thetaPower = controller.calculate(imu.getAngularOrientation().firstAngle, TagData.Red.Bearing.Average);
         } else {
             thetaPower = -driver.right_stick_x * Math.PI;
