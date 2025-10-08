@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
 import androidx.annotation.NonNull;
-
+import com.acmerobotics.roadrunner.ftc.PinpointIMU;
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -258,8 +258,8 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, pose);
-
+        //localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, pose);
+        localizer = new PinpointLocalizer(hardwareMap,PARAMS.inPerTick,pose);
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
