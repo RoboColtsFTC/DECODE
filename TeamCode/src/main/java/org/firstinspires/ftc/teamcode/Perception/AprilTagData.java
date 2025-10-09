@@ -63,10 +63,12 @@ public class AprilTagData {
             Bearing=new MovingAverage(windowsize);
             Range=new MovingAverage(windowsize);
 
+
         }
         public void addValue( double Range,double Bearing){
             this.Bearing.addData(Bearing);
             this.Range.addData(Range);
+
         }
     }
 

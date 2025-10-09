@@ -10,6 +10,7 @@ public class MovingAverage {
         private long PreviousTimestamp;
         public long DeltaT;
         public double Average=0;
+        public double Value=0;
 
         public MovingAverage(int windowSize) {
             if (windowSize <= 0) {
@@ -18,7 +19,7 @@ public class MovingAverage {
             this.windowSize = windowSize;
             this.window = new LinkedList<>();
             this.sum = 0.0;
-            this.DeltaT=500;  // time before the buffer resets ms
+            this.DeltaT=5;  // time before the buffer resets ms
         }  // end of MovingAverage Constructor
 
       // Returns the moving average and reset if data is old.
@@ -30,6 +31,7 @@ public class MovingAverage {
             }
             PreviousTimestamp = currentTimeMillis();
             // Add the new value to the sum and the window
+            Value=newValue;
             sum += newValue;
             window.add(newValue);
 

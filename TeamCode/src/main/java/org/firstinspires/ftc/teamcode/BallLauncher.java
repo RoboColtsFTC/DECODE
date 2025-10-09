@@ -24,32 +24,13 @@ public BallLauncher(LinearOpMode opMode){
     this.opMode=opMode;
     this.gamepad2=opMode.gamepad2;
     motor = opMode.hardwareMap.get(DcMotorEx.class, "launcher_motor");
+    Power=30;
 
 
 
 }
 public void run(){
 
-        if (gamepad2.dpad_up & !dpad_up_Debounce) {
-
-            Power += Increment;
-        }
-        dpad_up_Debounce = gamepad2.dpad_up; // Debouncing Game Controller
-
-        if (gamepad2.dpad_down & !dpad_down_Debounce) {
-
-            Power -= Increment;
-        }
-        dpad_down_Debounce = gamepad2.dpad_down; // Debouncing Game Controller
-
-        if (Math.abs(Power) > MaxPower) {
-            if (Power > 0) {
-                Power = MaxPower;
-            } else {
-                Power = -MaxPower;
-            }
-
-        }
 
         motor.setPower(Power);
 
@@ -57,10 +38,8 @@ public void run(){
 }
 
 public void UpdateTelemetry() {
-    telemetry.addData(">", "Press DPadUp to Increase Press DPadDown to Degrease.");
-    telemetry.addData("Motor Power", "%5.2f",Power);
-    telemetry.addData("Motor Power Measured", "%5.2f",motor.getPower());
-    telemetry.addData(">", "Press Stop to end test." );
+
+    telemetry.addData("Ball Launcher Motor Power", "%5.2f",Power);
     telemetry.update();
 }
 
