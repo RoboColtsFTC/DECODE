@@ -12,7 +12,7 @@ public class ContinuousMotor {
     private DcMotorEx motor;
     private boolean isrunning = false;
 
-    public ContinuousMotor(HardwareMap hardwaremap, String MotorName, double power) {
+    public ContinuousMotor(HardwareMap hardwareMap, String MotorName, double power) {
 
         motor = hardwareMap.get(DcMotorEx.class, MotorName);
         motor.setDirection(DcMotorSimple.Direction.FORWARD);

@@ -19,7 +19,7 @@ public class ThreePositionServo {
 
     private double offset=0; //Degrees
 
-public ThreePositionServo(HardwareMap hardwaremap, String ServoName,double PositionOne, double PositionTwo,double PositionThree,double MaxAngle,double offset){
+public ThreePositionServo(HardwareMap hardwareMap, String ServoName,double PositionOne, double PositionTwo,double PositionThree,double MaxAngle,double offset){
     servo = hardwareMap.get(Servo.class, ServoName);
 
     this.PositionOne=PositionOne;

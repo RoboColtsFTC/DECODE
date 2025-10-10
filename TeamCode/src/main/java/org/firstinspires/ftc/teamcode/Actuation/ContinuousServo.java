@@ -16,11 +16,13 @@ public class ContinuousServo {
     public double Power=0;
     public boolean State=false; //True equals running False = not running
 
-    public ContinuousServo(HardwareMap hardwaremap, String ServoName) {
+    public ContinuousServo(HardwareMap hardwareMap, String ServoName,double power) {
 
         servo = hardwareMap.get(CRServo.class, ServoName);
         servo.setDirection(CRServo.Direction.FORWARD);
+        this.Power=power;
         servo.setPower(0);
+
 
     }
 
@@ -45,12 +47,12 @@ public class ContinuousServo {
 
     }
     public void Forward(){
-
+        servo.setPower(0);
         servo.setDirection(CRServo.Direction.FORWARD);
 
     }
     public void Reverse(){
-
+        servo.setPower(0);
         servo.setDirection(CRServo.Direction.REVERSE);
 
     }
