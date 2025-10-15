@@ -10,7 +10,7 @@ public class TestAngleServo extends LinearOpMode {
 public AngleServo servo;
     @Override
     public void runOpMode() throws InterruptedException {
-        servo= new AngleServo(this.hardwareMap,"Test",10,250,300);
+        servo= new AngleServo(this.hardwareMap,"Test",0,95,1800);
 
         waitForStart();
 

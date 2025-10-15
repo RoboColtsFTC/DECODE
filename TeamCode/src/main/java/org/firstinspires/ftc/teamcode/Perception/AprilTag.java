@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Perception;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import android.util.Size;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -106,7 +108,7 @@ public class AprilTag {
         //builder.setAutoStopLiveView(false);
         // Disable or re-enable the aprilTag processor at any time.
         //visionPortal.setProcessorEnabled(aprilTag, true);
-
+        FtcDashboard.getInstance().startCameraStream(visionPortal, 0);
     }   // end method initAprilTag()
 
     // Process Detections and storing in AprilTagData to be used with other classes

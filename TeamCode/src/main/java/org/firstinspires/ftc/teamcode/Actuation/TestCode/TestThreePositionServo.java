@@ -42,6 +42,8 @@ public class TestThreePositionServo extends LinearOpMode {
             packet.put("Offset",Offset);
             packet.put("Current Servo Position Command", servo.servo.getPosition());
             dashboard.sendTelemetryPacket(packet);
+            servo.setAngle(Position1,Position2,Position3);
+            servo.setOffset(Offset);
 
             telemetry.addData("Servo Position", "Press D-Pad Up/Down/Left");
             telemetry.addData("P1 Angle", Position1);

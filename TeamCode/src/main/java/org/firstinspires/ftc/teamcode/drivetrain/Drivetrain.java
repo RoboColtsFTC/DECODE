@@ -60,84 +60,34 @@ public class Drivetrain {
         this.TagData = TagData;
         drive = new MecanumDrive(this.opMode.hardwareMap, new Pose2d(0,0,0));
 
-        // Initialize the hardware variables. Note that the strings used here must correspond
-        // to the names assigned during the robot configuration step on the DS or RC devices.
-
-        odo = opMode.hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-
-        /*
-        Set the odometry pod positions relative to the point that the odometry computer tracks around.
-        The X pod offset refers to how far sideways from the tracking point the
-        X (forward) odometry pod is. Left of the center is a positive number,
-        right of center is a negative number. the Y pod offset refers to how far forwards from
-        the tracking point the Y (strafe) odometry pod is. forward of center is a positive number,
-        backwards is a negative number.
-         */
-        //todo: Update offsets based on frame
-        odo.setOffsets(-84.0, -168.0); //these are tuned for 3110-0002-0001 Product Insight #1
-
-        /*
-        Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
-        the goBILDA_SWINGARM_POD, or the goBILDA_4_BAR_POD.
-        If you're using another kind of odometry pod, uncomment setEncoderResolution and input the
-        number of ticks per mm of your odometry pod.
-         */
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        //odo.setEncoderResolution(13.26291192);
-
-
-        /*
-        Set the direction that each of the two odometry pods count. The X (forward) pod should
-        increase when you move the robot forward. And the Y (strafe) pod should increase when
-        you move the robot to the left.
-         */
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-
-
-        /*
-        Before running the robot, recalibrate the IMU. This needs to happen when the robot is stationary
-        The IMU will automatically calibrate when first powered on, but recalibrating before running
-        the robot is a good idea to ensure that the calibration is "good".
-        resetPosAndIMU will reset the position to 0,0,0 and also recalibrate the IMU.
-        This is recommended before you run your autonomous, as a bad initial calibration can cause
-        an incorrect starting value for x, y, and heading.
-         */
-        //odo.recalibrateIMU();
-        odo.resetPosAndIMU();
-
-        opMode.telemetry.addData("Status", "Initialized");
-        opMode. telemetry.addData("X offset", odo.getXOffset());
-        opMode.telemetry.addData("Y offset", odo.getYOffset());
-        opMode.telemetry.addData("Device Version Number:", odo.getDeviceVersion());
-        opMode.telemetry.addData("Device Scalar", odo.getYawScalar());
-        opMode.telemetry.update();
-
-
-//        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-//        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-//        parameters.loggingEnabled      = false;
-//
-//        imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
-//        imu.initialize(parameters);
+    //  Not required for using Pinpoint IMU
+     //     parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+    //        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+    //        parameters.loggingEnabled      = false;
+    //
+    //        imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+    //        imu.initialize(parameters);
     }
 
     public void run(){
         ChassisSpeeds speeds;
 
         double thetaPower;
-        Pose2D pos = odo.getPosition();
+        Pose2d pos = drive.localizer.getPose();  // updated for
+
+        //Pose2D pos = odo.getPosition();
         if(driver.a) {
-            thetaPower = controller.calculate(pos.getHeading(AngleUnit.DEGREES), -45 + 180);
+            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), -45 + 180);
         } else if(driver.x){
-            thetaPower = controller.calculate(pos.getHeading(AngleUnit.DEGREES), 90);
+            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), 90);
         } else if(driver.b) {
-            thetaPower = controller.calculate(pos.getHeading(AngleUnit.DEGREES), -90);
+            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), -90);
         } else if (driver.y && !TagData.color){
-            thetaPower = controller.calculate(pos.getHeading(AngleUnit.DEGREES), TagData.Blue.Bearing.Average);
-            opMode.telemetry.addData("IMU Reading", "%5.1f inches",pos.getHeading(AngleUnit.DEGREES));
+            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), TagData.Blue.Bearing.Average);
+            opMode.telemetry.addData("IMU Reading", "%5.1f inches",Math.toDegrees(pos.heading.toDouble()));
         } else if (driver.y && TagData.color){
-            thetaPower = controller.calculate(pos.getHeading(AngleUnit.DEGREES), TagData.Red.Bearing.Average);
-            opMode.telemetry.addData("IMU Reading", "%5.1f inches",pos.getHeading(AngleUnit.DEGREES));
+            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), TagData.Red.Bearing.Average);
+            opMode.telemetry.addData("IMU Reading", "%5.1f inches",Math.toDegrees(pos.heading.toDouble()));
         } else {
             thetaPower = -driver.right_stick_x * Math.PI;
         }
@@ -146,7 +96,7 @@ public class Drivetrain {
                 driver.left_stick_y * maxSpeed,
                 driver.left_stick_x * maxSpeed,
                 thetaPower,
-                Rotation2d.fromDegrees(pos.getHeading(AngleUnit.DEGREES) + 180)
+                Rotation2d.fromDegrees(Math.toDegrees(pos.heading.toDouble()) + 180)
         );
 
         MecanumDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
