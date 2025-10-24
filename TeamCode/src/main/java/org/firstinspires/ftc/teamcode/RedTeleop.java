@@ -17,6 +17,7 @@ public class RedTeleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             robot.runRobot();
+            telemetry.update();
         }
     }
 }

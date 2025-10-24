@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -55,7 +56,13 @@ public final class PinpointLocalizer implements Localizer {
 
     @Override
     public Pose2d getPose() {
+        driver.update();
         return txWorldPinpoint.times(txPinpointRobot);
+    }
+
+    public String GetIMUStatus(){
+        driver.update();
+        return String.valueOf(driver.getDeviceStatus());
     }
 
     @Override

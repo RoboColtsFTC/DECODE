@@ -73,6 +73,7 @@ public class Drivetrain {
         ChassisSpeeds speeds;
 
         double thetaPower;
+        drive.localizer.update();
         Pose2d pos = drive.localizer.getPose();  // updated for
 
         //Pose2D pos = odo.getPosition();
@@ -92,13 +93,20 @@ public class Drivetrain {
             thetaPower = -driver.right_stick_x * Math.PI;
         }
 
-        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                driver.left_stick_y * maxSpeed,
-                driver.left_stick_x * maxSpeed,
-                thetaPower,
-                Rotation2d.fromDegrees(Math.toDegrees(pos.heading.toDouble()) + 180)
+       speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+               -driver.left_stick_y * maxSpeed,
+                -driver.left_stick_x * maxSpeed,
+               thetaPower,
+               Rotation2d.fromDegrees(Math.toDegrees(pos.heading.toDouble()) )
         );
-
+//        speeds = new ChassisSpeeds(
+//                -driver.left_stick_y * maxSpeed,
+//                -driver.left_stick_x * maxSpeed,
+//                thetaPower
+//        );
+        opMode.telemetry.addData("Pinpoint IMU Status",drive.localizer.GetIMUStatus());
+        opMode.telemetry.addData("heading",Math.toDegrees(pos.heading.toDouble()));
+        opMode.telemetry.addData("rotatedHeading",Rotation2d.fromDegrees(Math.toDegrees(pos.heading.toDouble())));
         MecanumDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
 
         wheelSpeeds.normalize(maxSpeed);
