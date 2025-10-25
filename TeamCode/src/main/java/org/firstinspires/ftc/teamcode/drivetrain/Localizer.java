@@ -24,4 +24,7 @@ public interface Localizer {
     PoseVelocity2d update();
 
     String GetIMUStatus();
+
+    void resetPinpointIMU();
+    double getHeading();
 }

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -7,23 +10,20 @@ import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveKinematics;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveWheelSpeeds;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.Perception.AprilTag;
-import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
-import org.firstinspires.ftc.teamcode.drivetrain.PinPointIMU.GoBildaPinpointDriver;
 
+import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
+
+@Config
 public class Drivetrain {
     MecanumDrive drive;
-
+    public static Pose2d pos;
     LinearOpMode opMode;
-    GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
+
     double width = .3429;
     double length = .3429;
 
@@ -37,22 +37,25 @@ public class Drivetrain {
                     m_frontLeftLocation, m_frontRightLocation,
                     m_backLeftLocation, m_backRightLocation);
 
-//    public static BNO055IMU imu;
-//    //    public static IMU imu;
-//    public static BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-//
-//    RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
-//    RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
-//    RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
-
-
     Gamepad driver;
+    public static double ApirlTagRotationGain=2;
+    public boolean isfeildDrive =true;  // set true for feild orentated driving control.
 
-    double maxSpeed = 1;
+    public static double headingAngle=0;
+    public static Rotation2d headingAngleRotated;
 
-    PIDController controller = new PIDController(.025,.0025,0);
+    public static double AprilTagBearing=0;
+    public FtcDashboard dashboard;
+
+
+    public static double kp=.025;
+    public static double ki=.0025;
+    public static double kd=0;
+    PIDController controller = new PIDController(kp,ki,kd);
 
     public AprilTagData TagData;
+    private FtcDashboard da;
+
     public Drivetrain(LinearOpMode opMode, AprilTagData TagData){
         this.opMode = opMode;
 
@@ -60,13 +63,7 @@ public class Drivetrain {
         this.TagData = TagData;
         drive = new MecanumDrive(this.opMode.hardwareMap, new Pose2d(0,0,0));
 
-    //  Not required for using Pinpoint IMU
-     //     parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-    //        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-    //        parameters.loggingEnabled      = false;
-    //
-    //        imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
-    //        imu.initialize(parameters);
+
     }
 
     public void run(){
@@ -74,39 +71,63 @@ public class Drivetrain {
 
         double thetaPower;
         drive.localizer.update();
-        Pose2d pos = drive.localizer.getPose();  // updated for
+        pos = drive.localizer.getPose();  // updated for
+        headingAngle=drive.localizer.getHeading();//Math.toDegrees(pos.heading.toDouble());
+        headingAngleRotated= Rotation2d.fromDegrees(headingAngle);
+        AprilTagBearing=TagData.Red.Bearing;
+        dashboard =  FtcDashboard.getInstance();
+        TelemetryPacket packet = new TelemetryPacket();
 
-        //Pose2D pos = odo.getPosition();
-        if(driver.a) {
-            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), -45 + 180);
+        packet.put("Heading Angle",headingAngle);
+        packet.put("Heading Angle Rotated",headingAngleRotated);
+        packet.put("AprilTag heading",AprilTagBearing);
+        packet.put("Pinpoint IMU Status",drive.localizer.GetIMUStatus());
+        packet.put("isAnyTagDetected",TagData.detectionState.isAnyTagDetected);
+        packet.put("isBlueGoalAprilTagDetected",TagData.detectionState.isBlueGoalAprilTagDetected);
+        packet.put("isRedGoalAprilTagDetected",TagData.detectionState.isRedGoalAprilTagDetected);
+        dashboard.sendTelemetryPacket(packet);
+
+       if(driver.a) {
+           thetaPower = controller.calculate(headingAngle, -45 + 180);
         } else if(driver.x){
-            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), 90);
-        } else if(driver.b) {
-            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), -90);
-        } else if (driver.y && !TagData.color){
-            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), TagData.Blue.Bearing.Average);
-            opMode.telemetry.addData("IMU Reading", "%5.1f inches",Math.toDegrees(pos.heading.toDouble()));
-        } else if (driver.y && TagData.color){
-            thetaPower = controller.calculate(Math.toDegrees(pos.heading.toDouble()), TagData.Red.Bearing.Average);
-            opMode.telemetry.addData("IMU Reading", "%5.1f inches",Math.toDegrees(pos.heading.toDouble()));
-        } else {
-            thetaPower = -driver.right_stick_x * Math.PI;
-        }
+           thetaPower = controller.calculate(headingAngle, 90);
+       } else if(driver.b) {
+           thetaPower = controller.calculate(headingAngle, -90);        } else if (driver.y && !TagData.color){
+            thetaPower = controller.calculate(headingAngle,    AprilTagBearing);
+            opMode.telemetry.addData("IMU Reading", "%5.1f inches",   AprilTagBearing);
+       } else if (driver.y){
+           thetaPower = controller.calculate(headingAngle,    AprilTagBearing)* ApirlTagRotationGain;
+             opMode.telemetry.addData("IMU Reading", "%5.1f inches",   AprilTagBearing);
+       } else {
+          thetaPower = -driver.right_stick_x * Math.PI;
+       }
 
-       speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        //thetaPower = controller.calculate(Math.toDegrees(headingAngle, AprilTagBearing)* ApirlTagRotationGain;
+
+
+        double maxSpeed = 1;
+
+
+        if(isfeildDrive) {
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                    -driver.left_stick_y * maxSpeed,
+                    -driver.left_stick_x * maxSpeed,
+                    thetaPower,
+                    headingAngleRotated
+    );
+}else {  // used to verify correct orentation for feild drive.
+       speeds = new ChassisSpeeds(
                -driver.left_stick_y * maxSpeed,
-                -driver.left_stick_x * maxSpeed,
-               thetaPower,
-               Rotation2d.fromDegrees(Math.toDegrees(pos.heading.toDouble()) )
-        );
-//        speeds = new ChassisSpeeds(
-//                -driver.left_stick_y * maxSpeed,
-//                -driver.left_stick_x * maxSpeed,
-//                thetaPower
-//        );
+               -driver.left_stick_x * maxSpeed,
+               thetaPower
+      );
+}
         opMode.telemetry.addData("Pinpoint IMU Status",drive.localizer.GetIMUStatus());
         opMode.telemetry.addData("heading",Math.toDegrees(pos.heading.toDouble()));
-        opMode.telemetry.addData("rotatedHeading",Rotation2d.fromDegrees(Math.toDegrees(pos.heading.toDouble())));
+        opMode.telemetry.addData("rotatedHeading",headingAngleRotated);
+        opMode.telemetry.addData("AprilTag heading",AprilTagBearing);
+
+
         MecanumDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
 
         wheelSpeeds.normalize(maxSpeed);
@@ -118,9 +139,10 @@ public class Drivetrain {
                 wheelSpeeds.frontRightMetersPerSecond
         });
 
-//        if(driver.back){
-//            drive.localizer.setPose(new Pose2d(0,0,0));
-//            imu.initialize(parameters);
-//        }
+       if(driver.back){
+
+           drive.localizer.resetPinpointIMU();
+
+       }
     }
 }

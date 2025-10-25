@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.Perception;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
+import org.firstinspires.ftc.teamcode.Perception.AprilTag.DetectionState;
 public class AprilTagData {
-    public long timestamp;
-    public MovingAverage Bearing;
-    public MovingAverage Range;
+    public DetectionState detectionState = new DetectionState();
 
     public goal Red;
     public goal Blue;
@@ -38,6 +35,11 @@ public class AprilTagData {
 
     }
 
+    public void SetDetectionState(DetectionState detectionState){
+        this.detectionState=detectionState;
+
+    }
+
 
    public class Code{
         String CodeID;
@@ -55,21 +57,21 @@ public class AprilTagData {
     public class goal{
 
         public long timestamp;
-        public MovingAverage Bearing;
-        public MovingAverage Range;
+        public double Bearing;
+        public double Range;
         public int windowsize=3;
         public goal(){
 
-            Bearing=new MovingAverage(windowsize);
-            Range=new MovingAverage(windowsize);
 
 
         }
         public void addValue( double Range,double Bearing){
-            this.Bearing.addData(Bearing);
-            this.Range.addData(Range);
+            this.Bearing=Bearing;
+            this.Range=Range;
 
         }
     }
+
+
 
 }

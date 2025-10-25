@@ -9,6 +9,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
@@ -65,6 +66,15 @@ public final class PinpointLocalizer implements Localizer {
         return String.valueOf(driver.getDeviceStatus());
     }
 
+    public void resetPinpointIMU(){
+
+        driver.resetPosAndIMU();
+
+    }
+
+    public double getHeading(){
+        return driver.getHeading(AngleUnit.DEGREES);
+    }
     @Override
     public PoseVelocity2d update() {
         driver.update();
