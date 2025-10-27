@@ -73,8 +73,13 @@ public class Drivetrain {
         drive.localizer.update();
         pos = drive.localizer.getPose();  // updated for
         headingAngle=drive.localizer.getHeading();//Math.toDegrees(pos.heading.toDouble());
-        headingAngleRotated= Rotation2d.fromDegrees(headingAngle);
-        AprilTagBearing=TagData.Red.Bearing;
+        headingAngleRotated= Rotation2d.fromDegrees(headingAngle+180);
+
+        if(TagData.red) {
+            AprilTagBearing = TagData.Red.Bearing;
+        }else{
+            AprilTagBearing = TagData.Blue.Bearing;
+        }
         dashboard =  FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
 
@@ -92,17 +97,21 @@ public class Drivetrain {
         } else if(driver.x){
            thetaPower = controller.calculate(headingAngle, 90);
        } else if(driver.b) {
-           thetaPower = controller.calculate(headingAngle, -90);        } else if (driver.y && !TagData.color){
+           thetaPower = controller.calculate(headingAngle, -90);
+       } else if (driver.y && !TagData.red){
             thetaPower = controller.calculate(headingAngle,    AprilTagBearing);
             opMode.telemetry.addData("IMU Reading", "%5.1f inches",   AprilTagBearing);
-       } else if (driver.y){
-           thetaPower = controller.calculate(headingAngle,    AprilTagBearing)* ApirlTagRotationGain;
-             opMode.telemetry.addData("IMU Reading", "%5.1f inches",   AprilTagBearing);
+       } else if (driver.y &&  TagData.detectionState.isAnyTagDetected){
+
+               thetaPower = controller.calculate(headingAngle, AprilTagBearing) * ApirlTagRotationGain;
+               opMode.telemetry.addData("IMU Reading", "%5.1f inches", AprilTagBearing);
+
        } else {
           thetaPower = -driver.right_stick_x * Math.PI;
        }
 
-        //thetaPower = controller.calculate(Math.toDegrees(headingAngle, AprilTagBearing)* ApirlTagRotationGain;
+
+           //thetaPower = controller.calculate(Math.toDegrees(headingAngle, AprilTagBearing)* ApirlTagRotationGain;
 
 
         double maxSpeed = 1;
@@ -110,8 +119,8 @@ public class Drivetrain {
 
         if(isfeildDrive) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    -driver.left_stick_y * maxSpeed,
-                    -driver.left_stick_x * maxSpeed,
+                    driver.left_stick_y * maxSpeed,
+                    driver.left_stick_x * maxSpeed,
                     thetaPower,
                     headingAngleRotated
     );

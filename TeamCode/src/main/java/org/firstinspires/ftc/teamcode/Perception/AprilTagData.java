@@ -4,12 +4,11 @@ package org.firstinspires.ftc.teamcode.Perception;
 import org.firstinspires.ftc.teamcode.Perception.AprilTag.DetectionState;
 public class AprilTagData {
     public DetectionState detectionState = new DetectionState();
-
     public goal Red;
     public goal Blue;
     public Code DetectedCode;
 
-   public boolean color;  // True == Red, False == Blue
+   public boolean red;  // True == Red, False == Blue
 
     public AprilTagData(){
         Red = new goal();

@@ -35,10 +35,10 @@ public class Robot {
 
         // set color for April tags
         if (red){
-            TagData.color=true;
+            TagData.red=true;
         }
           else{
-            TagData.color=false;
+            TagData.red=false;
         }
           if(!auto && useAprilTags) {
               AprilTagPro = new AprilTag(this.opMode, TagData);

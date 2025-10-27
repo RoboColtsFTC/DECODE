@@ -28,6 +28,7 @@ public class AprilTag {
     private final YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             0, 0, 0, 0);
     private AprilTagData Data;
+    private VisionPortal visionPortal;
 
     public static class DetectionState {
         public boolean isRedGoalAprilTagDetected = false;
@@ -117,7 +118,7 @@ public class AprilTag {
         // Enable live view on Robot Controller screen
         // Automatically stop live view when OpMode is stopped
         // Set and enable the processor.
-        VisionPortal visionPortal = new VisionPortal.Builder()
+        visionPortal = new VisionPortal.Builder()
                 .setCamera(opMode.hardwareMap.get(WebcamName.class, "Webcam 1")) // Get camera from hardware map
                 .setCameraResolution(new Size(1280, 800))
                 //.setCameraResolution(new Size(800, 600))
@@ -220,6 +221,8 @@ public class AprilTag {
             opMode.telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
             opMode.telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
         }
+           opMode.telemetry.addData("FPS=",visionPortal.getFps());
+
 
 
     }   // end method telemetryAprilTag()
