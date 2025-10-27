@@ -10,8 +10,8 @@ public class FeedControl {
 
     public FeedControl(HardwareMap hardware, double power){
         this.power=power;
-        servo1 = new ContinuousServo(hardware,"FeadServo1",this.power);
-        servo2 = new ContinuousServo(hardware,"FeadServo2",this.power);
+        servo1 = new ContinuousServo(hardware,"servo1",this.power);
+        servo2 = new ContinuousServo(hardware,"servo2",this.power);
         servo2.Reverse();
 
     }
