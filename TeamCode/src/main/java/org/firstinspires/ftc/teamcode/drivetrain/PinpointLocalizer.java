@@ -57,12 +57,12 @@ public final class PinpointLocalizer implements Localizer {
 
     @Override
     public Pose2d getPose() {
-        driver.update();
+        
         return txWorldPinpoint.times(txPinpointRobot);
     }
 
     public String GetIMUStatus(){
-        driver.update();
+  			 driver.update();
         return String.valueOf(driver.getDeviceStatus());
     }
 
