@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Actuation.TestCode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Actuation.AngleServo;
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.AngleServo;
 
 @TeleOp(name="TestAngleServo", group="Test")
 public class TestAngleServo extends LinearOpMode {

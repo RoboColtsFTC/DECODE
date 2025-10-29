@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Actuation.ThreePositionServo;
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.ThreePositionServo;
 @Config
 @TeleOp(name="TestThreePositionServo", group="Test")
 public class TestThreePositionServo extends LinearOpMode {

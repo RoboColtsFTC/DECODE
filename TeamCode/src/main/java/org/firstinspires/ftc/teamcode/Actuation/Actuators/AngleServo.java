@@ -2,7 +2,7 @@
 //
 
 
-package org.firstinspires.ftc.teamcode.Actuation;
+package org.firstinspires.ftc.teamcode.Actuation.Actuators;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 

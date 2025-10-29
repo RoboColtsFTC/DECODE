@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode.Actuation;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.teamcode.Actuation.ContinuousMotor; //forgot ; here
+
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.ContinuousMotor; //forgot ; here
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.ContinuousServo;
 
 
 @TeleOp(name="BallPath", group="Actuation")

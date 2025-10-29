@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Actuation;
+package org.firstinspires.ftc.teamcode.Actuation.Actuators;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

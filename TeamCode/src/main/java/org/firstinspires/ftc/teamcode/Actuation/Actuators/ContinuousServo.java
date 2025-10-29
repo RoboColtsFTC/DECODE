@@ -1,7 +1,4 @@
-package org.firstinspires.ftc.teamcode.Actuation;
-
-
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+package org.firstinspires.ftc.teamcode.Actuation.Actuators;
 
 
 import com.qualcomm.robotcore.hardware.CRServo;

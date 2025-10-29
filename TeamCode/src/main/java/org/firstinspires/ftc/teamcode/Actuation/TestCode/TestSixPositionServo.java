@@ -4,8 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.Actuation.SpindexerControl.Positions;
-import org.firstinspires.ftc.teamcode.Actuation.SpindexerControl;
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl.Positions;
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl;
 
 @Config
 @TeleOp(name="TestSixPositionServo", group="Test")
@@ -20,7 +20,7 @@ public class TestSixPositionServo extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         positions= new Positions();
-        servo= new SpindexerControl(hardwareMap,"Test",positions);
+        servo= new SpindexerControl(hardwareMap,"Test");
 
 
         waitForStart();

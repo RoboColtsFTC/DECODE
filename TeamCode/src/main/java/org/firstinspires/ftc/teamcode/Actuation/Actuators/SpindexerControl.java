@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Actuation;
+package org.firstinspires.ftc.teamcode.Actuation.Actuators;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,8 +29,20 @@ public class SpindexerControl {
         public double normPos6;
 
     }
+    public static enum CurrentState{
+        posloadone,
+        posloadTwo,
+        posloadThree,
+        posLaunchOne,
+        posLaunchTwo,
+        posLaunchThree
+    }
+
+    public static CurrentState curState;
     public static normPositions normPos = new normPositions();
     public static Positions Pos = new Positions();
+
+
 
 public SpindexerControl(HardwareMap hardwareMap, String ServoName){
     servo = hardwareMap.get(Servo.class, ServoName);
@@ -51,21 +63,27 @@ public void setPosition(int Position) {
     switch (Position) {
         case 1:
             servo.setPosition(normPos.normPos1);
+            curState=CurrentState.posloadone;
             break;
         case 2:
             servo.setPosition(normPos.normPos2);
+            curState=CurrentState.posloadTwo;
             break;
         case 3:
             servo.setPosition(normPos.normPos3);
+            curState=CurrentState.posloadThree;
             break;
         case 4:
             servo.setPosition(normPos.normPos3);
+            curState=CurrentState.posLaunchOne;
             break;
         case 5:
             servo.setPosition(normPos.normPos3);
+            curState=CurrentState.posLaunchTwo;
             break;
         case 6:
             servo.setPosition(normPos.normPos3);
+            curState=CurrentState.posLaunchThree;
             break;
 
         default:
@@ -82,6 +100,11 @@ public void setPositions(Positions positions ){
     normPos.normPos5=(Pos.Position5+Pos.Offset)/Pos.MaxAngle;
     normPos.normPos6=(Pos.Position6+Pos.Offset)/Pos.MaxAngle;
 
+}
+
+public CurrentState GetPosition(){
+
+    return  curState;
 }
 
 
