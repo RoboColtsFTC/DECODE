@@ -32,10 +32,10 @@ public class SpindexerControl {
     public static normPositions normPos = new normPositions();
     public static Positions Pos = new Positions();
 
-public SpindexerControl(HardwareMap hardwareMap, String ServoName, Positions positions ){
+public SpindexerControl(HardwareMap hardwareMap, String ServoName){
     servo = hardwareMap.get(Servo.class, ServoName);
 
-    Pos=positions;
+
 
     normPos.normPos1=(Pos.Position1+Pos.Offset)/Pos.MaxAngle;
     normPos.normPos2=(Pos.Position2+Pos.Offset)/Pos.MaxAngle;

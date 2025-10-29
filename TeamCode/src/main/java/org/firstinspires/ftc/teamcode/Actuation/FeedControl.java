@@ -10,8 +10,8 @@ public class FeedControl {
 
     public FeedControl(HardwareMap hardware, double power){
         this.power=power;
-        servo1 = new ContinuousServo(hardware,"servo1",this.power);
-        servo2 = new ContinuousServo(hardware,"servo2",this.power);
+        servo1 = new ContinuousServo(hardware,"FeedLeft",this.power);
+        servo2 = new ContinuousServo(hardware,"FeedRight",this.power);
         servo2.Reverse();
 
     }
@@ -27,4 +27,20 @@ public void startFeed(){
         servo2.Stop();
 
     }
+
+    public void Reverse(){
+        servo1.Stop();
+        servo2.Stop();
+        servo1.Reverse();
+        servo2.Forward();
+
+    }
+    public void Forward(){
+        servo1.Stop();
+        servo2.Stop();
+        servo1.Forward();
+        servo2.Reverse();
+
+    }
+
 }
