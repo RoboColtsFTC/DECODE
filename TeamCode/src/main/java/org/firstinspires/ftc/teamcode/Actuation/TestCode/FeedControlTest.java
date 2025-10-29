@@ -20,12 +20,16 @@ public class FeedControlTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             //Map buttons for testing
-            if (gamepad1.a) {
+            if (gamepad1.x) {
                 feedControl.startFeed();
                 telemetry.addLine("Feed started");
-            } else if (gamepad1.b) {
+            } else if (gamepad1.y) {
+               //  sleep(5000);
                 feedControl.StopFeed();
                 telemetry.addLine("Feed Stopped");
+            } else if (gamepad1.b) {
+                feedControl.ReverseFeed();
+                telemetry.addLine("Feed Reversed");
             }
 
             telemetry.update();
