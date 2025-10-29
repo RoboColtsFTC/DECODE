@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
-import org.firstinspires.ftc.teamcode.drivetrain.ThreeDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.drivetrain.PinpointLocalizer;
 
 public final class ManualFeedbackTuner extends LinearOpMode {
     public static double DISTANCE = 64;
@@ -14,9 +14,9 @@ public final class ManualFeedbackTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-        if (ThreeDeadWheelLocalizer.PARAMS.perpXTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.par0YTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.par1YTicks == 1) {
-            throw new RuntimeException("Odometry wheel locations not set! Run AngularRampLogger to tune them.");
-        }
+//        if (PinpointLocalizer.PARAMS.perpXTicks == 0 && PinpointLocalizer.PARAMS.par0YTicks == 0 && PinpointLocalizer.PARAMS.par1YTicks == 1) {
+//            throw new RuntimeException("Odometry wheel locations not set! Run AngularRampLogger to tune them.");
+//        }
 
         waitForStart();
 

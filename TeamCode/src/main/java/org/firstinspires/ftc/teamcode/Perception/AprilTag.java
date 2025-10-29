@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.Perception;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import android.util.Size;
 
+
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -18,17 +19,32 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
-
+@Config
 public class AprilTag {
     private LinearOpMode opMode;
     private AprilTagProcessor aprilTag;
-    private VisionPortal visionPortal;
     private final Position cameraPosition = new Position(DistanceUnit.INCH,
             0, 0, 0, 0);
     private final YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             0, 0, 0, 0);
     private AprilTagData Data;
+    private VisionPortal visionPortal;
 
+    public static class DetectionState {
+        public boolean isRedGoalAprilTagDetected = false;
+        public boolean isBlueGoalAprilTagDetected = false;
+        public boolean isAnyTagDetected = false;
+
+        public void ResetStates(){
+
+            this.isRedGoalAprilTagDetected = false;
+            this.isBlueGoalAprilTagDetected = false;
+            this.isAnyTagDetected = false;
+
+        }
+    }
+
+    public static DetectionState  detectionState = new DetectionState();
     public AprilTag(LinearOpMode opMode, AprilTagData Data) {
         this.opMode = opMode;
         this.Data = Data;
@@ -69,7 +85,19 @@ public class AprilTag {
                 //        P1: -0.00442754 P2: 0.00173836
                 //        Skew: 0*/
 
-                .setLensIntrinsics(543.913, 543.913, 321.431, 223.814)
+                //.setLensIntrinsics(543.913, 543.913, 321.431, 223.814)
+
+
+                // Camera calabiration for Image Resolution: 1280 x 800
+                //        Focals (pixels) - Fx: 502.204 Fy: 502.204
+                //        Optical center - Cx: 672.761 Cy: 428.515
+                //        Radial distortion (Brown's Model)
+                //        K1: 0.181964 K2: -0.201197 K3: 0.0491265
+                //        P1: 0.000703624 P2: -0.000354538
+                //        Skew: 0
+                //          Mean Square Reprojection Error: 0.413669 pixels
+
+                .setLensIntrinsics(502.204, 502.204, 672.7611, 428.515)
                 .build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
@@ -84,9 +112,17 @@ public class AprilTag {
 
 
         // Create the vision portal by using a builder.
+        // Get camera from hardware map
+        // Setting resolution
+        // Set stream format to MJPEG for higher FPS
+        // Enable live view on Robot Controller screen
+        // Automatically stop live view when OpMode is stopped
+        // Set and enable the processor.
         visionPortal = new VisionPortal.Builder()
                 .setCamera(opMode.hardwareMap.get(WebcamName.class, "Webcam 1")) // Get camera from hardware map
-                .setCameraResolution(new Size(640, 480)) // Setting resolution
+                .setCameraResolution(new Size(1280, 800))
+                //.setCameraResolution(new Size(800, 600))
+                //.setCameraResolution(new Size(640, 480)) // Setting resolution
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // Set stream format to MJPEG for higher FPS
                 .enableLiveView(true) // Enable live view on Robot Controller screen
                 .setAutoStopLiveView(true) // Automatically stop live view when OpMode is stopped
@@ -116,35 +152,46 @@ public class AprilTag {
         // Step through the list of detections and display info for each one.
 
 
-        switch (detection.id) {
-            case 20:  //Blue April Tag ID
+    switch (detection.id) {
+        case 20:  //Blue April Tag ID
 
-                Data.SetBlue(detection.ftcPose.range, detection.ftcPose.bearing);
-                opMode.telemetry.addData("Rangeavg", "%5.1f inches",Data.Blue.Range.Average);
-                opMode.telemetry.addData("Bearingavg", "%3.0f degrees", Data.Blue.Bearing.Average);
+            Data.SetBlue(detection.ftcPose.range, detection.ftcPose.bearing);
+            opMode.telemetry.addData("Rangeavg", "%5.1f inches", Data.Blue.Range);
+            opMode.telemetry.addData("Bearingavg", "%3.0f degrees", Data.Blue.Bearing);
+            detectionState.isBlueGoalAprilTagDetected=true;
+            break; // Exits the switch statement
+        case 24: //Red April Tag ID
+            Data.SetRed(detection.ftcPose.range, detection.ftcPose.bearing);
+            opMode.telemetry.addData("Rangeavg", "%5.1f inches", Data.Red.Range);
+            opMode.telemetry.addData("Bearingavg", "%3.0f degrees", Data.Red.Bearing);
+            detectionState.isRedGoalAprilTagDetected=true;
+            break;
+        // ... more cases
+        default:
 
-                break; // Exits the switch statement
-            case 24: //Red April Tag ID
-                Data.SetRed(detection.ftcPose.range, detection.ftcPose.bearing);
-                opMode.telemetry.addData("Rangeavg", "%5.1f inches",Data.Red.Range.Average);
-                opMode.telemetry.addData("Bearingavg", "%3.0f degrees", Data.Red.Bearing.Average);
-                break;
-            // ... more cases
-            default:
-                // Code to execute if no case matches (optional)
-                break;
-        }
+            // Code to execute if no case matches (optional)
+            break;
     }
+
+
+}
 
     private void ProcessAprilTags() {
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         opMode.telemetry.addData("# AprilTags Detected", currentDetections.size());
+        detectionState.ResetStates();
+        if (currentDetections.isEmpty()){
+            detectionState.isAnyTagDetected = false;
 
-        for (AprilTagDetection detection : currentDetections) {
-            ProcessDetections(detection, Data);
-            telemetryAprilTag(detection);
+       }else{
+            detectionState.isAnyTagDetected = true;
+            for (AprilTagDetection detection : currentDetections) {
+                ProcessDetections(detection, Data);
+                telemetryAprilTag(detection);
+            }
         }
 
+        Data.detectionState= detectionState;
 
 //        // Add "key" information to telemetry
 //        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
@@ -174,6 +221,8 @@ public class AprilTag {
             opMode.telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
             opMode.telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
         }
+           opMode.telemetry.addData("FPS=",visionPortal.getFps());
+
 
 
     }   // end method telemetryAprilTag()

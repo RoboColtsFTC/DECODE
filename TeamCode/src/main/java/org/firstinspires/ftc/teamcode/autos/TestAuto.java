@@ -25,7 +25,6 @@ public final class TestAuto extends LinearOpMode {
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
                 .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(0, 20), Math.toRadians(180))
                 .build());
     }
 }
