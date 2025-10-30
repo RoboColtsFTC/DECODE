@@ -58,6 +58,7 @@ public class SensorColor extends LinearOpMode {
    * in this sample application; you probably *don't* need this when you use a color sensor on your
    * robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller. */
   View relativeLayout;
+  final float[] hsvValues = new float[3];
 
   /*
    * The runOpMode() method is the root of this OpMode, as it is in all LinearOpModes.
@@ -99,7 +100,7 @@ public class SensorColor extends LinearOpMode {
       // hue, the second element (1) will contain the saturation, and the third element (2) will
       // contain the value. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
       // for an explanation of HSV color.
-    final float[] hsvValues = new float[3];
+
     colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color1");
     colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color2");
 
@@ -120,72 +121,77 @@ public class SensorColor extends LinearOpMode {
 
     // Loop until we are asked to stop
     while (opModeIsActive()) {
-      NormalizedRGBA colors = colorSensor.getNormalizedColors();
-      NormalizedRGBA colors2 = colorSensor2.getNormalizedColors();
 
-      /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
-       * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
-       * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
-       * for an explanation of HSV color. */
+    DetectColor();
 
-      // Update the hsvValues array by passing it to Color.colorToHSV()
-      Color.colorToHSV(colors.toColor(), hsvValues);
-      relativeLayout.post(new Runnable() {
-        public void run() {
-          relativeLayout.setBackgroundColor(Color.HSVToColor(hsvValues));
-        }
-      });
-
-      float normBlue, normGreen, normRed;
-      float normBlue2, normGreen2, normRed2;
-      String detectedColor1, detectedColor2, finalDetectedColor;
-      /* If this color sensor also has a distance sensor, display the measured distance.
-       * Note that the reported distance is only useful at very close range, and is impacted by
-       * ambient light and surface reflectivity. */
-      if (colorSensor instanceof DistanceSensor) {
-        telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
       }
-      normRed = colors.red / colors.alpha;
-      normGreen = colors.green / colors.alpha;
-      normBlue = colors.blue / colors.alpha;
+  }
+  public void DetectColor(){
+    NormalizedRGBA colors = colorSensor.getNormalizedColors();
+    NormalizedRGBA colors2 = colorSensor2.getNormalizedColors();
 
-      normRed2 = colors2.red / colors2.alpha;
-      normGreen2 = colors2.green / colors2.alpha;
-      normBlue2 = colors2.blue / colors2.alpha;
+    /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
+     * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
+     * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
+     * for an explanation of HSV color. */
 
-      if (normRed < normGreen && normBlue > normGreen) {
-        detectedColor1 = "PURPLE";
-      } else if (normGreen > normRed && normGreen > normBlue && normGreen > .06) {
-        detectedColor1 = "GREEN";
-      } else {
-        detectedColor1 = "UNKNOWN";
+    // Update the hsvValues array by passing it to Color.colorToHSV()
+    Color.colorToHSV(colors.toColor(), hsvValues);
+    relativeLayout.post(new Runnable() {
+      public void run() {
+        relativeLayout.setBackgroundColor(Color.HSVToColor(hsvValues));
       }
+    });
 
-      if (normRed2 < normGreen2 && normBlue2 > normGreen2) {
-        detectedColor2 = "PURPLE";
-      } else if (normGreen2 > normRed2 && normGreen2 > normBlue2 && normGreen2 > .06) {
-        detectedColor2 = "GREEN";
-      } else {
-        detectedColor2 = "UNKNOWN";
-      }
-
-      if (detectedColor1.equals(detectedColor2)) {
-        finalDetectedColor = detectedColor1;
-      } else {
-        finalDetectedColor = "UNKNOWN";
-      }
-
-      telemetry.addData("NormRed", normRed);
-      telemetry.addData("NormGreen", normGreen);
-      telemetry.addData("NormBlue", normBlue);
-      telemetry.addData("NormRed2", normRed2);
-      telemetry.addData("NormGreen2", normGreen2);
-      telemetry.addData("NormBlue2", normBlue2);
-      //telemetry.addData("gain", gain);
-      telemetry.addLine("Detected Color1: " + detectedColor1);
-      telemetry.addLine("Detected Color2: " + detectedColor2);
-      telemetry.addLine("Final Detected Color: " + finalDetectedColor);
-      telemetry.update();
+    float normBlue, normGreen, normRed;
+    float normBlue2, normGreen2, normRed2;
+    String detectedColor1, detectedColor2, finalDetectedColor;
+    /* If this color sensor also has a distance sensor, display the measured distance.
+     * Note that the reported distance is only useful at very close range, and is impacted by
+     * ambient light and surface reflectivity. */
+    if (colorSensor instanceof DistanceSensor) {
+      telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
     }
+    normRed = colors.red / colors.alpha;
+    normGreen = colors.green / colors.alpha;
+    normBlue = colors.blue / colors.alpha;
+
+    normRed2 = colors2.red / colors2.alpha;
+    normGreen2 = colors2.green / colors2.alpha;
+    normBlue2 = colors2.blue / colors2.alpha;
+
+    if (normRed < normGreen && normBlue > normGreen) {
+      detectedColor1 = "PURPLE";
+    } else if (normGreen > normRed && normGreen > normBlue && normGreen > .06) {
+      detectedColor1 = "GREEN";
+    } else {
+      detectedColor1 = "UNKNOWN";
+    }
+
+    if (normRed2 < normGreen2 && normBlue2 > normGreen2) {
+      detectedColor2 = "PURPLE";
+    } else if (normGreen2 > normRed2 && normGreen2 > normBlue2 && normGreen2 > .06) {
+      detectedColor2 = "GREEN";
+    } else {
+      detectedColor2 = "UNKNOWN";
+    }
+
+    if (detectedColor1.equals(detectedColor2)) {
+      finalDetectedColor = detectedColor1;
+    } else {
+      finalDetectedColor = "UNKNOWN";
+    }
+
+    telemetry.addData("NormRed", normRed);
+    telemetry.addData("NormGreen", normGreen);
+    telemetry.addData("NormBlue", normBlue);
+    telemetry.addData("NormRed2", normRed2);
+    telemetry.addData("NormGreen2", normGreen2);
+    telemetry.addData("NormBlue2", normBlue2);
+    //telemetry.addData("gain", gain);
+    telemetry.addLine("Detected Color1: " + detectedColor1);
+    telemetry.addLine("Detected Color2: " + detectedColor2);
+    telemetry.addLine("Final Detected Color: " + finalDetectedColor);
+    telemetry.update();
   }
 }
