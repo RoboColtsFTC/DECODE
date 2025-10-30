@@ -51,7 +51,7 @@ public final class MecanumDrive {
 
 
         // drive model parameters
-        public double inPerTick = 1/(19.89436789f*25.4); //19.89436789ticks-per-mm for the goBILDA 4-Bar Pod *25.4 to be ticks per inch
+        public double inPerTick = 1/(19.89436789f*25.4); //.00304; //19.89436789ticks-per-mm for the goBILDA 4-Bar Pod *25.4 to be ticks per inch
         public double lateralInPerTick = inPerTick;
         public double trackWidthTicks = 4193;
 
