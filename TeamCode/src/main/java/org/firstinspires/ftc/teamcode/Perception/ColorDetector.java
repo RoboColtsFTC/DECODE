@@ -28,6 +28,7 @@ public class ColorDetector {
 
     public Color GetColor() {
         // Put color detection
+        detectedcolor=Color.PURPLE;  //todo remove once color code is put in place
         return detectedcolor;
     }
 
@@ -43,7 +44,7 @@ public class ColorDetector {
             default:
                 detected =false;
         }
-
+        detected =true;  // todo remove once color detection coe is put in place
         return detected;
     }
 

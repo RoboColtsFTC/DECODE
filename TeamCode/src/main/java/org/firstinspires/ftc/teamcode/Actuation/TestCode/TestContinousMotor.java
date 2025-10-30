@@ -1,13 +1,13 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Actuation.TestCode;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.ContinuousMotor;
 @TeleOp(name = "Actuation:Launch Ball", group = "Actuation")
-public class LaunchBall extends LinearOpMode {
+public class TestContinousMotor extends LinearOpMode {
 
     DcMotor motor;
     double Power = 0 ;
@@ -15,17 +15,19 @@ public class LaunchBall extends LinearOpMode {
     double MaxPower = 1;
 
 
-
+public ContinuousMotor continousmotor;
 
 
     @Override
     public void runOpMode() {
-        motor = hardwareMap.get(DcMotorEx.class, "launcher_motor");
+
+        continousmotor=new ContinuousMotor(hardwareMap,"Test",0);
+
         // Debounce Switches
         boolean dpad_up_Debounce = false;
         boolean dpad_down_Debounce = false;
 
-        motor.setPower(Power);
+
         // Wait for the start button
         telemetry.addData(">", "Press Start to start Ball Launcher.");
         telemetry.update();
@@ -56,7 +58,8 @@ public class LaunchBall extends LinearOpMode {
 
             }
 
-            motor.setPower(Power);
+            continousmotor.SetPower(Power);
+            continousmotor.StartMotor();
 
             telemetry.addData(">", "Press DPadUp to Increase Press DPadDown to Degrease.");
             telemetry.addData("Motor Power", "%5.2f",Power);

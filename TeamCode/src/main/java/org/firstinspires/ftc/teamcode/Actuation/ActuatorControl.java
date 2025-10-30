@@ -25,9 +25,11 @@ public class ActuatorControl {
     public Actuators actuators=new Actuators();
 
     public LoadSpindexer loadSpindexer;
+    public LaunchGamePeace launchgamepeace;
 
     public LinearOpMode opmode;
     public HardwareMap hardwaremap;
+
     public ActuatorControl(LinearOpMode opmode) {
 
         this.opmode=opmode;
@@ -39,11 +41,14 @@ public class ActuatorControl {
         actuators.LauncherMotor= new ContinuousMotor(hardwaremap,"LauncherMotor",0);
         actuators.spindexercontrol=new SpindexerControl(hardwaremap,"Spindexer");
         loadSpindexer=new LoadSpindexer(this.opmode,actuators);
+        launchgamepeace=new LaunchGamePeace(this.opmode,actuators);
 
     }
 
 public void run() {
     loadSpindexer.Run();
+    launchgamepeace.Run();
+
 
 }
 

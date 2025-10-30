@@ -21,8 +21,9 @@ public class LaunchGamePeace {
    public void Run(){
 
        if(opmode.gamepad1.a && !Rebounce) {
+
            lanchall();
-           Rebounce=false;
+
        }
 
    }
@@ -41,4 +42,11 @@ public class LaunchGamePeace {
        }
 
    }
+
+   public void launchByCode(){
+
+       // Todo Add code to launch ball by detected code
+
+    }
+
 }

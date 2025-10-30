@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl;
 
 @Config
 @TeleOp(name="TestSixPositionServo", group="Test")
-public class TestSixPositionServo extends LinearOpMode {
+public class TestSpindexerControl extends LinearOpMode {
 
 
     public SpindexerControl servo;
