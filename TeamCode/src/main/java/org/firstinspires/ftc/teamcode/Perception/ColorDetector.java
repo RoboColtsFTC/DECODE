@@ -40,13 +40,14 @@ public class ColorDetector{
     public ColorDetector(LinearOpMode opmode) {
         this.opmode=opmode;
         this.hardwaremap = opmode.hardwareMap;
-        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color1");
-        colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color2");
+
 
         // Get a reference to the RelativeLayout so we can later change the background
         // color of the Robot Controller app to match the hue detected by the RGB sensor.
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color1");
+        colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color2");
 //
 //        try {
 //            runSample(); // actually execute the sample
@@ -63,7 +64,7 @@ public class ColorDetector{
 //        }
     }
 
-    protected void Run() {
+    public void Run() {
         float gain = 8;
         // Once per loop, we will update this hsvValues array. The first element (0) will contain the
         // hue, the second element (1) will contain the saturation, and the third element (2) will
