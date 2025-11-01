@@ -53,7 +53,12 @@ public class SensorColor extends LinearOpMode {
 
   /** The colorSensor field will contain a reference to our color sensor hardware object */
   NormalizedColorSensor colorSensor, colorSensor2;
+  public enum DetColor {
+    PURPLE,
+    GREEN,
+    UNKNOWN
 
+  }
   /** The relativeLayout field is used to aid in providing interesting visual feedback
    * in this sample application; you probably *don't* need this when you use a color sensor on your
    * robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller. */
@@ -124,7 +129,7 @@ public class SensorColor extends LinearOpMode {
 
     DetectColor();
 
-      }
+    }
   }
   public void DetectColor(){
     NormalizedRGBA colors = colorSensor.getNormalizedColors();
@@ -145,7 +150,9 @@ public class SensorColor extends LinearOpMode {
 
     float normBlue, normGreen, normRed;
     float normBlue2, normGreen2, normRed2;
-    String detectedColor1, detectedColor2, finalDetectedColor;
+    DetColor detectedColor1;
+    DetColor detectedColor2;
+    DetColor finalDetectedColor;
     /* If this color sensor also has a distance sensor, display the measured distance.
      * Note that the reported distance is only useful at very close range, and is impacted by
      * ambient light and surface reflectivity. */
@@ -161,33 +168,33 @@ public class SensorColor extends LinearOpMode {
     normBlue2 = colors2.blue / colors2.alpha;
 
     if (normRed < normGreen && normBlue > normGreen) {
-      detectedColor1 = "PURPLE";
+      detectedColor1 = DetColor.PURPLE;
     } else if (normGreen > normRed && normGreen > normBlue && normGreen > .06) {
-      detectedColor1 = "GREEN";
+      detectedColor1 = DetColor.GREEN;
     } else {
-      detectedColor1 = "UNKNOWN";
+      detectedColor1 = DetColor.UNKNOWN;
     }
 
     if (normRed2 < normGreen2 && normBlue2 > normGreen2) {
-      detectedColor2 = "PURPLE";
+      detectedColor2 = DetColor.PURPLE;
     } else if (normGreen2 > normRed2 && normGreen2 > normBlue2 && normGreen2 > .06) {
-      detectedColor2 = "GREEN";
+      detectedColor2 = DetColor.GREEN;
     } else {
-      detectedColor2 = "UNKNOWN";
+      detectedColor2 = DetColor.UNKNOWN;
     }
 
     if (detectedColor1.equals(detectedColor2)) {
       finalDetectedColor = detectedColor1;
     } else {
-      finalDetectedColor = "UNKNOWN";
+      finalDetectedColor = DetColor.UNKNOWN;
     }
 
-    telemetry.addData("NormRed", normRed);
-    telemetry.addData("NormGreen", normGreen);
-    telemetry.addData("NormBlue", normBlue);
-    telemetry.addData("NormRed2", normRed2);
-    telemetry.addData("NormGreen2", normGreen2);
-    telemetry.addData("NormBlue2", normBlue2);
+    //telemetry.addData("NormRed", normRed);
+    //telemetry.addData("NormGreen", normGreen);
+    //telemetry.addData("NormBlue", normBlue);
+    //telemetry.addData("NormRed2", normRed2);
+    //telemetry.addData("NormGreen2", normGreen2);
+    //telemetry.addData("NormBlue2", normBlue2);
     //telemetry.addData("gain", gain);
     telemetry.addLine("Detected Color1: " + detectedColor1);
     telemetry.addLine("Detected Color2: " + detectedColor2);
