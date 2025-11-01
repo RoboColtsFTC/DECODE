@@ -102,8 +102,8 @@ public class Drivetrain {
             thetaPower = controller.calculate(headingAngle,    AprilTagBearing);
             opMode.telemetry.addData("IMU Reading", "%5.1f inches",   AprilTagBearing);
        } else if (driver.y &&  TagData.detectionState.isAnyTagDetected){
-
-               thetaPower = controller.calculate(headingAngle, AprilTagBearing) * ApirlTagRotationGain;
+                thetaPower=drive.RotateTwardsGoal();
+//               thetaPower = controller.calculate(headingAngle, AprilTagBearing) * ApirlTagRotationGain;
                opMode.telemetry.addData("IMU Reading", "%5.1f inches", AprilTagBearing);
 
        } else {

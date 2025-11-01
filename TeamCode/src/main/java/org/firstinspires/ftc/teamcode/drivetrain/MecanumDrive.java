@@ -29,11 +29,14 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.DownsampledWriter;
 import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 import com.acmerobotics.roadrunner.ftc.LynxFirmware;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+
+import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 import org.firstinspires.ftc.teamcode.drivetrain.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.drivetrain.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.drivetrain.messages.PoseMessage;
@@ -407,4 +410,32 @@ public final class MecanumDrive {
         rightBack.setPower(powers[2]);
         rightFront.setPower(powers[3]);
     }
+
+
+
+//---------------------------------------------------------------------------
+// Code to Align to goal
+
+    public static double kp=.025;
+    public static double ki=.0025;
+    public static double kd=0;
+    PIDController controller = new PIDController(kp,ki,kd);
+    public AprilTagData TagData;
+
+    public double RotateTwardsGoal(){
+        double TagBearing;
+        double thetaPower;
+        double headingAngle=localizer.getHeading();
+
+        if(TagData.red){
+            TagBearing=TagData.Red.Bearing;
+        }else{
+            TagBearing=TagData.Blue.Bearing;
+        }
+
+        thetaPower = controller.calculate(headingAngle+180, TagBearing+180) ;
+     return thetaPower;
+    }
+
+
 }
