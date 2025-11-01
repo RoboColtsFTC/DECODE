@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Actuation;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.Color;
@@ -11,11 +13,8 @@ public class LoadSpindexer {
 public enum State {
     Empty,
     LoadOne,
-
     LoadTwo,
-
     LoadThree,
-
     Loaded
 
 }
@@ -33,6 +32,8 @@ public Color Position2 =Color.UNKNOWN;
 public Color Position3 =Color.UNKNOWN;
 State Currentstate;
 
+private final ElapsedTime timer = new ElapsedTime();
+
 public  static long CycleTime=2000;
 public LinearOpMode opmode;
 
@@ -47,55 +48,90 @@ public LinearOpMode opmode;
 
     public void Run(){
 
-        if(opmode.gamepad1.b) {
+        if(opmode.gamepad1.b && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
+            ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
             Start=true;
-                 }
+        }
 
 
 
 // State machine to load Spindexer
 
-    switch(Currentstate){
+    switch(Currentstate) {
         case Empty:
-     if(Start){
-         Currentstate = State.LoadOne;
-     }
+            if (Start) {
+                Currentstate = State.LoadOne;
+            }
             break;
         case LoadOne:
-            LoadBall(Position1,State.LoadTwo,1);
+            LoadBall(Position1, State.LoadTwo, 1);
             break;
         case LoadTwo:
-            LoadBall(Position2,State.LoadThree,2);
+            LoadBall(Position2, State.LoadThree, 2);
             break;
         case LoadThree:
-            LoadBall(Position3,State.Loaded,3);
+            LoadBall(Position3, State.Loaded, 3);
             break;
 
         case Loaded:
+            if (timer.milliseconds() >= CycleTime){
+                ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
+                timer.reset();
+            }
             break;
 
         }
 
     }
 
+
+    public enum ControlState{
+        Start,
+        Position,
+        DetectColor,
+        kickball
+    }
+    ControlState controlstate;
 public void LoadBall( Color Position, State NextState,int SpindexPos)  {
-        actuators.spindexercontrol.setPosition(SpindexPos);  // set spindexer to first position
-        opmode.sleep(CycleTime);
-        actuators.IntakeMotor.StartMotor(); // Start Intake motor
-        actuators.feedcontrol.Forward();    // Set Direction of feed
-        actuators.feedcontrol.startFeed();  // Start Feed Rollers
-        //While loop till detection occurs
-        if(colordetector.colordetected()) {         // check to see if the ball is in the hopper.
-            if(NextState==State.LoadThree){         // if third state use kicker to feed the last ball
-                actuators.FeedKicker.SetSecond();   // Kick bal into launcher
-                opmode.sleep(CycleTime);            // wait time between kicker positions
-                actuators.FeedKicker.SetFirst();    // Return Back to second position.
+
+        // Cycle time controls t
+    switch(controlstate){
+        case Start:
+            break;
+        case Position:
+            actuators.spindexercontrol.setPosition(SpindexPos);  // set spindexer to first position
+            if(timer.milliseconds()>=CycleTime){
+                controlstate=ControlState.DetectColor;
+                timer.reset();
+            }
+            break;
+        case DetectColor:
+
+            if (colordetector.colordetected()) {         // check to see if the ball is in the hopper.
+                if (NextState == State.LoadThree) {         // if third state use kicker to feed the last ball
+                    controlstate=ControlState.kickball;
+                }else {
+                    actuators.feedcontrol.StopFeed();       // Stop feed
+                    Position = colordetector.GetColor();    // Get Color Detected
+                    Currentstate = NextState;
+                    controlstate=ControlState.Start;// Move to next state
+                }
 
             }
-            actuators.feedcontrol.StopFeed();       // Stop feed
-            Position = colordetector.GetColor();    // Get Color Detected
-            Currentstate = NextState;               // Move to next state
-        }
+            break;
+        case kickball:
+            if(timer.milliseconds()>=CycleTime){
+                timer.reset();
+                controlstate= ControlState.Start;
+
+            }else {
+                actuators.LaunchKicker.SetFirst();
+            }
+            break;
+
+
+    }
+
     }
 
 

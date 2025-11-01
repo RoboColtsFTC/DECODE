@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Actuation.Actuators;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 public class SpindexerControl {
@@ -43,7 +44,6 @@ public class SpindexerControl {
     public static Positions Pos = new Positions();
 
 
-
 public SpindexerControl(HardwareMap hardwareMap, String ServoName){
     servo = hardwareMap.get(Servo.class, ServoName);
 
@@ -58,12 +58,14 @@ public SpindexerControl(HardwareMap hardwareMap, String ServoName){
 
    }
 
+
 public void setPosition(int Position) {
 
     switch (Position) {
         case 1:
             servo.setPosition(normPos.normPos1);
             curState=CurrentState.posloadone;
+
             break;
         case 2:
             servo.setPosition(normPos.normPos2);

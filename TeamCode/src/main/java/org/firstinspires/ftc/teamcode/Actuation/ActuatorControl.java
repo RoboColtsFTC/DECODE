@@ -67,7 +67,16 @@ public class ActuatorControl {
 
     }
 
+    public static enum ControlState{
+        ready,
+        loading,
+        launching,
+        tilting
+    }
+public static ControlState controlstate = ControlState.ready;
+
 public void Run() {
+
     loadSpindexer.Run();
     launchgamepeace.Run();
 
