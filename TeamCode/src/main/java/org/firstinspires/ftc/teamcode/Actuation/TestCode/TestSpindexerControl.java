@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl.Posit
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl;
 
 @Config
-@TeleOp(name="TestSixPositionServo", group="Test")
+@TeleOp(name="TestSpindexerControl", group="Test")
 public class TestSpindexerControl extends LinearOpMode {
 
 
@@ -20,14 +20,14 @@ public class TestSpindexerControl extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         positions= new Positions();
-        servo= new SpindexerControl(hardwareMap,"Test");
+        servo= new SpindexerControl(hardwareMap,"Spindexer");
 
 
         waitForStart();
 
         while (opModeIsActive()) {
 
-            if (gamepad1.dpad_up) {
+            if (gamepad1.dpad_right) {
                 servo.setPosition(1);
             }else if(gamepad1.dpad_down) {
                 servo.setPosition(2);

@@ -1,22 +1,25 @@
 package org.firstinspires.ftc.teamcode.Actuation.Actuators;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-
+@Config
 public class SpindexerControl {
-    public Servo servo;
+    public ServoImplEx servo;
 
     public static class Positions{
         public double Offset =0;
-        public  double Position1 = 0;
-        public  double Position2 = Position1+120;
-        public double Position3 = Position2+120;
-        public double Position4 = 60;
-        public double Position5 = Position4+120;
-        public double Position6 = Position5+120;
-        public double MaxAngle= 300;
+        public  double Position1 = 96;
+        public  double Position2 = Position1+118;
+        public double Position3 = Position2+115;
+        public double Position4 = 60+93;
+        public double Position5 = Position4+118;
+        public double Position6 = Position5+114;
+        public double MaxAngle= 360*1.7;
 
     }
 
@@ -45,7 +48,8 @@ public class SpindexerControl {
 
 
 public SpindexerControl(HardwareMap hardwareMap, String ServoName){
-    servo = hardwareMap.get(Servo.class, ServoName);
+    servo = (ServoImplEx)hardwareMap.get(Servo.class, ServoName);
+    servo.setPwmRange(new PwmControl.PwmRange(800, 2200));
 
 
 
@@ -76,15 +80,15 @@ public void setPosition(int Position) {
             curState=CurrentState.posloadThree;
             break;
         case 4:
-            servo.setPosition(normPos.normPos3);
+            servo.setPosition(normPos.normPos4);
             curState=CurrentState.posLaunchOne;
             break;
         case 5:
-            servo.setPosition(normPos.normPos3);
+            servo.setPosition(normPos.normPos5);
             curState=CurrentState.posLaunchTwo;
             break;
         case 6:
-            servo.setPosition(normPos.normPos3);
+            servo.setPosition(normPos.normPos6);
             curState=CurrentState.posLaunchThree;
             break;
 
