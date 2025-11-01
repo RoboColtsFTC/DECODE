@@ -96,7 +96,7 @@ public class ColorDetector{
 
     }
 
-    public Color GetColor() {
+    public DetColor GetColor() {
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
         NormalizedRGBA colors2 = colorSensor2.getNormalizedColors();
 
@@ -115,9 +115,9 @@ public class ColorDetector{
 
         float normBlue, normGreen, normRed;
         float normBlue2, normGreen2, normRed2;
-        SensorColor.DetColor detectedColor1;
-        SensorColor.DetColor detectedColor2;
-        SensorColor.DetColor finalDetectedColor;
+        DetColor detectedColor1;
+        DetColor detectedColor2;
+        DetColor finalDetectedColor;
         /* If this color sensor also has a distance sensor, display the measured distance.
          * Note that the reported distance is only useful at very close range, and is impacted by
          * ambient light and surface reflectivity. */
@@ -133,25 +133,25 @@ public class ColorDetector{
         normBlue2 = colors2.blue / colors2.alpha;
 
         if (normRed < normGreen && normBlue > normGreen) {
-            detectedColor1 = SensorColor.DetColor.PURPLE;
+            detectedColor1 = DetColor.PURPLE;
         } else if (normGreen > normRed && normGreen > normBlue && normGreen > .06) {
-            detectedColor1 = SensorColor.DetColor.GREEN;
+            detectedColor1 = DetColor.GREEN;
         } else {
-            detectedColor1 = SensorColor.DetColor.UNKNOWN;
+            detectedColor1 = DetColor.UNKNOWN;
         }
 
         if (normRed2 < normGreen2 && normBlue2 > normGreen2) {
-            detectedColor2 = SensorColor.DetColor.PURPLE;
+            detectedColor2 = DetColor.PURPLE;
         } else if (normGreen2 > normRed2 && normGreen2 > normBlue2 && normGreen2 > .06) {
-            detectedColor2 = SensorColor.DetColor.GREEN;
+            detectedColor2 = DetColor.GREEN;
         } else {
-            detectedColor2 = SensorColor.DetColor.UNKNOWN;
+            detectedColor2 = DetColor.UNKNOWN;
         }
 
         if (detectedColor1.equals(detectedColor2)) {
             finalDetectedColor = detectedColor1;
         } else {
-            finalDetectedColor = SensorColor.DetColor.UNKNOWN;
+            finalDetectedColor = DetColor.UNKNOWN;
         }
 
         //telemetry.addData("NormRed", normRed);
@@ -170,7 +170,7 @@ public class ColorDetector{
 
 
 
-    public boolean colordetected(Color finalDetectedColor) {
+    public boolean colordetected() {
         boolean detected =false;
         switch(finalDetectedColor){
             case GREEN:

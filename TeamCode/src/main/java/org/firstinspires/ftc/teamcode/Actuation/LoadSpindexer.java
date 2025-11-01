@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
-import org.firstinspires.ftc.teamcode.Perception.ColorDetector.Color;
+import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
 @Config
 public class LoadSpindexer {
 public enum State {
@@ -27,9 +27,9 @@ public ColorDetector colordetector;
 
 public Actuators actuators;
 
-public Color Position1 =Color.UNKNOWN;
-public Color Position2 =Color.UNKNOWN;
-public Color Position3 =Color.UNKNOWN;
+public DetColor Position1 =DetColor.UNKNOWN;
+public DetColor Position2 =DetColor.UNKNOWN;
+public DetColor Position3 =DetColor.UNKNOWN;
 State Currentstate;
 
 private final ElapsedTime timer = new ElapsedTime();
@@ -92,7 +92,7 @@ public LinearOpMode opmode;
         kickball
     }
     ControlState controlstate;
-public void LoadBall( Color Position, State NextState,int SpindexPos)  {
+public void LoadBall( DetColor Position, State NextState,int SpindexPos)  {
 
         // Cycle time controls t
     switch(controlstate){
@@ -107,7 +107,7 @@ public void LoadBall( Color Position, State NextState,int SpindexPos)  {
             break;
         case DetectColor:
 
-            if (colordetector.colordetected()) {         // check to see if the ball is in the hopper.
+            if (colordetector.colordetected() ){         // check to see if the ball is in the hopper.
                 if (NextState == State.LoadThree) {         // if third state use kicker to feed the last ball
                     controlstate=ControlState.kickball;
                 }else {
