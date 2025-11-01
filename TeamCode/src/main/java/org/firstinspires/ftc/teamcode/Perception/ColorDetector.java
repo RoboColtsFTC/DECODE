@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 public class ColorDetector{
-    NormalizedColorSensor colorSensor, colorSensor2;
+    public NormalizedColorSensor colorSensor, colorSensor2;
     public enum DetColor {
         PURPLE,
         GREEN,
@@ -31,7 +31,7 @@ public class ColorDetector{
      * robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller. */
     View relativeLayout;
     final float[] hsvValues = new float[3];
-    HardwareMap hardwaremap;
+    HardwareMap hardwareMap;
     //ColorSensor colorSensor;
 
     DetColor finalDetectedColor;
@@ -39,7 +39,7 @@ public class ColorDetector{
 
     public ColorDetector(LinearOpMode opmode) {
         this.opmode=opmode;
-        this.hardwaremap = opmode.hardwareMap;
+        this.hardwareMap = opmode.hardwareMap;
 
 
         // Get a reference to the RelativeLayout so we can later change the background
@@ -71,8 +71,8 @@ public class ColorDetector{
         // contain the value. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
         // for an explanation of HSV color.
 
-        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color1");
-        colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color2");
+//        colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color1");
+//        colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color2");
 
         // If possible, turn the light on in the beginning (it might already be on anyway,
         // we just make sure it is if we can).
