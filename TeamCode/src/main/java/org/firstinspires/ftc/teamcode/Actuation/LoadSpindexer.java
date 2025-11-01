@@ -1,20 +1,21 @@
 package org.firstinspires.ftc.teamcode.Actuation;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.Color;
-
+@Config
 public class LoadSpindexer {
 public enum State {
     Empty,
     LoadOne,
-    OneLoaded,
+
     LoadTwo,
-    TwoLoaded,
+
     LoadThree,
-    ThreeLoaded,
+
     Loaded
 
 }
@@ -22,9 +23,6 @@ public enum State {
 public boolean Start = false;
 public boolean exit = false;
 
-public ActuatorControl actuatorcontrol;
-
-public Color ColorState;
 
 public ColorDetector colordetector;
 
@@ -34,6 +32,8 @@ public Color Position1 =Color.UNKNOWN;
 public Color Position2 =Color.UNKNOWN;
 public Color Position3 =Color.UNKNOWN;
 State Currentstate;
+
+public  static long CycleTime=2000;
 public LinearOpMode opmode;
 
 
@@ -62,23 +62,15 @@ public LinearOpMode opmode;
      }
             break;
         case LoadOne:
-            actuators.spindexercontrol.setPosition(1);  // set spindexer to first position
-            LoadBall(Position1,State.LoadTwo);
-            break;
-        case OneLoaded:
+            LoadBall(Position1,State.LoadTwo,1);
             break;
         case LoadTwo:
-            actuators.spindexercontrol.setPosition(2);  // set spindexer to first position
-            LoadBall(Position2,State.LoadThree);
-            break;
-        case TwoLoaded:
+            LoadBall(Position2,State.LoadThree,2);
             break;
         case LoadThree:
-            actuators.spindexercontrol.setPosition(3); // set spindexer to first position
-            LoadBall(Position3,State.Loaded);
+            LoadBall(Position3,State.Loaded,3);
             break;
-        case ThreeLoaded:
-            break;
+
         case Loaded:
             break;
 
@@ -86,8 +78,9 @@ public LinearOpMode opmode;
 
     }
 
-public void LoadBall( Color Position, State NextState)  {
-
+public void LoadBall( Color Position, State NextState,int SpindexPos)  {
+        actuators.spindexercontrol.setPosition(SpindexPos);  // set spindexer to first position
+        opmode.sleep(CycleTime);
         actuators.IntakeMotor.StartMotor(); // Start Intake motor
         actuators.feedcontrol.Forward();    // Set Direction of feed
         actuators.feedcontrol.startFeed();  // Start Feed Rollers
@@ -95,7 +88,7 @@ public void LoadBall( Color Position, State NextState)  {
         if(colordetector.colordetected()) {         // check to see if the ball is in the hopper.
             if(NextState==State.LoadThree){         // if third state use kicker to feed the last ball
                 actuators.FeedKicker.SetSecond();   // Kick bal into launcher
-                opmode.sleep(2000);      // wait 2 seconds
+                opmode.sleep(CycleTime);            // wait time between kicker positions
                 actuators.FeedKicker.SetFirst();    // Return Back to second position.
 
             }

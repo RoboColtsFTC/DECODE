@@ -28,7 +28,7 @@ public class FeedControlTest extends LinearOpMode {
                 feedControl.StopFeed();
                 telemetry.addLine("Feed Stopped");
             } else if (gamepad1.b) {
-                feedControl.ReverseFeed();
+                feedControl.Reverse();
                 telemetry.addLine("Feed Reversed");
             }
 
