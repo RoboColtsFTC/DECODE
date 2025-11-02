@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
+import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 
 import java.text.BreakIterator;
 
@@ -17,6 +18,8 @@ public class LaunchGamePeace {
     public Actuators actuators;
     public LinearOpMode opmode;
     public static long CycleTime;
+
+    public AprilTagData TagData;
 
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -130,6 +133,8 @@ public class LaunchGamePeace {
 
 
     public void launchByCode(){
+
+
 
        // Todo Add code to launch ball by detected code
 

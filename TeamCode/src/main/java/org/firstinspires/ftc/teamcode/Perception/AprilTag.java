@@ -18,6 +18,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+
 import java.util.List;
 @Config
 public class AprilTag {
@@ -167,10 +168,16 @@ public class AprilTag {
             detectionState.isRedGoalAprilTagDetected=true;
             break;
         // ... more cases
-        default:
-
-            // Code to execute if no case matches (optional)
+        case 21:	//GPP
+            Data.SetCode(AprilTagData.AprilCode.GPP);
             break;
+        case 22:	//PGP
+            Data.SetCode(AprilTagData.AprilCode.PGP);
+            break;
+        case 23: 	//PPG
+            Data.SetCode(AprilTagData.AprilCode.PPG);
+            break;
+
     }
 
 

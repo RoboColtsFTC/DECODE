@@ -131,12 +131,21 @@ public void LoadBall( DetColor Position, State NextState,int SpindexPos)  {
 
     }
 
-
-
-
     public void StartLoading(){  //Starts Loading Sequence
         Start=true;
 
     }
+
+    public void LoadOne(){
+        Currentstate=State.LoadThree;
+    }
+
+    public void LoadTwo(){
+
+        Currentstate=State.LoadTwo;
+
+    }
+
+
 
 }

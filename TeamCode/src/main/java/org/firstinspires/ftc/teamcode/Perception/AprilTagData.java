@@ -8,6 +8,12 @@ public class AprilTagData {
     public goal Blue;
     public Code DetectedCode;
 
+    public enum AprilCode{
+            GPP,
+            PGP,
+            PPG
+    }
+    AprilCode ColorCode;
    public boolean red;  // True == Red, False == Blue
 
     public AprilTagData(){
@@ -28,7 +34,7 @@ public class AprilTagData {
 
     }
 
-    public void SetCode(String code) {
+    public void SetCode(AprilCode code) {
         DetectedCode.SetCode(code);
 
 
@@ -41,9 +47,9 @@ public class AprilTagData {
 
 
    public class Code{
-        String CodeID;
+       AprilCode CodeID;
         boolean IsDetected = false;
-       public void SetCode(String code){
+       public void SetCode(AprilCode code){
 
            IsDetected = true;
            CodeID=code;
