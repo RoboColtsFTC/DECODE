@@ -39,138 +39,49 @@ public class LaunchGamePeace {
 
    public void Run(){
 
-       if(opmode.gamepad1.a && !Rebounce && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+       if(opmode.gamepad2.x && !Rebounce && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
 
-           lanchall();
            ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+           actuators.LauncherMotor.StartMotor();
+           lanchall();
+
 
        }
+       Rebounce=opmode.gamepad2.x;
 
    }
 
-
-    public enum SpindleState {
-
-       AllBallsLoaded,
-        TwoBallsLoaded,
-        OneBallLoaded,
-        Empty
-
-
-    }
-
-    public enum ControlState{
-        Ready,
-        SetPosition,
-        KickBall
-
-    }
-    ControlState controlstate;
-   SpindleState BallState;
-   public void launch(int pos){
-
-       switch (controlstate){
-           case Ready:
-               actuators.LauncherMotor.StartMotor();
-               if(timer.milliseconds()>=CycleTime){
-                   timer.reset();
-                   controlstate=ControlState.SetPosition;
-               }
-               break;
-
-           case SetPosition:
-               actuators.spindexercontrol.setPosition(pos);  // increments betweeen all positions
-               if(timer.milliseconds()>=CycleTime){
-                   timer.reset();
-                   controlstate=ControlState.KickBall;
-               }
-               break;
-
-           case KickBall:
-               if(timer.milliseconds()>=CycleTime){
-                   timer.reset();
-                   controlstate=ControlState.Ready;
-
-               }else {
-                   actuators.LaunchKicker.SetFirst();
-               }
-               break;
-       }
-
-
-
-   }
 
    public void lanchall(){
-
-       switch(BallState){
-
-           case AllBallsLoaded:
-               launch(6);
-
-
-                   BallState = SpindleState.TwoBallsLoaded;
-
-             break;
-
-           case TwoBallsLoaded:
-               launch(5);
-
-                   BallState = SpindleState.OneBallLoaded;
-
-           break;
-
-           case OneBallLoaded:
-
-               launch(4);
-                   BallState = SpindleState.Empty;
-
-               break;
-
-           case Empty:
-                if (timer.milliseconds()>=CycleTime) {
-                    ActuatorControl.controlstate = ActuatorControl.ControlState.loading;
-                    timer.reset();
-                }
-               break;
-
-       }
+       opmode.sleep(3000);
+       launch(6);
+       launch(5);
+       launch(4);
+       LoadSpindexer.SpindexerLoaded=false;
+       actuators.LauncherMotor.StopMotor();
+       ActuatorControl.controlstate=ActuatorControl.ControlState.ready;
+       LoadSpindexer.Currentstate= LoadSpindexer.State.Empty;
+       LoadSpindexer.SpindexerLoaded=false;
 
    }
+
+    public void launch(int pos){
+
+        opmode.sleep(500);
+        actuators.spindexercontrol.setPosition(pos);  // increments betweeen all positions
+        opmode.sleep(500);
+        actuators.LaunchKicker.SetSecond();
+        opmode.sleep(500);
+        actuators.LaunchKicker.SetFirst();
+
+    }
     public void lanchorder(List<Integer> order){
 
-        switch(BallState){
+        opmode.sleep(3000);
+        launch(order.get(1));
+        launch(order.get(2));
+        launch(order.get(3));
 
-            case AllBallsLoaded:
-                launch(order.get(1));
-
-
-                BallState = SpindleState.TwoBallsLoaded;
-
-                break;
-
-            case TwoBallsLoaded:
-                launch(order.get(2));
-
-                BallState = SpindleState.OneBallLoaded;
-
-                break;
-
-            case OneBallLoaded:
-
-                launch(order.get(3));
-                BallState = SpindleState.Empty;
-
-                break;
-
-            case Empty:
-                if (timer.milliseconds()>=CycleTime) {
-                    ActuatorControl.controlstate = ActuatorControl.ControlState.loading;
-                    timer.reset();
-                }
-                break;
-
-        }
 
     }
 

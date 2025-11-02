@@ -38,8 +38,8 @@ public class ActuatorControl {
 
     public static class Params{
         // Feed Kicker parameters
-        public double FeedKicker_First=0;  //Calibrated to Robot 0
-        public double FeedKicker_Second=115;  //Calibrated to Robot 115
+        public double FeedKicker_First=4;  //Calibrated to Robot 0
+        public double FeedKicker_Second=150;  //Calibrated to Robot 115
         public double FeedKicker_MaxAngle=300;
         // LaunchKicker parameters
         public double LaunchKicker_First=103;  //calibrated to robot  103
@@ -86,7 +86,7 @@ public static ControlState controlstate = ControlState.ready;
 public void Run() {
 
     loadSpindexer.Run();
-    //launchgamepeace.Run();
+    launchgamepeace.Run();
 
 
 }

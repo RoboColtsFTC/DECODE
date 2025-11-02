@@ -31,10 +31,8 @@ public Actuators actuators;
 
 public static List<DetColor> colorPos;
 
-State Currentstate;
+public static State Currentstate=State.Empty;
 
-private final ElapsedTime timer = new ElapsedTime();
-private final ElapsedTime timer2 = new ElapsedTime();
 
 public  static long CycleTime=2000;
 public  static long CycleTimeFeed=5000;
@@ -53,11 +51,12 @@ public LinearOpMode opmode;
 
     public void Run(){
 
-        if(opmode.gamepad1.b && !rebounceb && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
+        if(opmode.gamepad2.a && !rebounceb && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
             ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
             Start=true;
         }
-        rebounceb=opmode.gamepad1.b;
+        rebounceb=opmode.gamepad2.a;
+
 
 
 // State machine to load Spindexer
@@ -65,14 +64,13 @@ public LinearOpMode opmode;
         switch(Currentstate) {
             case Empty:
 
-                if (Start) {
+                if (Start && !SpindexerLoaded) {
 
                     Currentstate = State.LoadOne;
 
                 }
                 break;
             case LoadOne:
-
                 LoadBall(colorPos, State.LoadTwo, 1);
                 break;
             case LoadTwo:
@@ -80,16 +78,13 @@ public LinearOpMode opmode;
                 break;
             case LoadThree:
                 LoadBall(colorPos, State.Loaded, 3);
-                break;
-            case Loaded:
-
                 ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
-
                 break;
 
             }
 
-        }
+
+    }
 
 
     public enum ControlState{
@@ -102,14 +97,14 @@ public LinearOpMode opmode;
 
    public static ControlState controlstate=ControlState.Ready;
     public Boolean rebounce = false;
-    public Boolean SpindexerLoaded=false;
+    public static Boolean SpindexerLoaded=false;
 
 public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  {
 
         // Cycle time controls t
     switch(controlstate) {
         case Ready:
-            if (!SpindexerLoaded) {
+            if (!SpindexerLoaded && Start) {
                 controlstate = ControlState.StartIntake;
             }
             break;
@@ -137,7 +132,7 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
             break;
         case DetectColor:
 
-            if (opmode.gamepad1.y && !rebounce){  //colordetector.colordetected()  check to see if the ball is in the spindexer using Gampad as backup
+            if (opmode.gamepad2.b && !rebounce){  //colordetector.colordetected()  check to see if the ball is in the spindexer using Gampad as backup
                 if (Currentstate== State.LoadThree) {                   // if third state use kicker to feed the last ball
                     controlstate=ControlState.kickball;
                 }else {
@@ -149,7 +144,7 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
 
 
             }
-            rebounce=opmode.gamepad1.y;
+            rebounce=opmode.gamepad2.b;
             break;
         case kickball:
             actuators.FeedKicker.SetSecond();
@@ -159,6 +154,7 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
             actuators.IntakeMotor.StopMotor();
             SpindexerLoaded=true;
             controlstate= ControlState.Ready;
+            Start=false;
 
             break;
     }
