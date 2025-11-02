@@ -38,12 +38,12 @@ public class ActuatorControl {
 
     public static class Params{
         // Feed Kicker parameters
-        public double FeedKicker_First=0;  //Calibrated to Robot
-        public double FeedKicker_Second=115;  //Calibrated to Robot
+        public double FeedKicker_First=0;  //Calibrated to Robot 0
+        public double FeedKicker_Second=115;  //Calibrated to Robot 115
         public double FeedKicker_MaxAngle=300;
         // LaunchKicker parameters
-        public double LaunchKicker_First=103;  //calibrated to robot
-        public double LaunchKicker_Second=0;   //calibrated to robot
+        public double LaunchKicker_First=103;  //calibrated to robot  103
+        public double LaunchKicker_Second=0;   //calibrated to robot 0
         public double LaunchKicker_MaxAngle=300;
 
         // Intake Motor Parameters
