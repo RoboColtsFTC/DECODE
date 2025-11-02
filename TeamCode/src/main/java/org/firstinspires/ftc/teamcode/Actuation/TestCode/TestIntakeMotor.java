@@ -6,8 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.ContinuousMotor;
-@TeleOp(name = "TestContinousMotor", group = "Test")
-public class TestContinousMotor extends LinearOpMode {
+
+@TeleOp(name = "TestIntakeMotor", group = "Test")
+public class TestIntakeMotor extends LinearOpMode {
 
     DcMotor motor;
     double Power = 0 ;
@@ -22,7 +23,7 @@ public ContinuousMotor continousmotor;
     public void runOpMode() {
 
         continousmotor=new ContinuousMotor(hardwareMap,"IntakeMotor",0);
-
+        continousmotor.SetReverse();
         // Debounce Switches
         boolean dpad_up_Debounce = false;
         boolean dpad_down_Debounce = false;

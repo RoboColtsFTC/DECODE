@@ -32,8 +32,8 @@ public class LaunchGamePeace {
 
     public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos){
         this.colorPos=colorPos;
-       this.opmode=opmode;
-       this.actuators = actuators;
+        this.opmode=opmode;
+        this.actuators = actuators;
 
    }
 

@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.FeedControl;
 
-@TeleOp(name = "FeedControl Test", group = "Test")
-public class FeedControlTest extends LinearOpMode {
+@TeleOp(name = "TestFeedControl ", group = "Test")
+public class TestFeedControl extends LinearOpMode {
     private FeedControl feedControl;
 
     @Override

@@ -38,8 +38,8 @@ public class ActuatorControl {
 
     public static class Params{
         // Feed Kicker parameters
-        public double FeedKicker_First=10;
-        public double FeedKicker_Second=20;
+        public double FeedKicker_First=0;  //Calibrated to Robot
+        public double FeedKicker_Second=115;  //Calibrated to Robot
         public double FeedKicker_MaxAngle=300;
         // LaunchKicker parameters
         public double LaunchKicker_First=103;  //calibrated to robot
@@ -69,6 +69,10 @@ public class ActuatorControl {
         loadSpindexer=new LoadSpindexer(this.opmode,actuators,colorPos);
         launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos);
 
+        // Tuning
+        actuators.IntakeMotor.SetReverse();
+        actuators.feedcontrol.Reverse();
+
     }
 
     public static enum ControlState{
@@ -82,7 +86,7 @@ public static ControlState controlstate = ControlState.ready;
 public void Run() {
 
     loadSpindexer.Run();
-    launchgamepeace.Run();
+    //launchgamepeace.Run();
 
 
 }

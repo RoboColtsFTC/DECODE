@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 @Config
 public class LoadSpindexer {
-public enum State {
+public static enum State {
     Empty,
     LoadOne,
     LoadTwo,
@@ -21,21 +21,23 @@ public enum State {
 
 }
 
-public boolean Start = false;
-public boolean exit = false;
+public static boolean Start = false;
+public static boolean exit = false;
 
 
 public ColorDetector colordetector;
 
 public Actuators actuators;
 
-public List<DetColor> colorPos;
+public static List<DetColor> colorPos;
 
 State Currentstate;
 
 private final ElapsedTime timer = new ElapsedTime();
 
-public  static long CycleTime=2000;
+public  static long CycleTime=5000;
+public  static long CycleTimeFeed=5000;
+
 public LinearOpMode opmode;
 
 
@@ -46,22 +48,26 @@ public LinearOpMode opmode;
         this.opmode=opmode;
         this.actuators=actuators;
     }
+    boolean rebounceb=false;
 
     public void Run(){
 
-        if(opmode.gamepad1.b && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
+        if(opmode.gamepad1.b && !rebounceb && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
             ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
             Start=true;
         }
-
+        rebounceb=opmode.gamepad1.b;
 
 
 // State machine to load Spindexer
 
         switch(Currentstate) {
             case Empty:
+
                 if (Start) {
+
                     Currentstate = State.LoadOne;
+
                 }
                 break;
             case LoadOne:
@@ -92,34 +98,57 @@ public LinearOpMode opmode;
         kickball
     }
 
-    ControlState controlstate;
+   public static ControlState controlstate=ControlState.Ready;
+    public Boolean rebounce = false;
+    public Boolean switch1 = true;
 public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  {
 
         // Cycle time controls t
-    switch(controlstate){
+    switch(controlstate) {
         case Ready:
-            controlstate=ControlState.Position;
+            controlstate = ControlState.Position;
+            actuators.IntakeMotor.StartMotor();
+            actuators.feedcontrol.startFeed();
+
             break;
         case Position:
-            actuators.spindexercontrol.setPosition(SpindexPos);  // set spindexer to first position
-            if(timer.milliseconds()>=CycleTime){
-                controlstate=ControlState.DetectColor;
-                timer.reset();
+
+
+            if (SpindexPos == 1 && switch1 ) {
+                actuators.spindexercontrol.setPosition(SpindexPos);
+                switch1 = false;
+            } else {
+                actuators.feedcontrol.StopFeed();
+
+                if (timer.milliseconds() >= CycleTimeFeed) {
+
+                    actuators.spindexercontrol.setPosition(SpindexPos);  // set spindexer to first position
+                    timer.reset();
+                    controlstate=ControlState.DetectColor;
+                    actuators.feedcontrol.startFeed();
+                }
+
             }
+
+
+
+
             break;
         case DetectColor:
 
-            if (colordetector.colordetected() || opmode.gamepad1.y){  // check to see if the ball is in the spindexer using Gampad as backup
-                if (NextState == State.LoadThree) {                   // if third state use kicker to feed the last ball
+            if (opmode.gamepad1.y && !rebounce){  //colordetector.colordetected()  check to see if the ball is in the spindexer using Gampad as backup
+                if (Currentstate== State.LoadThree) {                   // if third state use kicker to feed the last ball
                     controlstate=ControlState.kickball;
                 }else {
-                    actuators.feedcontrol.StopFeed();                 // Stop feed
-                    colorPos.set(SpindexPos,colordetector.GetColor());              // Get Color Detected
+                                   // Stop feed
+                    //colorPos.set(SpindexPos,colordetector.GetColor());              // Get Color Detected
                     Currentstate = NextState;
                     controlstate=ControlState.Ready;                  // Move to next state
                 }
 
+
             }
+            rebounce=opmode.gamepad1.y;
             break;
         case kickball:
             if(timer.milliseconds()>=CycleTime){
@@ -128,6 +157,7 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
 
             }else {
                 actuators.LaunchKicker.SetFirst();
+                actuators.feedcontrol.StopFeed();
             }
             break;
     }
