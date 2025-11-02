@@ -7,14 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.FeedControl;
 
-@TeleOp(name = "FeedControl Test", group = "Test")
+@TeleOp(name = "ActuoatorControlTest", group = "Test")
 public class ActuoatorControlTest extends LinearOpMode {
 public ActuatorControl actuatorcontrol;
-    private LinearOpMode OpMode;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-        actuatorcontrol =new ActuatorControl(OpMode);
+        actuatorcontrol =new ActuatorControl(this);
         telemetry.addLine("FeedControl Test Ready");
         telemetry.update();
 

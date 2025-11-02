@@ -85,19 +85,19 @@ public class AprilTag {
                 //        P1: -0.00442754 P2: 0.00173836
                 //        Skew: 0*/
 
-                //.setLensIntrinsics(543.913, 543.913, 321.431, 223.814)
+                .setLensIntrinsics(543.913, 543.913, 321.431, 223.814)
 
 
-                // Camera calabiration for Image Resolution: 1280 x 800
-                //        Focals (pixels) - Fx: 502.204 Fy: 502.204
-                //        Optical center - Cx: 672.761 Cy: 428.515
-                //        Radial distortion (Brown's Model)
-                //        K1: 0.181964 K2: -0.201197 K3: 0.0491265
-                //        P1: 0.000703624 P2: -0.000354538
-                //        Skew: 0
-                //          Mean Square Reprojection Error: 0.413669 pixels
-
-                .setLensIntrinsics(502.204, 502.204, 672.7611, 428.515)
+//                // Camera calabiration for Image Resolution: 1280 x 800
+//                //        Focals (pixels) - Fx: 502.204 Fy: 502.204
+//                //        Optical center - Cx: 672.761 Cy: 428.515
+//                //        Radial distortion (Brown's Model)
+//                //        K1: 0.181964 K2: -0.201197 K3: 0.0491265
+//                //        P1: 0.000703624 P2: -0.000354538
+//                //        Skew: 0
+//                //          Mean Square Reprojection Error: 0.413669 pixels
+//
+//                .setLensIntrinsics(502.204, 502.204, 672.7611, 428.515)
                 .build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
@@ -120,9 +120,9 @@ public class AprilTag {
         // Set and enable the processor.
         visionPortal = new VisionPortal.Builder()
                 .setCamera(opMode.hardwareMap.get(WebcamName.class, "Webcam 1")) // Get camera from hardware map
-                .setCameraResolution(new Size(1280, 800))
+//                .setCameraResolution(new Size(1280, 800))
                 //.setCameraResolution(new Size(800, 600))
-                //.setCameraResolution(new Size(640, 480)) // Setting resolution
+                .setCameraResolution(new Size(640, 480)) // Setting resolution
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // Set stream format to MJPEG for higher FPS
                 .enableLiveView(true) // Enable live view on Robot Controller screen
                 .setAutoStopLiveView(true) // Automatically stop live view when OpMode is stopped
