@@ -47,8 +47,8 @@ public class AprilTagData {
 
 
    public class Code{
-       AprilCode CodeID;
-        boolean IsDetected = false;
+       public AprilCode CodeID;
+       public boolean IsDetected = false;
        public void SetCode(AprilCode code){
 
            IsDetected = true;

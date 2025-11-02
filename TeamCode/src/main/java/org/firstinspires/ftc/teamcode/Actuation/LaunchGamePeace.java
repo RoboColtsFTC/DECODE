@@ -8,10 +8,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
+import org.firstinspires.ftc.teamcode.Perception.AprilTag;
 import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
+import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
+import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
 
-import java.text.BreakIterator;
 
+
+
+import java.util.Arrays;
+import java.util.List;
 @Config
 public class LaunchGamePeace {
     private boolean Rebounce = false;
@@ -20,11 +26,12 @@ public class LaunchGamePeace {
     public static long CycleTime;
 
     public AprilTagData TagData;
+    List<ColorDetector.DetColor> colorPos;
 
     private final ElapsedTime timer = new ElapsedTime();
 
-    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators){
-
+    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos){
+        this.colorPos=colorPos;
        this.opmode=opmode;
        this.actuators = actuators;
 
@@ -130,14 +137,101 @@ public class LaunchGamePeace {
        }
 
    }
+    public void lanchorder(List<Integer> order){
+
+        switch(BallState){
+
+            case AllBallsLoaded:
+                launch(order.get(1));
+
+
+                BallState = SpindleState.TwoBallsLoaded;
+
+                break;
+
+            case TwoBallsLoaded:
+                launch(order.get(2));
+
+                BallState = SpindleState.OneBallLoaded;
+
+                break;
+
+            case OneBallLoaded:
+
+                launch(order.get(3));
+                BallState = SpindleState.Empty;
+
+                break;
+
+            case Empty:
+                if (timer.milliseconds()>=CycleTime) {
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.loading;
+                    timer.reset();
+                }
+                break;
+
+        }
+
+    }
 
 
     public void launchByCode(){
+        List<DetColor> Code=Arrays.asList(DetColor.UNKNOWN,DetColor.UNKNOWN, DetColor.UNKNOWN);
+       switch(TagData.DetectedCode.CodeID) {
+           case GPP:
 
+                Code= Arrays.asList(DetColor.GREEN, DetColor.PURPLE, DetColor.PURPLE);
 
+                break;
+           case PGP:
+                Code= Arrays.asList(DetColor.PURPLE, DetColor.GREEN, DetColor.PURPLE);
 
+               break;
+           case PPG:
+               Code= Arrays.asList(DetColor.PURPLE, DetColor.PURPLE, DetColor.GREEN);
+
+               break;
+       }
        // Todo Add code to launch ball by detected code
+        List<Integer> Lorder =MarchLists(colorPos,Code);
 
+        lanchorder(Lorder);
+
+
+
+
+
+    }
+
+// Method used to determien fire order
+    public static List<Integer> MarchLists(List<DetColor> ListA, List<DetColor> ListB) {
+
+        List<Integer> IDList= Arrays.asList(0, 0, 0);
+        Boolean[] FlagA={true,true,true};
+        Boolean[] FlagB={true,true,true};
+
+        for(int n =0;n<ListA.size();n++){
+
+
+            for(int m =0;m<ListB.size();m++){
+
+
+                if(ListA.get(n).equals(ListB.get(m))&FlagA[n]&&FlagB[m]){
+
+                    IDList.set(n,m+1);
+                    FlagA[n] = false;
+                    FlagB[m] = false;
+
+
+                }
+
+
+
+
+
+            }
+        }
+        return IDList;
     }
 
 }

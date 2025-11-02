@@ -9,6 +9,10 @@ import org.firstinspires.ftc.teamcode.Actuation.Actuators.AngleServo;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.ContinuousMotor;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.FeedControl;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl;
+import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
+
+import java.util.Arrays;
+import java.util.List;
 
 // This class is used for initializing all the actuators used in the Decode Game.
 // It allows them to be initialized once and shared between different classes
@@ -50,7 +54,7 @@ public class ActuatorControl {
         public double FeedControl_Power=.5;
     }
 
-
+    public List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
     Params param=new Params();
     public ActuatorControl(LinearOpMode opmode) {
 
@@ -62,8 +66,8 @@ public class ActuatorControl {
         actuators.IntakeMotor = new ContinuousMotor(hardwaremap,"IntakeMotor",param.IntakeMotor_Power);
         actuators.LauncherMotor= new ContinuousMotor(hardwaremap,"LauncherMotor",param.Launchmmotor_Power);
         actuators.spindexercontrol=new SpindexerControl(hardwaremap,"Spindexer");
-        loadSpindexer=new LoadSpindexer(this.opmode,actuators);
-        launchgamepeace=new LaunchGamePeace(this.opmode,actuators);
+        loadSpindexer=new LoadSpindexer(this.opmode,actuators,colorPos);
+        launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos);
 
     }
 

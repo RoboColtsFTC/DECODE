@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
+
+import java.util.Arrays;
+import java.util.List;
 @Config
 public class LoadSpindexer {
 public enum State {
@@ -25,9 +28,9 @@ public boolean exit = false;
 public ColorDetector colordetector;
 
 public Actuators actuators;
-public DetColor Position1 =DetColor.UNKNOWN;
-public DetColor Position2 =DetColor.UNKNOWN;
-public DetColor Position3 =DetColor.UNKNOWN;
+
+public List<DetColor> colorPos;
+
 State Currentstate;
 
 private final ElapsedTime timer = new ElapsedTime();
@@ -37,8 +40,8 @@ public LinearOpMode opmode;
 
 
 
-    public LoadSpindexer(LinearOpMode opmode,Actuators actuators){ // Cunstructor
-
+    public LoadSpindexer(LinearOpMode opmode,Actuators actuators,List<DetColor> colorPos){ // Cunstructor
+        this.colorPos=colorPos;
         Currentstate=State.Empty;
         this.opmode=opmode;
         this.actuators=actuators;
@@ -62,13 +65,13 @@ public LinearOpMode opmode;
                 }
                 break;
             case LoadOne:
-                LoadBall(Position1, State.LoadTwo, 1);
+                LoadBall(colorPos, State.LoadTwo, 1);
                 break;
             case LoadTwo:
-                LoadBall(Position2, State.LoadThree, 2);
+                LoadBall(colorPos, State.LoadThree, 2);
                 break;
             case LoadThree:
-                LoadBall(Position3, State.Loaded, 3);
+                LoadBall(colorPos, State.Loaded, 3);
                 break;
             case Loaded:
                 if (timer.milliseconds() >= CycleTime){
@@ -90,7 +93,7 @@ public LinearOpMode opmode;
     }
 
     ControlState controlstate;
-public void LoadBall( DetColor Position, State NextState,int SpindexPos)  {
+public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  {
 
         // Cycle time controls t
     switch(controlstate){
@@ -111,7 +114,7 @@ public void LoadBall( DetColor Position, State NextState,int SpindexPos)  {
                     controlstate=ControlState.kickball;
                 }else {
                     actuators.feedcontrol.StopFeed();                 // Stop feed
-                    Position = colordetector.GetColor();              // Get Color Detected
+                    colorPos.set(SpindexPos,colordetector.GetColor());              // Get Color Detected
                     Currentstate = NextState;
                     controlstate=ControlState.Ready;                  // Move to next state
                 }
