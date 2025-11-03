@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Perception.AprilTag;
 import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
-
+@Config
 public class Robot {
     LinearOpMode opMode;
 
@@ -20,7 +21,7 @@ public class Robot {
     public Drivetrain drivetrain;
     public BallLauncher balllauncher;
 
-    public AprilTagData TagData;
+    public static AprilTagData TagData;
     public AprilTag AprilTagPro;
 
     public Robot(LinearOpMode opMode, boolean auto, boolean red, boolean useDrive,boolean useBallLauncher,boolean useAprilTags){

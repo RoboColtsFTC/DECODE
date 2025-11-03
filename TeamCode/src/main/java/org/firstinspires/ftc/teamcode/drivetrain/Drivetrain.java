@@ -119,15 +119,15 @@ public class Drivetrain {
 
         if(isfeildDrive) {
             speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    -driver.left_stick_y * maxSpeed,
-                    -driver.left_stick_x * maxSpeed,
+                    driver.left_stick_y * maxSpeed,
+                    driver.left_stick_x * maxSpeed,
                     thetaPower,
                     headingAngleRotated
     );
 }else {  // used to verify correct orentation for feild drive.
        speeds = new ChassisSpeeds(
-               -driver.left_stick_y * maxSpeed,
-               -driver.left_stick_x * maxSpeed,
+               driver.left_stick_y * maxSpeed,
+               driver.left_stick_x * maxSpeed,
                thetaPower
       );
 }

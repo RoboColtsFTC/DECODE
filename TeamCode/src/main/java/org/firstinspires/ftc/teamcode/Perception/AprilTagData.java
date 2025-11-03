@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Perception;
 
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.Perception.AprilTag.DetectionState;
+
 public class AprilTagData {
     public DetectionState detectionState = new DetectionState();
     public goal Red;

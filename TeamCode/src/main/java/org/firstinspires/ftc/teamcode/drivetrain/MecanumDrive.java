@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drivetrain.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.drivetrain.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.drivetrain.messages.PoseMessage;
@@ -420,17 +420,17 @@ public final class MecanumDrive {
     public static double ki=.0025;
     public static double kd=0;
     PIDController controller = new PIDController(kp,ki,kd);
-    public AprilTagData TagData;
+
 
     public double RotateTwardsGoal(){
         double TagBearing;
         double thetaPower;
         double headingAngle=localizer.getHeading();
 
-        if(TagData.red){
-            TagBearing=TagData.Red.Bearing;
+        if(Robot.TagData.red){
+            TagBearing=Robot.TagData.Red.Bearing;
         }else{
-            TagBearing=TagData.Blue.Bearing;
+            TagBearing=Robot.TagData.Blue.Bearing;
         }
 
         thetaPower = controller.calculate(headingAngle+180, TagBearing+180) ;
