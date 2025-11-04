@@ -77,7 +77,7 @@ public class LaunchGamePeace {
     }
     public void lanchorder(List<Integer> order){
 
-        opmode.sleep(3000);
+        opmode.sleep(6000);
         launch(order.get(1));
         launch(order.get(2));
         launch(order.get(3));

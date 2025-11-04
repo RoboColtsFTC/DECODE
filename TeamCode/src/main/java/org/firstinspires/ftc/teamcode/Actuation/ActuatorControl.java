@@ -47,11 +47,11 @@ public class ActuatorControl {
         public double LaunchKicker_MaxAngle=300;
 
         // Intake Motor Parameters
-        public double IntakeMotor_Power=.5;
-        public double Launchmmotor_Power=.5;
+        public double IntakeMotor_Power=1;
+        public double Launchmmotor_Power=.73;
 
         // Feed control Parameters
-        public double FeedControl_Power=.5;
+        public double FeedControl_Power=1;
     }
 
     public List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
