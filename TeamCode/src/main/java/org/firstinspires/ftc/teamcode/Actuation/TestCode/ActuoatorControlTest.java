@@ -22,7 +22,7 @@ public ActuatorControl actuatorcontrol;
 
         while (opModeIsActive()) {
 
-            actuatorcontrol.Run();
+            actuatorcontrol.run();
 
         }
     }

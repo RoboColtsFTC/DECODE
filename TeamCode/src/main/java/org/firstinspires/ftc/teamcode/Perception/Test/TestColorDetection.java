@@ -24,7 +24,7 @@ public class TestColorDetection extends LinearOpMode {
         waitForStart();
         boolean detectcolor;
         while (opModeIsActive()) {
-            colordetector.Run(); // actually execute the sample
+            colordetector.run(); // actually execute the sample
             detectcolor = colordetector.colordetected();
 
         }

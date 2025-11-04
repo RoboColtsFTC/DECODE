@@ -83,10 +83,10 @@ public class ActuatorControl {
     }
 public static ControlState controlstate = ControlState.ready;
 
-public void Run() {
+public void run() {
 
-    loadSpindexer.Run();
-    launchgamepeace.Run();
+    loadSpindexer.run();
+    launchgamepeace.run();
 
 
 }

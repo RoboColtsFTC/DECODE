@@ -42,6 +42,7 @@ public LinearOpMode opmode;
 
 
     public LoadSpindexer(LinearOpMode opmode,Actuators actuators,List<DetColor> colorPos){ // Cunstructor
+       colordetector=new ColorDetector(opmode);
         this.colorPos=colorPos;
         Currentstate=State.Empty;
         this.opmode=opmode;
@@ -49,7 +50,8 @@ public LinearOpMode opmode;
     }
     boolean rebounceb=false;
 
-    public void Run(){
+    public void run(){
+        colordetector.run();
 
         if(opmode.gamepad2.a && !rebounceb && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
             ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
@@ -131,13 +133,17 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
 
             break;
         case DetectColor:
+            if (Currentstate== State.LoadThree){
+                colordetector.maxdist=8;
+            }
 
-            if (opmode.gamepad2.b && !rebounce){  //colordetector.colordetected()  check to see if the ball is in the spindexer using Gampad as backup
+            if (opmode.gamepad2.b && !rebounce || colordetector.colordetected()){  //colordetector.colordetected()  check to see if the ball is in the spindexer using Gampad as backup
                 if (Currentstate== State.LoadThree) {                   // if third state use kicker to feed the last ball
+
                     controlstate=ControlState.kickball;
                 }else {
                                    // Stop feed
-                    //colorPos.set(SpindexPos,colordetector.GetColor());              // Get Color Detected
+                    colorPos.set(SpindexPos,colordetector.GetColor());              // Get Color Detected
                     Currentstate = NextState;
                     controlstate=ControlState.Ready;                  // Move to next state
                 }

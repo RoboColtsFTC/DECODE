@@ -38,6 +38,7 @@ public class ColorDetector{
 
     DetColor finalDetectedColor = DetColor.UNKNOWN;
     public LinearOpMode opmode;
+    public double maxdist = 5.00;
 
     public ColorDetector(@NonNull LinearOpMode opmode) {
         this.opmode=opmode;
@@ -66,7 +67,7 @@ public class ColorDetector{
 //        }
     }
 
-    public void Run() {
+    public void run() {
         float gain = 8;
         // Once per loop, we will update this hsvValues array. The first element (0) will contain the
         // hue, the second element (1) will contain the saturation, and the third element (2) will
@@ -149,8 +150,10 @@ public class ColorDetector{
             detectedColor2 = DetColor.UNKNOWN;
         }
 
-        if (detectedColor1.equals(detectedColor2)) {
-            finalDetectedColor = detectedColor1;
+        if ((detectedColor1 == DetColor.GREEN) || (detectedColor2 == DetColor.GREEN)) {
+            finalDetectedColor = DetColor.GREEN;
+        } else if ((detectedColor1 == DetColor.PURPLE) || (detectedColor2 == DetColor.PURPLE)) {
+            finalDetectedColor = DetColor.PURPLE;
         } else {
             finalDetectedColor = DetColor.UNKNOWN;
         }
@@ -173,7 +176,7 @@ public class ColorDetector{
 
     public boolean colordetected() {
         boolean detected =false;
-        if (((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) > 0.60 && ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) < 0.80) {
+        if (((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) > 1.35 && ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) < maxdist) {
             switch(finalDetectedColor){
                 case GREEN:
                     detected =true;

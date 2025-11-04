@@ -37,7 +37,7 @@ public class LaunchGamePeace {
 
    }
 
-   public void Run(){
+   public void run(){
 
        if(opmode.gamepad2.x && !Rebounce && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
 
