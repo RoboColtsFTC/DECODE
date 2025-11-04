@@ -17,17 +17,19 @@ public class TestColorDetection extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        colordetector = new ColorDetector(this);
 
-
-       colordetector = new ColorDetector(this);
         // Get a reference to the RelativeLayout so we can later change the background
         // color of the Robot Controller app to match the hue detected by the RGB sensor.
-
         waitForStart();
-        while (opModeIsActive())
-
+        boolean detectcolor;
+        while (opModeIsActive()) {
             colordetector.Run(); // actually execute the sample
+            detectcolor = colordetector.colordetected();
+
         }
+    }
+
     }
 
 

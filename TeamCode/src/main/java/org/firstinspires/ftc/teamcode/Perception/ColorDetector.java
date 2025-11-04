@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -34,10 +36,10 @@ public class ColorDetector{
     HardwareMap hardwareMap;
     //ColorSensor colorSensor;
 
-    DetColor finalDetectedColor;
+    DetColor finalDetectedColor = DetColor.UNKNOWN;
     public LinearOpMode opmode;
 
-    public ColorDetector(LinearOpMode opmode) {
+    public ColorDetector(@NonNull LinearOpMode opmode) {
         this.opmode=opmode;
         this.hardwareMap = opmode.hardwareMap;
 
@@ -94,7 +96,6 @@ public class ColorDetector{
 
         GetColor();
 
-
     }
 
     public DetColor GetColor() {
@@ -118,7 +119,6 @@ public class ColorDetector{
         float normBlue2, normGreen2, normRed2;
         DetColor detectedColor1;
         DetColor detectedColor2;
-        DetColor finalDetectedColor;
         /* If this color sensor also has a distance sensor, display the measured distance.
          * Note that the reported distance is only useful at very close range, and is impacted by
          * ambient light and surface reflectivity. */
@@ -165,7 +165,7 @@ public class ColorDetector{
         //telemetry.addLine("Detected Color1: " + detectedColor1);
         //telemetry.addLine("Detected Color2: " + detectedColor2);
         opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
-        opmode.telemetry.update();
+        //opmode.telemetry.update();
         return finalDetectedColor;
     }
 
@@ -173,19 +173,28 @@ public class ColorDetector{
 
     public boolean colordetected() {
         boolean detected =false;
-        switch(finalDetectedColor){
-            case GREEN:
-                detected =true;
-                break;
-            case PURPLE:
-                detected =true;
-            default:
-                detected =false;
+        if (((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) > 0.60 && ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) < 0.80) {
+            switch(finalDetectedColor){
+                case GREEN:
+                    detected =true;
+                    break;
+                case PURPLE:
+                    detected =true;
+                    break;
+                default:
+                    detected =false;
+                    break;
+            }
+        } else {
+            detected = false;
         }
+        opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
+        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
         opmode.telemetry.addData("Detected Boolean: ", detected);
         opmode.telemetry.update();
         return detected;
     }
+
 
 }
 
