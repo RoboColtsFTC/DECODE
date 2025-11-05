@@ -69,7 +69,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
             case Empty:
                 if(opmode.gamepad2.a  && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
                     ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
-                    urrentstate = State.LoadOne;
+                    Currentstate = State.LoadOne;
                 }
 
 
@@ -111,36 +111,36 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
     }
 public KickerState kickerstate = KickerState.IDLE;
     
-    pubplic void ActuateFeedKicker(boolean start){
+    public void ActuateFeedKicker(boolean start){
         switch(kickerstate){
-                case: IDLE
+            case IDLE:
                 if(start){
                     
                     KickerTimer.reset();
-                    kickerstate = KickerState.Kick
+                    kickerstate = KickerState.KICK;
                 }
                 
                 break;
-                case: KICK
+            case KICK:
                  actuators.FeedKicker.SetSecond();
             
-                if(KickerTimer.milliseconds>=500){
+                if(KickerTimer.milliseconds()>=500){
                  
                      
                     KickerTimer.reset();
-                    kickerstate = KickerState.RETURNTOPOSITION
+                    kickerstate = KickerState.RETURNTOPOSITION;
                 }
                 break;
-                case: RETURNTOPOSITION
+            case RETURNTOPOSITION:
                     actuators.FeedKicker.SetFirst();
-                    if(KickerTimer.milliseconds>=500){
+                    if(KickerTimer.milliseconds()>=500){
                         actuators.feedcontrol.StopFeed();
                         actuators.IntakeMotor.StopMotor();
                         SpindexerLoaded=true;
                         controlstate= ControlState.Ready;
                         start=false;
                          KickerTimer.reset();
-                        kickerstate = KickerState.IDLE
+                        kickerstate = KickerState.IDLE;
                 }
                 
                 break;
@@ -159,11 +159,11 @@ public enum FeedState{
 FeedState feedstate=FeedState.IDLE;
     public void ActuateFeed(int SpindexPos){
         switch(feedstate){
-                case: IDLE
+            case IDLE:
                     ControlFeedTimer.reset();
                     feedstate=FeedState.STOPFEED;
                     break;
-                case: STOPFEED
+            case STOPFEED:
                      actuators.feedcontrol.StopFeed();
                 if(ControlFeedTimer.milliseconds()>=500){
                     
@@ -171,7 +171,7 @@ FeedState feedstate=FeedState.IDLE;
                     feedstate=FeedState.CHANGEPOSITION;
                 }
                      break;
-                case: CHANGEPOSITION
+            case CHANGEPOSITION:
               
                   actuators.spindexercontrol.setPosition(SpindexPos);
                   if(ControlFeedTimer.milliseconds()>=500){
@@ -179,7 +179,7 @@ FeedState feedstate=FeedState.IDLE;
                         feedstate=FeedState.STARTFEED;
                   }
                      break;
-                case:STARTFEED
+            case STARTFEED:
                          actuators.feedcontrol.startFeed();
                          controlstate = ControlState.DetectColor;
                          feedstate=FeedState.IDLE;
@@ -211,7 +211,7 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
                 controlstate=ControlState.DetectColor;
 
             } else {
-                ActuateFeed(int SpindexPos)
+                ActuateFeed(SpindexPos);
                 controlstate = ControlState.DetectColor;
 
                 }
@@ -238,7 +238,7 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
             rebounce=opmode.gamepad2.b;
             break;
         case kickball:
-            ActuateFeedKicker(boolean start)
+            ActuateFeedKicker(true);
 
             break;
     }

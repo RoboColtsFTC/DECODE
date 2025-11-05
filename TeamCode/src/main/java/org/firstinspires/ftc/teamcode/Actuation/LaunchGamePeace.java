@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 @Config
 public class LaunchGamePeace {
-    private boolean Rebounce1,Rebounce2,Rebounce3,Rebounce4 = false;
+
     public Actuators actuators;
     public LinearOpMode opmode;
     public static long CycleTime;
@@ -29,222 +29,225 @@ public class LaunchGamePeace {
     List<ColorDetector.DetColor> colorPos;
 
     private final ElapsedTime LauncherMotorTimer = new ElapsedTime();
-    private final ElapsedTime LoadGamePeaceTimer  = new ElapsedTime();
+    private final ElapsedTime LoadGamePeaceTimer = new ElapsedTime();
 
-    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos){
-        this.colorPos=colorPos;
-        this.opmode=opmode;
+    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos) {
+        this.colorPos = colorPos;
+        this.opmode = opmode;
         this.actuators = actuators;
-        LauncherMotorTimer.reset()   
+        LauncherMotorTimer.reset();
 
-   }
+    }
+
     public enum LauncherState {
         IDLE,
         MOTORSTARTUP,
-        ACTIVELAUNCHALL
-              
+        ACTIVELAUNCH
+
     }
 
-    public launcherstate = LauncherState.IDLE;
-    public List<Integer> LaunchOrder= Arrays.asList(6, 5, 4);  // Defalt sequnce
+    public LauncherState launcherstate = LauncherState.IDLE;
+    public List<Integer> LaunchOrder = Arrays.asList(6, 5, 4);  // Defalt sequnce
 
-    
-   public void run(){
 
-       Switch(launcherstate){
+    public void run() {
 
-           case: IDLE{
-        // Far Launching
-               if(opmode.gamepad2.x && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-        
-                   ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-                   actuators.LauncherMotor.SetPower(.73);
-                   actuators.LauncherMotor.StartMotor();
-                   LauncherMotorTimer.reset();
-                   LaunchOrder= Arrays.asList(6, 5, 4); 
-                   launcherstate= LauncherState.ACTIVELAUNCHALL;
-                   
-        
-               }
-               // Close Launching
-              
-        
-               if(opmode.gamepad2.y && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-        
-                   ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-                   actuators.LauncherMotor.SetPower(.67);
-                   actuators.LauncherMotor.StartMotor();
-                   LauncherMotorTimer.reset() ;
-                   LaunchOrder= Arrays.asList(6, 5, 4); 
-                   launcherstate= LauncherState.ACTIVELAUNCHALL;
-                   
-        
-               }
-           
-        
-               // Far Launching by code  todo test code
-               if(opmode.gamepad2.dpad_up && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-        
-                   ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-                   actuators.LauncherMotor.SetPower(.73);
-                   actuators.LauncherMotor.StartMotor();
-                   LauncherMotorTimer.reset();
-                   LaunchOrder= GetLaunchOrderFromCode(); 
-                   launcherstate= LauncherState.ACTIVELAUNCHBYCODE;
-        
-               }
-         
-        
+        switch (launcherstate) {
+
+            case IDLE:
+                // Far Launching
+                if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetPower(.73);
+                    actuators.LauncherMotor.StartMotor();
+                    LauncherMotorTimer.reset();
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    launcherstate = LauncherState.ACTIVELAUNCH;
+
+
+                }
+                // Close Launching
+
+
+                if (opmode.gamepad2.y && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetPower(.67);
+                    actuators.LauncherMotor.StartMotor();
+                    LauncherMotorTimer.reset();
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    launcherstate = LauncherState.ACTIVELAUNCH;
+
+
+                }
+
+
+                // Far Launching by code  todo test code
+                if (opmode.gamepad2.dpad_up && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetPower(.73);
+                    actuators.LauncherMotor.StartMotor();
+                    LauncherMotorTimer.reset();
+                    LaunchOrder = GetLaunchOrderFromCode();
+                    launcherstate = LauncherState.ACTIVELAUNCH;
+
+                }
+
+
                 // Close Launching by code todo test code
-               if(opmode.gamepad2.dpad_down && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-        
-                   ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-                   actuators.LauncherMotor.SetPower(.67);
-                   actuators.LauncherMotor.StartMotor();
-                   LauncherMotorTimer.reset() ;
-                   LaunchOrder= GetLaunchOrderFromCode();
-                   launcherstate= LauncherState.ACTIVELAUNCHBYCODE;
-        
-               }
-             
+                if (opmode.gamepad2.dpad_down && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
-           break;
-           case: MOTORSTARTUP
-               if(LauncherMotorTimer.milliseconds()>=4000){
-               
-                launcherstate= LauncherState.ACTIVELAUNCHALL;
-           }
-               break;
-           case: ACTIVELAUNCHALL
-           
-               launchall();
-                   if (launchsequence == LaunchSequence.IDLE){
-                       launcherstate = LauncherState.IDLE;
-                       
-                   }
-                   
-               break;
-    
-       }
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetPower(.67);
+                    actuators.LauncherMotor.StartMotor();
+                    LauncherMotorTimer.reset();
+                    LaunchOrder = GetLaunchOrderFromCode();
+                    launcherstate = LauncherState.ACTIVELAUNCH;
 
-       
-   }
+                }
 
-   }
 
-    public enum LaunchSequence{
+                break;
+            case MOTORSTARTUP:
+                if (LauncherMotorTimer.milliseconds() >= 4000) {
+
+                    launcherstate = LauncherState.ACTIVELAUNCH;
+                }
+                break;
+            case ACTIVELAUNCH:
+
+                launchall();
+                if (launchsequence == LaunchSequence.IDLE) {
+                    launcherstate = LauncherState.IDLE;
+
+                }
+
+                break;
+
+        }
+
+
+    }
+
+
+    public enum LaunchSequence {
         IDLE,
         LAUNCHPOSITION1,
         LAUNCHPOSITION2,
         LAUNCHPOSITION3
-        
+
     }
 
-public  LaunchSequence launchsequence = LaunchSequence.IDLE;
-   public void launchall() {
-      
-        switch(launchsequence){
-                case: IDLE
-                    
-                     launchsequence = LaunchSequence.LAUNCHPOSITION1;
-                    break;
-                case:LAUNCHPOSITION1
-                    launch(LaunchOrder.get(0));
-                    if(loadgamepeace=LoadGamePeace.IDLE){
-                        launchsequence = LaunchSequence.LAUNCHPOSITION2;
-                    }
-                  break;
-                    case:LAUNCHPOSITION2
-                    launch(LaunchOrder.get(1));
-                    if(loadgamepeace==LoadGamePeace.IDLE){
-                        launchsequence = LaunchSequence.LAUNCHPOSITION3;
-                    }
-                break;
-                    case:LAUNCHPOSITION3
-                    launch(LaunchOrder.get(2));
-                    if(loadgamepeace=LoadGamePeace.IDLE){
-                        launchsequence = LaunchSequence.IDLE;
-                    }
-                
-                break;
-    
+    public LaunchSequence launchsequence = LaunchSequence.IDLE;
 
-               actuators.LauncherMotor.StopMotor();
-               ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
-               LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
-               LoadSpindexer.SpindexerLoaded = false;
-        
+    public void launchall() {
+
+        switch (launchsequence) {
+            case IDLE:
+
+                launchsequence = LaunchSequence.LAUNCHPOSITION1;
+                break;
+            case LAUNCHPOSITION1:
+                launch(LaunchOrder.get(0));
+                if (loadgamepeace == LoadGamePeace.IDLE) {
+                    launchsequence = LaunchSequence.LAUNCHPOSITION2;
+                }
+                break;
+            case LAUNCHPOSITION2:
+                launch(LaunchOrder.get(1));
+                if (loadgamepeace == LoadGamePeace.IDLE) {
+                    launchsequence = LaunchSequence.LAUNCHPOSITION3;
+                }
+                break;
+            case LAUNCHPOSITION3:
+                launch(LaunchOrder.get(2));
+                if (loadgamepeace == LoadGamePeace.IDLE) {
+                    launchsequence = LaunchSequence.IDLE;
+                    actuators.LauncherMotor.StopMotor();
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
+                    LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
+                    LoadSpindexer.SpindexerLoaded = false;
+                }
+
+                break;
+
+
+
+
         }
 
-   }
-public enum LoadGamePeace{
-    IDLE,
-    SETPOSITION,
-    ACTUATEKICKER,
-    RETURNKICKERPOSITION
-    
-}
+    }
 
- LoadGamePeace loadgamepeace=LoadGamePeace.IDLE;
+    public enum LoadGamePeace {
+        IDLE,
+        SETPOSITION,
+        ACTUATEKICKER,
+        RETURNKICKERPOSITION
 
-    public void launch(int pos){
+    }
 
-        switch(loadgamepeace){
+    LoadGamePeace loadgamepeace = LoadGamePeace.IDLE;
 
-            case: IDLE
-            LoadGamePeaceTimer.reset();
-            loadgamepeace=LoadGamePeace.SETPOSITION;
-            break;
-                
-            case:SETPOSITION
-                if(LoadGamePeaceTimer.milliseconds()>=500){
-                  actuators.spindexercontrol.setPosition(pos);
-                  LoadGamePeaceTimer.reset();
-                  loadgamepeace=LoadGamePeace.ACTUATEKICKER;
-                
-                }
+    public void launch(int pos) {
 
-                
-            break;
-            case:ACTUATEKICKER
-                if(LoadGamePeaceTimer.milliseconds()>=500){
-                 actuators.LaunchKicker.SetSecond();
-                 LoadGamePeaceTimer.reset();
-                 loadgamepeace=LoadGamePeace.RETURNKICKERPOSITION;
-                }
-            break;
-            case:RETURNKICKERPOSITION
-                if(LoadGamePeaceTimer.milliseconds()>=500){
-                actuators.LaunchKicker.SetFirst();
+        switch (loadgamepeace) {
+
+            case IDLE:
                 LoadGamePeaceTimer.reset();
-                loadgamepeace=LoadGamePeace.IDLE;
+                loadgamepeace = LoadGamePeace.SETPOSITION;
+                break;
+
+            case SETPOSITION:
+                if (LoadGamePeaceTimer.milliseconds() >= 500) {
+                    actuators.spindexercontrol.setPosition(pos);
+                    LoadGamePeaceTimer.reset();
+                    loadgamepeace = LoadGamePeace.ACTUATEKICKER;
+
                 }
-            break;
 
-
-    }
-
-    }
-
-    public List<Integer> GetLaunchOrderFromCode(){
-        List<DetColor> Code=Arrays.asList(DetColor.UNKNOWN,DetColor.UNKNOWN, DetColor.UNKNOWN);
-       switch(TagData.DetectedCode.CodeID) {
-           case GPP:
-
-                Code= Arrays.asList(DetColor.GREEN, DetColor.PURPLE, DetColor.PURPLE);
 
                 break;
-           case PGP:
-                Code= Arrays.asList(DetColor.PURPLE, DetColor.GREEN, DetColor.PURPLE);
+            case ACTUATEKICKER:
+                if (LoadGamePeaceTimer.milliseconds() >= 500) {
+                    actuators.LaunchKicker.SetSecond();
+                    LoadGamePeaceTimer.reset();
+                    loadgamepeace = LoadGamePeace.RETURNKICKERPOSITION;
+                }
+                break;
+            case RETURNKICKERPOSITION:
+                if (LoadGamePeaceTimer.milliseconds() >= 500) {
+                    actuators.LaunchKicker.SetFirst();
+                    LoadGamePeaceTimer.reset();
+                    loadgamepeace = LoadGamePeace.IDLE;
+                }
+                break;
 
-               break;
-           case PPG:
-               Code= Arrays.asList(DetColor.PURPLE, DetColor.PURPLE, DetColor.GREEN);
 
-               break;
-       }
+        }
+
+    }
+
+    public List<Integer> GetLaunchOrderFromCode() {
+        List<DetColor> Code = Arrays.asList(DetColor.UNKNOWN, DetColor.UNKNOWN, DetColor.UNKNOWN);
+        switch (TagData.DetectedCode.CodeID) {
+            case GPP:
+
+                Code = Arrays.asList(DetColor.GREEN, DetColor.PURPLE, DetColor.PURPLE);
+
+                break;
+            case PGP:
+                Code = Arrays.asList(DetColor.PURPLE, DetColor.GREEN, DetColor.PURPLE);
+
+                break;
+            case PPG:
+                Code = Arrays.asList(DetColor.PURPLE, DetColor.PURPLE, DetColor.GREEN);
+
+                break;
+        }
         // launch inorder
-        List<Integer> Lorder =MarchLists(colorPos,Code);
+       return  MarchLists(colorPos, Code);
 
     }
 
@@ -266,9 +269,9 @@ public enum LoadGamePeace{
                break;
        }
         // launch inorder
-        List<Integer> Lorder =MarchLists(colorPos,Code);
+        List<Integer> order =MarchLists(colorPos,Code);
 
-        lanchorder(Lorder);
+        //lanchorder(Lorder);
 
 
 
