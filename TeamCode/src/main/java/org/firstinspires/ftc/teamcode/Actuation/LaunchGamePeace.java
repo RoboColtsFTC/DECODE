@@ -47,6 +47,8 @@ public class LaunchGamePeace {
     }
 
     public launcherstate = LauncherState.IDLE;
+    public List<Integer> LaunchOrder= Arrays.asList(6, 5, 4);  // Defalt sequnce
+
     
    public void run(){
 
@@ -59,7 +61,8 @@ public class LaunchGamePeace {
                    ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
                    actuators.LauncherMotor.SetPower(.73);
                    actuators.LauncherMotor.StartMotor();
-                   LauncherMotorTimer.reset() 
+                   LauncherMotorTimer.reset();
+                   LaunchOrder= Arrays.asList(6, 5, 4); 
                    launcherstate= LauncherState.ACTIVELAUNCHALL;
                    
         
@@ -72,47 +75,53 @@ public class LaunchGamePeace {
                    ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
                    actuators.LauncherMotor.SetPower(.67);
                    actuators.LauncherMotor.StartMotor();
-                   LauncherMotorTimer.reset() 
+                   LauncherMotorTimer.reset() ;
+                   LaunchOrder= Arrays.asList(6, 5, 4); 
                    launcherstate= LauncherState.ACTIVELAUNCHALL;
                    
         
                }
            
         
-               // // Far Launching by code  todo test code
-               // if(opmode.gamepad2.dpad_up && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+               // Far Launching by code  todo test code
+               if(opmode.gamepad2.dpad_up && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
         
-               //     ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-               //     actuators.LauncherMotor.SetPower(.73);
-               //     actuators.LauncherMotor.StartMotor();
-               //     LauncherMotorTimer.reset() 
-               //     launcherstate= LauncherState.ACTIVELAUNCHBYCODE;
+                   ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+                   actuators.LauncherMotor.SetPower(.73);
+                   actuators.LauncherMotor.StartMotor();
+                   LauncherMotorTimer.reset();
+                   LaunchOrder= GetLaunchOrderFromCode(); 
+                   launcherstate= LauncherState.ACTIVELAUNCHBYCODE;
         
-               // }
+               }
          
         
-               //  // Close Launching by code todo test code
-               // if(opmode.gamepad2.dpad_down && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+                // Close Launching by code todo test code
+               if(opmode.gamepad2.dpad_down && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
         
-               //     ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-               //     actuators.LauncherMotor.SetPower(.67);
-               //     actuators.LauncherMotor.StartMotor();
-               //     LauncherMotorTimer.reset() 
-               //     launcherstate= LauncherState.ACTIVELAUNCHBYCODE;
+                   ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+                   actuators.LauncherMotor.SetPower(.67);
+                   actuators.LauncherMotor.StartMotor();
+                   LauncherMotorTimer.reset() ;
+                   LaunchOrder= GetLaunchOrderFromCode();
+                   launcherstate= LauncherState.ACTIVELAUNCHBYCODE;
         
-               // }
+               }
              
 
            break;
            case: MOTORSTARTUP
                if(LauncherMotorTimer.milliseconds()>=4000{
+               
                 launcherstate= LauncherState.ACTIVELAUNCHALL;
            }
                break;
            case: ACTIVELAUNCHALL
+           
                launchByCode();
                break;
            case: ACTIVELAUNCHBYCODE // need to test this second of code
+               LaunchOrder= Arrays.asList(6, 5, 4);
                launchByCode();
                break;
        }
@@ -139,19 +148,19 @@ public  LaunchSequence launchsequence = LaunchSequence.IDLE;
                      launchsequence = LaunchSequence.LAUNCHPOSITION1;
                     break;
                 case:LAUNCHPOSITION1
-                    launch(6);
+                    launch(LaunchOrder.get(1));
                     if(loadgamepeace=LoadGamePeace.IDLE){
                         launchsequence = LaunchSequence.LAUNCHPOSITION2;
                     }
                   break;
                     case:LAUNCHPOSITION2
-                    launch(5);
+                    launch(LaunchOrder.get(2));
                     if(loadgamepeace=LoadGamePeace.IDLE){
                         launchsequence = LaunchSequence.LAUNCHPOSITION3;
                     }
                 break;
                     case:LAUNCHPOSITION3
-                    launch(4);
+                    launch(LaunchOrder.get(3));
                     if(loadgamepeace=LoadGamePeace.IDLE){
                         launchsequence = LaunchSequence.IDLE;
                     }
@@ -228,9 +237,29 @@ public enum LoadGamePeace{
 
 
     }
+    public List<Integer> GetLaunchOrderFromCode(){
+        List<DetColor> Code=Arrays.asList(DetColor.UNKNOWN,DetColor.UNKNOWN, DetColor.UNKNOWN);
+       switch(TagData.DetectedCode.CodeID) {
+           case GPP:
 
+                Code= Arrays.asList(DetColor.GREEN, DetColor.PURPLE, DetColor.PURPLE);
 
-    public void launchByCode(){
+                break;
+           case PGP:
+                Code= Arrays.asList(DetColor.PURPLE, DetColor.GREEN, DetColor.PURPLE);
+
+               break;
+           case PPG:
+               Code= Arrays.asList(DetColor.PURPLE, DetColor.PURPLE, DetColor.GREEN);
+
+               break;
+       }
+        // launch inorder
+        List<Integer> Lorder =MarchLists(colorPos,Code);
+
+    }
+
+    public void launchByCode(){  // used for autonomous mode
         List<DetColor> Code=Arrays.asList(DetColor.UNKNOWN,DetColor.UNKNOWN, DetColor.UNKNOWN);
        switch(TagData.DetectedCode.CodeID) {
            case GPP:
@@ -273,7 +302,7 @@ public enum LoadGamePeace{
 
                 if(ListA.get(n).equals(ListB.get(m))&FlagA[n]&&FlagB[m]){
 
-                    IDList.set(n,m+1);
+                    IDList.set(n,m+1+3);
                     FlagA[n] = false;
                     FlagB[m] = false;
 
