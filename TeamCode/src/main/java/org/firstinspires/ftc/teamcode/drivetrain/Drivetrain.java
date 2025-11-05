@@ -24,8 +24,8 @@ public class Drivetrain {
     public static Pose2d pos;
     LinearOpMode opMode;
 
-    double width = .3429;
-    double length = .3429;
+    double width = .3429;  //current width .37232 meters center of wheel to center of wheel
+    double length = .3429; //.304 meters axil to axil
 
     Translation2d m_frontLeftLocation = new Translation2d(width/2.0, length/2.0);
     Translation2d m_frontRightLocation = new Translation2d(width/2.0, -length/2.0);
@@ -53,6 +53,8 @@ public class Drivetrain {
     public static double kd=0;
     PIDController controller = new PIDController(kp,ki,kd);
 
+    public double yticks;
+    public double xticks;
     public AprilTagData TagData;
     private FtcDashboard da;
 
@@ -68,8 +70,10 @@ public class Drivetrain {
 
     public void run(){
         ChassisSpeeds speeds;
-
+        xticks=drive.localizer.getXticks();
+        yticks=drive.localizer.getYticks();
         double thetaPower;
+        //drive.localizer.setPose(new Pose2d(0,0,90));
         drive.localizer.update();
         pos = drive.localizer.getPose();  // updated for
         headingAngle=drive.localizer.getHeading();//Math.toDegrees(pos.heading.toDouble());
@@ -98,9 +102,7 @@ public class Drivetrain {
            thetaPower = controller.calculate(headingAngle, 90);
        } else if(driver.b) {
            thetaPower = controller.calculate(headingAngle, -90);
-       } else if (driver.y && !TagData.red){
-            thetaPower = controller.calculate(headingAngle,    AprilTagBearing);
-            opMode.telemetry.addData("IMU Reading", "%5.1f inches",   AprilTagBearing);
+
        } else if (driver.y &&  TagData.detectionState.isAnyTagDetected){
                 thetaPower=drive.RotateTwardsGoal();
 //               thetaPower = controller.calculate(headingAngle, AprilTagBearing) * ApirlTagRotationGain;
@@ -124,8 +126,8 @@ public class Drivetrain {
                     thetaPower,
                     headingAngleRotated
     );
-}else {  // used to verify correct orentation for feild drive.
-       speeds = new ChassisSpeeds(
+        }else {  // used to verify correct orentation for feild drive.
+                speeds = new ChassisSpeeds(
                driver.left_stick_y * maxSpeed,
                driver.left_stick_x * maxSpeed,
                thetaPower
@@ -133,6 +135,7 @@ public class Drivetrain {
 }
         opMode.telemetry.addData("Pinpoint IMU Status",drive.localizer.GetIMUStatus());
         opMode.telemetry.addData("heading",Math.toDegrees(pos.heading.toDouble()));
+        opMode.telemetry.addData("heading+180",Math.toDegrees(pos.heading.toDouble())+180);
         opMode.telemetry.addData("rotatedHeading",headingAngleRotated);
         opMode.telemetry.addData("AprilTag heading",AprilTagBearing);
 
@@ -151,6 +154,7 @@ public class Drivetrain {
        if(driver.back){
 
            drive.localizer.resetPinpointIMU();
+           drive.localizer.setPose(new Pose2d(0,0,90));
 
        }
     }

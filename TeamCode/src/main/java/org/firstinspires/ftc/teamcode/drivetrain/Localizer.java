@@ -27,4 +27,8 @@ public interface Localizer {
 
     void resetPinpointIMU();
     double getHeading();
+
+    double getXticks();
+
+    double getYticks();
 }

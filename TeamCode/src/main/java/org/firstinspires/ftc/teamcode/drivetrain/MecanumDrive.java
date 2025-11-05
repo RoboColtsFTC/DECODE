@@ -416,8 +416,8 @@ public final class MecanumDrive {
 //---------------------------------------------------------------------------
 // Code to Align to goal
 
-    public static double kp=.025;
-    public static double ki=.0025;
+    public static double kp=.08;
+    public static double ki=0.0;
     public static double kd=0;
     PIDController controller = new PIDController(kp,ki,kd);
 
@@ -426,6 +426,7 @@ public final class MecanumDrive {
         double TagBearing;
         double thetaPower;
         double headingAngle=localizer.getHeading();
+        double setpoint;
 
         if(Robot.TagData.red){
             TagBearing=Robot.TagData.Red.Bearing;
@@ -433,9 +434,11 @@ public final class MecanumDrive {
             TagBearing=Robot.TagData.Blue.Bearing;
         }
 
-        thetaPower = controller.calculate(headingAngle+180, TagBearing+180) ;
+        thetaPower = controller.calculate( headingAngle+180,  (headingAngle+180)+TagBearing) ;
      return thetaPower;
     }
+
+
 
 
 }

@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 @Config
 public class LaunchGamePeace {
-    private boolean Rebounce = false;
+    private boolean Rebounce1,Rebounce2,Rebounce3,Rebounce4 = false;
     public Actuators actuators;
     public LinearOpMode opmode;
     public static long CycleTime;
@@ -29,6 +29,7 @@ public class LaunchGamePeace {
     List<ColorDetector.DetColor> colorPos;
 
     private final ElapsedTime timer = new ElapsedTime();
+    private final ElapsedTime timer2 = new ElapsedTime();
 
     public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos){
         this.colorPos=colorPos;
@@ -38,30 +39,68 @@ public class LaunchGamePeace {
    }
 
    public void run(){
-
-       if(opmode.gamepad2.x && !Rebounce && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+        // Far Launching
+       if(opmode.gamepad2.x && !Rebounce1 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
 
            ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+           actuators.LauncherMotor.SetPower(.73);
            actuators.LauncherMotor.StartMotor();
            lanchall();
 
+       }
+       // Close Launching
+       Rebounce1=opmode.gamepad2.x;
+
+       if(opmode.gamepad2.y && !Rebounce2 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+
+           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+           actuators.LauncherMotor.SetPower(.67);
+           actuators.LauncherMotor.StartMotor();
+           lanchall();
 
        }
-       Rebounce=opmode.gamepad2.x;
+       Rebounce2=opmode.gamepad2.y;
+
+       // Far Launching by code  todo test code
+       if(opmode.gamepad2.dpad_up && !Rebounce3 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+
+           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+           actuators.LauncherMotor.SetPower(.73);
+           actuators.LauncherMotor.StartMotor();
+           launchByCode();
+
+       }
+       Rebounce3=opmode.gamepad2.dpad_up;
+
+        // Close Launching by code todo test code
+       if(opmode.gamepad2.dpad_down && !Rebounce4 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+
+           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+           actuators.LauncherMotor.SetPower(.67);
+           actuators.LauncherMotor.StartMotor();
+           launchByCode();
+
+       }
+       Rebounce4=opmode.gamepad2.dpad_down;
+
+
 
    }
 
 
-   public void lanchall(){
+   public void lanchall() {
        opmode.sleep(3000);
-       launch(6);
-       launch(5);
-       launch(4);
-       LoadSpindexer.SpindexerLoaded=false;
-       actuators.LauncherMotor.StopMotor();
-       ActuatorControl.controlstate=ActuatorControl.ControlState.ready;
-       LoadSpindexer.Currentstate= LoadSpindexer.State.Empty;
-       LoadSpindexer.SpindexerLoaded=false;
+
+               launch(6);
+               launch(5);
+               launch(4);
+
+               actuators.LauncherMotor.StopMotor();
+               ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
+               LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
+               LoadSpindexer.SpindexerLoaded = false;
+
+
 
    }
 
@@ -74,6 +113,7 @@ public class LaunchGamePeace {
         opmode.sleep(500);
         actuators.LaunchKicker.SetFirst();
 
+
     }
     public void lanchorder(List<Integer> order){
 
@@ -81,6 +121,10 @@ public class LaunchGamePeace {
         launch(order.get(1));
         launch(order.get(2));
         launch(order.get(3));
+        actuators.LauncherMotor.StopMotor();
+        ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
+        LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
+        LoadSpindexer.SpindexerLoaded = false;
 
 
     }
@@ -103,7 +147,7 @@ public class LaunchGamePeace {
 
                break;
        }
-       // Todo Add code to launch ball by detected code
+        // launch inorder
         List<Integer> Lorder =MarchLists(colorPos,Code);
 
         lanchorder(Lorder);

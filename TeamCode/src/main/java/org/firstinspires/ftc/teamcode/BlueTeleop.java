@@ -10,7 +10,7 @@ public class BlueTeleop extends LinearOpMode {
     private FtcDashboard dashboard;
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot robot = new Robot(this, false, false, true,false,true);
+        Robot robot = new Robot(this, false, false, true,true,true);
 
         waitForStart();
 

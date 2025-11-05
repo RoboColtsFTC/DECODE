@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
 import java.util.Objects;
@@ -18,8 +19,8 @@ import java.util.Objects;
 @Config
 public final class PinpointLocalizer implements Localizer {
     public static class Params {
-        public double parYTicks = -18.5982285f;  //-370   ÷   19.89436789 //8.44460105135f;  //-168/19.89436789 mm y position of the parallel encoder (in tick units)
-        public double perpXTicks = 0.175929188569961f;//  41 17-4.423362455f; // x -88/19.89436789 mm position of the perpendicular encoder (in tick units)
+        public double parYTicks = -9.1734505f;  // Calulation made by refrencing cad drawing for robot)
+        public double perpXTicks = 1.91008833f;//  Calculations made by referencing cad drawing for robot
     }
 
     public static Params PARAMS = new Params();
@@ -60,9 +61,24 @@ public final class PinpointLocalizer implements Localizer {
         
         return txWorldPinpoint.times(txPinpointRobot);
     }
+    public void SetPinpointPose(Pose2D pose){
 
+
+        driver.setPosition(pose);
+    }
+    public double getYticks(){
+
+        return driver.getEncoderY();
+
+    }
+
+    public double getXticks(){
+
+        return driver.getEncoderX();
+
+    }
     public String GetIMUStatus(){
-  			 driver.update();
+        driver.update();
         return String.valueOf(driver.getDeviceStatus());
     }
 
