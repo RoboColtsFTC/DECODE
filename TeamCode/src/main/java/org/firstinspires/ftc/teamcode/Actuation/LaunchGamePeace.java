@@ -41,8 +41,7 @@ public class LaunchGamePeace {
     public enum LauncherState {
         IDLE,
         MOTORSTARTUP,
-        ACTIVELAUNCHALL,
-        ACTIVELAUNCHBYCODE
+        ACTIVELAUNCHALL
               
     }
 
@@ -120,10 +119,7 @@ public class LaunchGamePeace {
            
                launchall() ;
                break;
-           case: ACTIVELAUNCHBYCODE // need to test this second of code
-               LaunchOrder= Arrays.asList(6, 5, 4);
-               launchByCode();
-               break;
+    
        }
 
        
