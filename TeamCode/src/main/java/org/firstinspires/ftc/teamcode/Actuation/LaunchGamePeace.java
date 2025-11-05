@@ -111,14 +111,14 @@ public class LaunchGamePeace {
 
            break;
            case: MOTORSTARTUP
-               if(LauncherMotorTimer.milliseconds()>=4000{
+               if(LauncherMotorTimer.milliseconds()>=4000){
                
                 launcherstate= LauncherState.ACTIVELAUNCHALL;
            }
                break;
            case: ACTIVELAUNCHALL
            
-               launchByCode();
+               launchall() ;
                break;
            case: ACTIVELAUNCHBYCODE // need to test this second of code
                LaunchOrder= Arrays.asList(6, 5, 4);
@@ -140,7 +140,7 @@ public class LaunchGamePeace {
     }
 
 public  LaunchSequence launchsequence = LaunchSequence.IDLE;
-   public void lanchall() {
+   public void launchall() {
       
         switch(launchsequence){
                 case: IDLE
@@ -148,19 +148,19 @@ public  LaunchSequence launchsequence = LaunchSequence.IDLE;
                      launchsequence = LaunchSequence.LAUNCHPOSITION1;
                     break;
                 case:LAUNCHPOSITION1
-                    launch(LaunchOrder.get(1));
+                    launch(LaunchOrder.get(0));
                     if(loadgamepeace=LoadGamePeace.IDLE){
                         launchsequence = LaunchSequence.LAUNCHPOSITION2;
                     }
                   break;
                     case:LAUNCHPOSITION2
-                    launch(LaunchOrder.get(2));
+                    launch(LaunchOrder.get(1));
                     if(loadgamepeace=LoadGamePeace.IDLE){
                         launchsequence = LaunchSequence.LAUNCHPOSITION3;
                     }
                 break;
                     case:LAUNCHPOSITION3
-                    launch(LaunchOrder.get(3));
+                    launch(LaunchOrder.get(2));
                     if(loadgamepeace=LoadGamePeace.IDLE){
                         launchsequence = LaunchSequence.IDLE;
                     }
@@ -224,19 +224,7 @@ public enum LoadGamePeace{
     }
 
     }
-    public void lanchorder(List<Integer> order){
 
-        opmode.sleep(6000);
-        launch(order.get(1));
-        launch(order.get(2));
-        launch(order.get(3));
-        actuators.LauncherMotor.StopMotor();
-        ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
-        LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
-        LoadSpindexer.SpindexerLoaded = false;
-
-
-    }
     public List<Integer> GetLaunchOrderFromCode(){
         List<DetColor> Code=Arrays.asList(DetColor.UNKNOWN,DetColor.UNKNOWN, DetColor.UNKNOWN);
        switch(TagData.DetectedCode.CodeID) {
