@@ -38,8 +38,8 @@ public  static long CycleTime=2000;
 public  static long CycleTimeFeed=5000;
 
 public LinearOpMode opmode;
-
-
+private final ElapsedTime ControlFeedTimer = new ElapsedTime();
+private final ElapsedTime KickerTimer = new ElapsedTime();
 
     public LoadSpindexer(LinearOpMode opmode,Actuators actuators,List<DetColor> colorPos){ // Cunstructor
        colordetector=new ColorDetector(opmode);
@@ -47,17 +47,19 @@ public LinearOpMode opmode;
         Currentstate=State.Empty;
         this.opmode=opmode;
         this.actuators=actuators;
+        ControlFeedTimer.reset();
+        KickerTimer.reset();
     }
     boolean rebounceb=false;
 
     public void run(){
         colordetector.run();
 
-        if(opmode.gamepad2.a && !rebounceb && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
-            ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
-            Start=true;
-        }
-        rebounceb=opmode.gamepad2.a;
+        // if(opmode.gamepad2.a && !rebounceb && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
+        //     ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
+        //     Start=true;
+        // }
+        // rebounceb=opmode.gamepad2.a;
 
 
 
@@ -65,12 +67,12 @@ public LinearOpMode opmode;
 
         switch(Currentstate) {
             case Empty:
-
-                if (Start && !SpindexerLoaded) {
-
-                    Currentstate = State.LoadOne;
-
+                if(opmode.gamepad2.a  && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
+                    ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
+                    urrentstate = State.LoadOne;
                 }
+
+
                 break;
             case LoadOne:
                 LoadBall(colorPos, State.LoadTwo, 1);
@@ -101,6 +103,93 @@ public LinearOpMode opmode;
     public Boolean rebounce = false;
     public static Boolean SpindexerLoaded=false;
 
+
+    public enum KickerState{
+        IDLE,
+        KICK,
+        RETURNTOPOSITION
+    }
+public KickerState kickerstate = KickerState.IDLE;
+    
+    pubplic void ActuateFeedKicker(boolean start){
+        switch(kickerstate){
+                case: IDLE
+                if(start){
+                    
+                    KickerTimer.reset();
+                    kickerstate = KickerState.Kick
+                }
+                
+                break;
+                case: KICK
+                 actuators.FeedKicker.SetSecond();
+            
+                if(KickerTimer.milliseconds>=500){
+                 
+                     
+                    KickerTimer.reset();
+                    kickerstate = KickerState.RETURNTOPOSITION
+                }
+                break;
+                case: RETURNTOPOSITION
+                    actuators.FeedKicker.SetFirst();
+                    if(KickerTimer.milliseconds>=500){
+                        actuators.feedcontrol.StopFeed();
+                        actuators.IntakeMotor.StopMotor();
+                        SpindexerLoaded=true;
+                        controlstate= ControlState.Ready;
+                        start=false;
+                         KickerTimer.reset();
+                        kickerstate = KickerState.IDLE
+                }
+                
+                break;
+                           
+        }
+        
+    }
+    
+public enum FeedState{
+    IDLE,
+    STOPFEED,
+    CHANGEPOSITION,
+    STARTFEED
+}
+    
+FeedState feedstate=FeedState.IDLE;
+    public void ActuateFeed(int SpindexPos){
+        switch(feedstate){
+                case: IDLE
+                    ControlFeedTimer.reset();
+                    feedstate=FeedState.STOPFEED;
+                    break;
+                case: STOPFEED
+                     actuators.feedcontrol.StopFeed();
+                if(ControlFeedTimer.milliseconds()>=500){
+                    
+                    ControlFeedTimer.reset();
+                    feedstate=FeedState.CHANGEPOSITION;
+                }
+                     break;
+                case: CHANGEPOSITION
+              
+                  actuators.spindexercontrol.setPosition(SpindexPos);
+                  if(ControlFeedTimer.milliseconds()>=500){
+                        ControlFeedTimer.reset();
+                        feedstate=FeedState.STARTFEED;
+                  }
+                     break;
+                case:STARTFEED
+                         actuators.feedcontrol.startFeed();
+                         controlstate = ControlState.DetectColor;
+                         feedstate=FeedState.IDLE;
+                
+                     break;
+                            
+        }
+        
+    }
+    
 public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  {
 
         // Cycle time controls t
@@ -122,11 +211,7 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
                 controlstate=ControlState.DetectColor;
 
             } else {
-                actuators.feedcontrol.StopFeed();
-                opmode.sleep(500);
-                actuators.spindexercontrol.setPosition(SpindexPos);
-                opmode.sleep(500);
-                actuators.feedcontrol.startFeed();
+                ActuateFeed(int SpindexPos)
                 controlstate = ControlState.DetectColor;
 
                 }
@@ -153,34 +238,27 @@ public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  
             rebounce=opmode.gamepad2.b;
             break;
         case kickball:
-            actuators.FeedKicker.SetSecond();
-            opmode.sleep(500);
-            actuators.FeedKicker.SetFirst();
-            actuators.feedcontrol.StopFeed();
-            actuators.IntakeMotor.StopMotor();
-            SpindexerLoaded=true;
-            controlstate= ControlState.Ready;
-            Start=false;
+            ActuateFeedKicker(boolean start)
 
             break;
     }
 
     }
 
-    public void StartLoading(){  //Starts Loading Sequence
-        Start=true;
+    // public void StartLoading(){  //Starts Loading Sequence
+    //     Start=true;
 
-    }
+    // }
 
-    public void LoadOne(){
-        Currentstate=State.LoadThree;
-    }
+    // public void LoadOne(){
+    //     Currentstate=State.LoadThree;
+    // }
 
-    public void LoadTwo(){
+    // public void LoadTwo(){
 
-        Currentstate=State.LoadTwo;
+    //     Currentstate=State.LoadTwo;
 
-    }
+    //}
 
 
 
