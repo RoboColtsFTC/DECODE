@@ -117,7 +117,12 @@ public class LaunchGamePeace {
                break;
            case: ACTIVELAUNCHALL
            
-               launchall() ;
+               launchall();
+                   if (launchsequence == LaunchSequence.IDLE){
+                       launcherstate = LauncherState.IDLE;
+                       
+                   }
+                   
                break;
     
        }
@@ -151,7 +156,7 @@ public  LaunchSequence launchsequence = LaunchSequence.IDLE;
                   break;
                     case:LAUNCHPOSITION2
                     launch(LaunchOrder.get(1));
-                    if(loadgamepeace=LoadGamePeace.IDLE){
+                    if(loadgamepeace==LoadGamePeace.IDLE){
                         launchsequence = LaunchSequence.LAUNCHPOSITION3;
                     }
                 break;
