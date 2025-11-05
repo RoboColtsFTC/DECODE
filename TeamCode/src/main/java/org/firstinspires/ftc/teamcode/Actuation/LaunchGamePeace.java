@@ -29,7 +29,7 @@ public class LaunchGamePeace {
     List<ColorDetector.DetColor> colorPos;
 
     private final ElapsedTime LauncherMotorTimer = new ElapsedTime();
-    private final ElapsedTime timer2 = new ElapsedTime();
+    private final ElapsedTime LoadGamePeaceTimer  = new ElapsedTime();
 
     public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos){
         this.colorPos=colorPos;
@@ -121,31 +121,98 @@ public class LaunchGamePeace {
    }
 
    }
-   public void lanchall() {
-       opmode.sleep(3000);
 
-               launch(6);
-               launch(5);
-               launch(4);
+    public enum LaunchSequence{
+        IDLE,
+        LAUNCHPOSITION1,
+        LAUNCHPOSITION2,
+        LAUNCHPOSITION3
+        
+    }
+
+public  LaunchSequence launchsequence = LaunchSequence.IDLE;
+   public void lanchall() {
+      
+        switch(launchsequence){
+                case: IDLE
+                    
+                     launchsequence = LaunchSequence.LAUNCHPOSITION1;
+                    break;
+                case:LAUNCHPOSITION1
+                    launch(6);
+                    if(loadgamepeace=LoadGamePeace.IDLE){
+                        launchsequence = LaunchSequence.LAUNCHPOSITION2;
+                    }
+                  break;
+                    case:LAUNCHPOSITION2
+                    launch(5);
+                    if(loadgamepeace=LoadGamePeace.IDLE){
+                        launchsequence = LaunchSequence.LAUNCHPOSITION3;
+                    }
+                break;
+                    case:LAUNCHPOSITION3
+                    launch(4);
+                    if(loadgamepeace=LoadGamePeace.IDLE){
+                        launchsequence = LaunchSequence.IDLE;
+                    }
+                
+                break;
+    
 
                actuators.LauncherMotor.StopMotor();
                ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
                LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
                LoadSpindexer.SpindexerLoaded = false;
-
-
+        
+        }
 
    }
+public enum LoadGamePeace{
+    IDLE,
+    SETPOSITION,
+    ACTUATEKICKER,
+    RETURNKICKERPOSITION
+    
+}
+
+ LoadGamePeace loadgamepeace=LoadGamePeace.IDLE;
 
     public void launch(int pos){
 
-        opmode.sleep(500);
-        actuators.spindexercontrol.setPosition(pos);  // increments betweeen all positions
-        opmode.sleep(500);
-        actuators.LaunchKicker.SetSecond();
-        opmode.sleep(500);
-        actuators.LaunchKicker.SetFirst();
+        switch(loadgamepeace){
 
+            case: IDLE
+            LoadGamePeaceTimer.reset();
+            loadgamepeace=LoadGamePeace.SETPOSITION;
+            break;
+                
+            case:SETPOSITION
+                if(LoadGamePeaceTimer.milliseconds()>=500){
+                  actuators.spindexercontrol.setPosition(pos);
+                  LoadGamePeaceTimer.reset();
+                  loadgamepeace=LoadGamePeace.ACTUATEKICKER;
+                
+                }
+
+                
+            break;
+            case:ACTUATEKICKER
+                if(LoadGamePeaceTimer.milliseconds()>=500){
+                 actuators.LaunchKicker.SetSecond();
+                 LoadGamePeaceTimer.reset();
+                 loadgamepeace=LoadGamePeace.RETURNKICKERPOSITION;
+                }
+            break;
+            case:RETURNKICKERPOSITION
+                if(LoadGamePeaceTimer.milliseconds()>=500){
+                actuators.LaunchKicker.SetFirst();
+                LoadGamePeaceTimer.reset();
+                loadgamepeace=LoadGamePeace.IDLE;
+                }
+            break;
+
+
+    }
 
     }
     public void lanchorder(List<Integer> order){
