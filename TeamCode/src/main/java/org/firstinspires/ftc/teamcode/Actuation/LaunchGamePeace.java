@@ -28,66 +28,99 @@ public class LaunchGamePeace {
     public AprilTagData TagData;
     List<ColorDetector.DetColor> colorPos;
 
-    private final ElapsedTime timer = new ElapsedTime();
+    private final ElapsedTime LauncherMotorTimer = new ElapsedTime();
     private final ElapsedTime timer2 = new ElapsedTime();
 
     public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos){
         this.colorPos=colorPos;
         this.opmode=opmode;
         this.actuators = actuators;
+        LauncherMotorTimer.reset()   
 
    }
+    public enum LauncherState {
+        IDLE,
+        MOTORSTARTUP,
+        ACTIVELAUNCHALL,
+        ACTIVELAUNCHBYCODE
+              
+    }
 
+    public launcherstate = LauncherState.IDLE;
+    
    public void run(){
+
+       Switch(launcherstate){
+
+           case: IDLE{
         // Far Launching
-       if(opmode.gamepad2.x && !Rebounce1 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+               if(opmode.gamepad2.x && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+        
+                   ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+                   actuators.LauncherMotor.SetPower(.73);
+                   actuators.LauncherMotor.StartMotor();
+                   LauncherMotorTimer.reset() 
+                   launcherstate= LauncherState.ACTIVELAUNCHALL;
+                   
+        
+               }
+               // Close Launching
+              
+        
+               if(opmode.gamepad2.y && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+        
+                   ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+                   actuators.LauncherMotor.SetPower(.67);
+                   actuators.LauncherMotor.StartMotor();
+                   LauncherMotorTimer.reset() 
+                   launcherstate= LauncherState.ACTIVELAUNCHALL;
+                   
+        
+               }
+           
+        
+               // // Far Launching by code  todo test code
+               // if(opmode.gamepad2.dpad_up && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+        
+               //     ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+               //     actuators.LauncherMotor.SetPower(.73);
+               //     actuators.LauncherMotor.StartMotor();
+               //     LauncherMotorTimer.reset() 
+               //     launcherstate= LauncherState.ACTIVELAUNCHBYCODE;
+        
+               // }
+         
+        
+               //  // Close Launching by code todo test code
+               // if(opmode.gamepad2.dpad_down && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
+        
+               //     ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
+               //     actuators.LauncherMotor.SetPower(.67);
+               //     actuators.LauncherMotor.StartMotor();
+               //     LauncherMotorTimer.reset() 
+               //     launcherstate= LauncherState.ACTIVELAUNCHBYCODE;
+        
+               // }
+             
 
-           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-           actuators.LauncherMotor.SetPower(.73);
-           actuators.LauncherMotor.StartMotor();
-           lanchall();
-
+           break;
+           case: MOTORSTARTUP
+               if(LauncherMotorTimer.milliseconds()>=4000{
+                launcherstate= LauncherState.ACTIVELAUNCHALL;
+           }
+               break;
+           case: ACTIVELAUNCHALL
+               launchByCode();
+               break;
+           case: ACTIVELAUNCHBYCODE // need to test this second of code
+               launchByCode();
+               break;
        }
-       // Close Launching
-       Rebounce1=opmode.gamepad2.x;
 
-       if(opmode.gamepad2.y && !Rebounce2 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-
-           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-           actuators.LauncherMotor.SetPower(.67);
-           actuators.LauncherMotor.StartMotor();
-           lanchall();
-
-       }
-       Rebounce2=opmode.gamepad2.y;
-
-       // Far Launching by code  todo test code
-       if(opmode.gamepad2.dpad_up && !Rebounce3 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-
-           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-           actuators.LauncherMotor.SetPower(.73);
-           actuators.LauncherMotor.StartMotor();
-           launchByCode();
-
-       }
-       Rebounce3=opmode.gamepad2.dpad_up;
-
-        // Close Launching by code todo test code
-       if(opmode.gamepad2.dpad_down && !Rebounce4 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-
-           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-           actuators.LauncherMotor.SetPower(.67);
-           actuators.LauncherMotor.StartMotor();
-           launchByCode();
-
-       }
-       Rebounce4=opmode.gamepad2.dpad_down;
-
-
-
+       
    }
 
-
+   }
    public void lanchall() {
        opmode.sleep(3000);
 
