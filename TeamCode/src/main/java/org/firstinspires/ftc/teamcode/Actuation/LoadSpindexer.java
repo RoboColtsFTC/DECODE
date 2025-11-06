@@ -63,7 +63,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
             case LoadOne:
                 LoadGamePeace( 1,true);
 
-                if(gamepeaceloadingstate==GamePeaceLoadingState.IDLE){
+                if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
+                    gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
                     Currentstate=State.LoadTwo;
                 }
 
@@ -71,7 +72,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
             case LoadTwo:
                 LoadGamePeace( 2,true);
 
-                if(gamepeaceloadingstate==GamePeaceLoadingState.IDLE){
+                if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
+                    gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
                     Currentstate=State.LoadTwo;
                 }
 
@@ -79,7 +81,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
             case LoadThree:
                 LoadGamePeace( 3,true);
 
-                if(gamepeaceloadingstate==GamePeaceLoadingState.IDLE){
+                if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
+                    gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
                     Currentstate=State.Loaded;
                     actuators.feedcontrol.StopFeed();
                     actuators.IntakeMotor.StopMotor();
@@ -96,7 +99,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
         Position,
         DetectColor,
         kickball,
-        stopintake
+        Complete
     }
 
     public static GamePeaceLoadingState gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
@@ -123,7 +126,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 } else {
                     ActuateFeed(SpindexPos,true);
 
-                    if(feedstate==FeedState.IDLE) {
+                    if(feedstate==FeedState.COMPLETE) {
+                        feedstate=FeedState.IDLE;
                         gamepeaceloadingstate = GamePeaceLoadingState.DetectColor;
                     }
 
@@ -133,11 +137,11 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
             case DetectColor:
                 DetectGamePeace(SpindexPos, true);
 
-                if(detectgamepeace==DetectGamePeace.IDLE){
+                if(detectgamepeace==DetectGamePeace.complete){
                     if (Currentstate==State.LoadThree){
                         gamepeaceloadingstate = GamePeaceLoadingState.kickball;
                     }else{
-                        gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
+                        gamepeaceloadingstate=GamePeaceLoadingState.Complete;
                     }
                 }
 
@@ -146,10 +150,15 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 ActuateFeedKicker(true);
 
                 if (kickerstate == KickerState.IDLE){
-                    gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
+                    gamepeaceloadingstate=GamePeaceLoadingState.Complete;
                 }
 
                 break;
+            case Complete:
+                // used to prevent circular states.
+
+                break;
+
 
         }
         opmode.telemetry.addData("gamepeaceloadingstate",gamepeaceloadingstate);
@@ -162,7 +171,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
         DetectGamePeace,
         ManualOveride,
-        RecordColor
+        RecordColor,
+        complete
     }
     DetectGamePeace detectgamepeace=DetectGamePeace.IDLE;
 
@@ -191,15 +201,18 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 break;
             case ManualOveride:
                 colorPos.set(SpindexPos,DetColor.UNKNOWN);
-                detectgamepeace=DetectGamePeace.IDLE;
+                detectgamepeace=DetectGamePeace.complete;
 
                 break;
             case RecordColor:
                 colorPos.set(SpindexPos,colordetector.GetColor());
-                detectgamepeace=DetectGamePeace.IDLE;
+                detectgamepeace=DetectGamePeace.complete;
 
                 break;
+            case complete:
 
+                // state used to avoid circular logic
+                break;
 
         }
         opmode.telemetry.addData("detectgamepeace",detectgamepeace);
@@ -210,7 +223,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
     public enum KickerState{
         IDLE,
         KICK,
-        RETURNTOPOSITION
+        RETURNTOPOSITION,
+        COMPLETE
     }
 
 
@@ -243,6 +257,9 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 }
                 
                 break;
+            case COMPLETE:
+                // state used to avoid circular state logic
+                break;
                            
         }
         opmode.telemetry.addData("KickerState",kickerstate);
@@ -252,7 +269,8 @@ public enum FeedState{
     IDLE,
     STOPFEED,
     CHANGEPOSITION,
-    STARTFEED
+    STARTFEED,
+    COMPLETE
 }
     
 FeedState feedstate=FeedState.IDLE;
@@ -282,8 +300,11 @@ FeedState feedstate=FeedState.IDLE;
                  break;
             case STARTFEED:
                  actuators.feedcontrol.startFeed();
-                 feedstate=FeedState.IDLE;
+                 feedstate=FeedState.COMPLETE;
 
+                break;
+            case COMPLETE:
+                // state used to avoid circular state logic
                 break;
                             
         }
