@@ -167,7 +167,7 @@ public class ColorDetector{
         //telemetry.addData("gain", gain);
         //telemetry.addLine("Detected Color1: " + detectedColor1);
         //telemetry.addLine("Detected Color2: " + detectedColor2);
-        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
+        //opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
         //opmode.telemetry.update();
         return finalDetectedColor;
     }

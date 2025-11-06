@@ -81,18 +81,22 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
                 if(gamepeaceloadingstate==GamePeaceLoadingState.IDLE){
                     Currentstate=State.Loaded;
+                    actuators.feedcontrol.StopFeed();
+                    actuators.IntakeMotor.StopMotor();
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
                 }
 
                 break;
             }
+        opmode.telemetry.addData("Currentstate",Currentstate);
     }
     public enum GamePeaceLoadingState{
         IDLE,
         StartIntake,
         Position,
         DetectColor,
-        kickball
+        kickball,
+        stopintake
     }
 
     public static GamePeaceLoadingState gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
@@ -146,8 +150,9 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 }
 
                 break;
-        }
 
+        }
+        opmode.telemetry.addData("gamepeaceloadingstate",gamepeaceloadingstate);
     }
 
 
@@ -160,6 +165,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
         RecordColor
     }
     DetectGamePeace detectgamepeace=DetectGamePeace.IDLE;
+
+
     public void DetectGamePeace(int SpindexPos, boolean start){
 
         switch(detectgamepeace){
@@ -172,11 +179,15 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 }
                 break;
             case DetectGamePeace:
-                if ( colordetector.colordetected()){
-                    detectgamepeace=DetectGamePeace.RecordColor;
-                } else if(opmode.gamepad2.b) {
+//                if ( colordetector.colordetected()){
+//                    detectgamepeace=DetectGamePeace.RecordColor;
+//                } else if(opmode.gamepad2.b) {
+//                    detectgamepeace=DetectGamePeace.ManualOveride;
+//                }
+                if(opmode.gamepad2.b) {
                     detectgamepeace=DetectGamePeace.ManualOveride;
-                }
+               }
+
                 break;
             case ManualOveride:
                 colorPos.set(SpindexPos,DetColor.UNKNOWN);
@@ -191,7 +202,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
 
         }
-
+        opmode.telemetry.addData("detectgamepeace",detectgamepeace);
     }
 
 
@@ -219,8 +230,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                  actuators.FeedKicker.SetSecond();
             
                 if(KickerTimer.milliseconds()>=500){
-                 
-                     
+
                     KickerTimer.reset();
                     kickerstate = KickerState.RETURNTOPOSITION;
                 }
@@ -228,8 +238,6 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
             case RETURNTOPOSITION:
                     actuators.FeedKicker.SetFirst();
                     if(KickerTimer.milliseconds()>=500){
-                        actuators.feedcontrol.StopFeed();
-                        actuators.IntakeMotor.StopMotor();
                         KickerTimer.reset();
                         kickerstate = KickerState.IDLE;
                 }
@@ -237,7 +245,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 break;
                            
         }
-        
+        opmode.telemetry.addData("KickerState",kickerstate);
     }
     
 public enum FeedState{
@@ -279,7 +287,7 @@ FeedState feedstate=FeedState.IDLE;
                 break;
                             
         }
-        
+        opmode.telemetry.addData("FeedState",feedstate);
     }
 
 

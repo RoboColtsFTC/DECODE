@@ -125,6 +125,7 @@ public class AprilTag {
                 //.setCameraResolution(new Size(800, 600))
                 .setCameraResolution(new Size(640, 480)) // Setting resolution
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // Set stream format to MJPEG for higher FPS
+
                 .enableLiveView(true) // Enable live view on Robot Controller screen
                 .setAutoStopLiveView(true) // Automatically stop live view when OpMode is stopped
                 .addProcessor(aprilTag)    // Set and enable the processor.
@@ -145,7 +146,7 @@ public class AprilTag {
         //builder.setAutoStopLiveView(false);
         // Disable or re-enable the aprilTag processor at any time.
         //visionPortal.setProcessorEnabled(aprilTag, true);
-        FtcDashboard.getInstance().startCameraStream(visionPortal, 0);
+        //FtcDashboard.getInstance().startCameraStream(visionPortal, 0);
     }   // end method initAprilTag()
 
     // Process Detections and storing in AprilTagData to be used with other classes
