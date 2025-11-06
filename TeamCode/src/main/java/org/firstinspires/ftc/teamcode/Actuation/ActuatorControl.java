@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.AngleServo;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.ContinuousMotor;
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.DualMotor;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.FeedControl;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
@@ -24,7 +25,7 @@ public class ActuatorControl {
         public AngleServo FeedKicker;
         public AngleServo LaunchKicker;
         public ContinuousMotor IntakeMotor;
-        public ContinuousMotor LauncherMotor;
+        public DualMotor LauncherMotor;
         public SpindexerControl spindexercontrol;
 
             }
@@ -64,7 +65,7 @@ public class ActuatorControl {
         actuators.FeedKicker= new AngleServo(hardwaremap,"FeedKicker",param.FeedKicker_First,param.FeedKicker_Second,param.FeedKicker_MaxAngle);
         actuators.LaunchKicker=new AngleServo(hardwaremap,"LaunchKicker",param.LaunchKicker_First,param.LaunchKicker_Second,param.LaunchKicker_MaxAngle);
         actuators.IntakeMotor = new ContinuousMotor(hardwaremap,"IntakeMotor",param.IntakeMotor_Power);
-        actuators.LauncherMotor= new ContinuousMotor(hardwaremap,"LauncherMotor",param.Launchmmotor_Power);
+        actuators.LauncherMotor= new DualMotor(hardwaremap,"LauncherMotor1","LauncherMotor2",param.Launchmmotor_Power);
         actuators.spindexercontrol=new SpindexerControl(hardwaremap,"Spindexer");
         loadSpindexer=new LoadSpindexer(this.opmode,actuators,colorPos);
         launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos);
@@ -86,7 +87,7 @@ public static ControlState controlstate = ControlState.ready;
 public void run() {
 
     loadSpindexer.run();
-    launchgamepeace.run();
+   // launchgamepeace.run();
 
 
 }

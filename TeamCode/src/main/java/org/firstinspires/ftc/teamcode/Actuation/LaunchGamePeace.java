@@ -4,11 +4,10 @@ import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
-import org.firstinspires.ftc.teamcode.Perception.AprilTag;
+
 import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
@@ -23,7 +22,7 @@ public class LaunchGamePeace {
 
     public Actuators actuators;
     public LinearOpMode opmode;
-    public static long CycleTime;
+
 
     public AprilTagData TagData;
     List<ColorDetector.DetColor> colorPos;
@@ -63,7 +62,7 @@ public class LaunchGamePeace {
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
-                    launcherstate = LauncherState.ACTIVELAUNCH;
+                    launcherstate = LauncherState.MOTORSTARTUP;
 
 
                 }
@@ -77,37 +76,35 @@ public class LaunchGamePeace {
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
-                    launcherstate = LauncherState.ACTIVELAUNCH;
-
+                    launcherstate = LauncherState.MOTORSTARTUP;
 
                 }
 
 
                 // Far Launching by code  todo test code
-                if (opmode.gamepad2.dpad_up && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+                if (opmode.gamepad2.dpad_left && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
                     actuators.LauncherMotor.SetPower(.73);
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = GetLaunchOrderFromCode();
-                    launcherstate = LauncherState.ACTIVELAUNCH;
+                    launcherstate = LauncherState.MOTORSTARTUP;
 
                 }
 
 
                 // Close Launching by code todo test code
-                if (opmode.gamepad2.dpad_down && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+                if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
                     actuators.LauncherMotor.SetPower(.67);
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = GetLaunchOrderFromCode();
-                    launcherstate = LauncherState.ACTIVELAUNCH;
+                    launcherstate = LauncherState.MOTORSTARTUP;
 
                 }
-
 
                 break;
             case MOTORSTARTUP:
@@ -168,7 +165,7 @@ public class LaunchGamePeace {
                     actuators.LauncherMotor.StopMotor();
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
                     LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
-                    LoadSpindexer.SpindexerLoaded = false;
+
                 }
 
                 break;
