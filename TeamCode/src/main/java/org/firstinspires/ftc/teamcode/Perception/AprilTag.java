@@ -145,7 +145,7 @@ public class AprilTag {
         //builder.setAutoStopLiveView(false);
         // Disable or re-enable the aprilTag processor at any time.
         //visionPortal.setProcessorEnabled(aprilTag, true);
-        FtcDashboard.getInstance().startCameraStream(visionPortal, 0);
+        //FtcDashboard.getInstance().startCameraStream(visionPortal, 0);
     }   // end method initAprilTag()
 
     // Process Detections and storing in AprilTagData to be used with other classes
