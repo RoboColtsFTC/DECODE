@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Actuation.Actuators.ContinuousMotor;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.DualMotor;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.FeedControl;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl;
+import org.firstinspires.ftc.teamcode.LightsandIndicators.GoBuildaPWMLight;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 
 import java.util.Arrays;
@@ -39,8 +40,8 @@ public class ActuatorControl {
 
     public static class Params{
         // Feed Kicker parameters
-        public double FeedKicker_First=4;  //Calibrated to Robot 0
-        public double FeedKicker_Second=150;  //Calibrated to Robot 115
+        public double FeedKicker_First=20;  //Calibrated to Robot 0
+        public double FeedKicker_Second=130;  //Calibrated to Robot 115
         public double FeedKicker_MaxAngle=300;
         // LaunchKicker parameters
         public double LaunchKicker_First=103;  //calibrated to robot  103
@@ -54,6 +55,8 @@ public class ActuatorControl {
         // Feed control Parameters
         public double FeedControl_Power=.5;
     }
+
+    public static GoBuildaPWMLight LockIndicator;
 
     public List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
     Params param=new Params();
@@ -73,7 +76,7 @@ public class ActuatorControl {
         // Tuning
         actuators.IntakeMotor.SetReverse();
         actuators.feedcontrol.Reverse();
-
+        LockIndicator= new GoBuildaPWMLight(hardwaremap,"light");
     }
 
     public static enum ControlState{

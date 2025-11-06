@@ -35,7 +35,7 @@ public static State Currentstate=State.Empty;
 public LinearOpMode opmode;
 private final ElapsedTime ControlFeedTimer = new ElapsedTime();
 private final ElapsedTime KickerTimer = new ElapsedTime();
-
+private static boolean auto;
     public LoadSpindexer(LinearOpMode opmode,Actuators actuators,List<DetColor> colorPos){ // Cunstructor
        colordetector=new ColorDetector(opmode);
         LoadSpindexer.colorPos =colorPos;
@@ -46,7 +46,10 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
         KickerTimer.reset();
     }
 
-
+    //entry function for autononmous mode;
+    public void LoadSpindexer_auto(){
+        auto=true;
+    }
     public void run(){
 
         colordetector.run();
@@ -55,6 +58,9 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
         switch(Currentstate) {
             case Empty:
                 if(opmode.gamepad2.a && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
+                    ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
+                    Currentstate = State.LoadOne;
+                }else if (auto){
                     ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
                     Currentstate = State.LoadOne;
                 }
@@ -87,6 +93,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                     actuators.feedcontrol.StopFeed();
                     actuators.IntakeMotor.StopMotor();
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
+                    auto=false;
                     opmode.telemetry.addData("colororder",colorPos);
 
                 }

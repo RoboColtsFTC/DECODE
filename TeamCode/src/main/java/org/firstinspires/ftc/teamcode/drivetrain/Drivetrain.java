@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 
+import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
 import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 
 @Config
@@ -92,7 +93,13 @@ public class Drivetrain {
             AprilTagBearing = TagData.Blue.Bearing;
         }
 
-        if(TagData.detectionState.isAnyTagDetected){tagDetectedAtleastonce=true;};
+        if(TagData.detectionState.isAnyTagDetected){
+            ActuatorControl.LockIndicator.SetColor(.5);
+            tagDetectedAtleastonce=true;
+        }else{
+            ActuatorControl.LockIndicator.SetColor(0);
+        }
+
         dashboard =  FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
 

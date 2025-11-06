@@ -47,13 +47,29 @@ public class LaunchGamePeace {
 
     public LauncherState launcherstate = LauncherState.IDLE;
     public List<Integer> LaunchOrder = Arrays.asList(6, 5, 4);  // Defalt sequnce
+public boolean autoLaunch =false;
 
+public void Launch_Auto(){
+
+    autoLaunch=true;
+
+}
 
     public void run() {
 
         switch (launcherstate) {
 
             case IDLE:
+                if (autoLaunch){
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetPower(.73);
+                    actuators.LauncherMotor.StartMotor();
+                    LauncherMotorTimer.reset();
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    launcherstate = LauncherState.MOTORSTARTUP;
+                    autoLaunch=false;
+
+                }
                 // Far Launching
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
@@ -163,15 +179,13 @@ public class LaunchGamePeace {
                 if (loadgamepeace == LoadGamePeace.IDLE) {
                     launchsequence = LaunchSequence.IDLE;
                     actuators.LauncherMotor.StopMotor();
+
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
                     LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
 
                 }
 
                 break;
-
-
-
 
         }
 

@@ -10,7 +10,7 @@ public class TestFeedKicker extends LinearOpMode {
 public AngleServo servo;
     @Override
     public void runOpMode() throws InterruptedException {
-        servo= new AngleServo(this.hardwareMap,"FeedKicker",0,140,300);
+        servo= new AngleServo(this.hardwareMap,"FeedKicker",20,130,300);
 
         waitForStart();
 
