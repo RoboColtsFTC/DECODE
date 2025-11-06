@@ -52,7 +52,7 @@ public class ActuatorControl {
         public double Launchmmotor_Power=.73;
 
         // Feed control Parameters
-        public double FeedControl_Power=1;
+        public double FeedControl_Power=.5;
     }
 
     public List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);

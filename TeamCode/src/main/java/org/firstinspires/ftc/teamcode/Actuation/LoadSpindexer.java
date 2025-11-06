@@ -185,13 +185,16 @@ boolean rebounce = false;
         switch(detectgamepeace){
             case IDLE:
 
-                    if (Currentstate == State.LoadThree) {
-                        colordetector.maxdist = 8;
-                    }
+
                     detectgamepeace=DetectGamePeace.DetectGamePeace;
 
                 break;
             case DetectGamePeace:
+                if (Currentstate == State.LoadThree) {
+                    colordetector.maxdist = 8;
+                }else{
+                    colordetector.maxdist = 4.8;
+                }
                 if ( colordetector.colordetected()){
                     detectgamepeace=DetectGamePeace.RecordColor;
                 } else if(opmode.gamepad2.b) {
@@ -288,7 +291,7 @@ public static FeedState feedstate=FeedState.IDLE;
                 break;
             case STOPFEED:
                 actuators.feedcontrol.StopFeed();
-                if(ControlFeedTimer.milliseconds()>=500){
+                if(ControlFeedTimer.milliseconds()>=0){
 
                     ControlFeedTimer.reset();
                     feedstate=FeedState.CHANGEPOSITION;
