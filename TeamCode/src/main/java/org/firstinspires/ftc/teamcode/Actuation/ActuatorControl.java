@@ -87,7 +87,7 @@ public static ControlState controlstate = ControlState.ready;
 public void run() {
 
     loadSpindexer.run();
-   // launchgamepeace.run();
+    launchgamepeace.run();
 
 
 }

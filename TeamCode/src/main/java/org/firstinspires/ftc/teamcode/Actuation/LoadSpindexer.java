@@ -38,7 +38,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
     public LoadSpindexer(LinearOpMode opmode,Actuators actuators,List<DetColor> colorPos){ // Cunstructor
        colordetector=new ColorDetector(opmode);
-        this.colorPos=colorPos;
+        LoadSpindexer.colorPos =colorPos;
         Currentstate=State.Empty;
         this.opmode=opmode;
         this.actuators=actuators;
@@ -281,22 +281,6 @@ FeedState feedstate=FeedState.IDLE;
         }
         
     }
-    
-
-    // public void StartLoading(){  //Starts Loading Sequence
-    //     Start=true;
-
-    // }
-
-    // public void LoadOne(){
-    //     Currentstate=State.LoadThree;
-    // }
-
-    // public void LoadTwo(){
-
-    //     Currentstate=State.LoadTwo;
-
-    //}
 
 
 
