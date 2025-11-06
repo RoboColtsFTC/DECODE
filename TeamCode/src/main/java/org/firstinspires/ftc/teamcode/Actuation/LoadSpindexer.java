@@ -61,7 +61,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
                 break;
             case LoadOne:
-                LoadGamePeace( 1,true);
+                LoadGamePeace( 1);
 
                 if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
                     gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
@@ -70,16 +70,16 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
                 break;
             case LoadTwo:
-                LoadGamePeace( 2,true);
+                LoadGamePeace( 2);
 
                 if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
                     gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
-                    Currentstate=State.LoadTwo;
+                    Currentstate=State.LoadThree;
                 }
 
                 break;
             case LoadThree:
-                LoadGamePeace( 3,true);
+                LoadGamePeace( 3);
 
                 if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
                     gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
@@ -87,11 +87,14 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                     actuators.feedcontrol.StopFeed();
                     actuators.IntakeMotor.StopMotor();
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
+                    opmode.telemetry.addData("colororder",colorPos);
+
                 }
 
                 break;
             }
-        opmode.telemetry.addData("Currentstate",Currentstate);
+//        opmode.telemetry.addData("Currentstate",Currentstate);
+//        opmode.telemetry.update();
     }
     public enum GamePeaceLoadingState{
         IDLE,
@@ -103,15 +106,13 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
     }
 
     public static GamePeaceLoadingState gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
-    public void LoadGamePeace(int SpindexPos,boolean start)  {
+    public void LoadGamePeace(int SpindexPos)  {
 
         // Cycle time controls t
         switch(gamepeaceloadingstate) {
             case IDLE:
-                if (start) {
-                    gamepeaceloadingstate = GamePeaceLoadingState.StartIntake;
-                }
-                break;
+                  gamepeaceloadingstate = GamePeaceLoadingState.StartIntake;
+                  break;
             case StartIntake:
                 actuators.IntakeMotor.StartMotor();
                 actuators.feedcontrol.startFeed();
@@ -124,7 +125,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                     gamepeaceloadingstate=GamePeaceLoadingState.DetectColor;
 
                 } else {
-                    ActuateFeed(SpindexPos,true);
+                    ActuateFeed(SpindexPos);
 
                     if(feedstate==FeedState.COMPLETE) {
                         feedstate=FeedState.IDLE;
@@ -135,9 +136,10 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
                 break;
             case DetectColor:
-                DetectGamePeace(SpindexPos, true);
+                DetectGamePeace(SpindexPos);
 
                 if(detectgamepeace==DetectGamePeace.complete){
+                    detectgamepeace=DetectGamePeace.IDLE;
                     if (Currentstate==State.LoadThree){
                         gamepeaceloadingstate = GamePeaceLoadingState.kickball;
                     }else{
@@ -147,9 +149,9 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
                 break;
             case kickball:
-                ActuateFeedKicker(true);
+                ActuateFeedKicker();
 
-                if (kickerstate == KickerState.IDLE){
+                if (kickerstate == KickerState.COMPLETE){
                     gamepeaceloadingstate=GamePeaceLoadingState.Complete;
                 }
 
@@ -161,7 +163,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 
 
         }
-        opmode.telemetry.addData("gamepeaceloadingstate",gamepeaceloadingstate);
+//        opmode.telemetry.addData("gamepeaceloadingstate",gamepeaceloadingstate);
+//        opmode.telemetry.update();
     }
 
 
@@ -174,38 +177,39 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
         RecordColor,
         complete
     }
-    DetectGamePeace detectgamepeace=DetectGamePeace.IDLE;
+    public static DetectGamePeace detectgamepeace=DetectGamePeace.IDLE;
 
-
-    public void DetectGamePeace(int SpindexPos, boolean start){
+boolean rebounce = false;
+    public void DetectGamePeace(int SpindexPos){
 
         switch(detectgamepeace){
             case IDLE:
-                if(start) {
+
                     if (Currentstate == State.LoadThree) {
                         colordetector.maxdist = 8;
                     }
                     detectgamepeace=DetectGamePeace.DetectGamePeace;
-                }
+
                 break;
             case DetectGamePeace:
-//                if ( colordetector.colordetected()){
-//                    detectgamepeace=DetectGamePeace.RecordColor;
-//                } else if(opmode.gamepad2.b) {
-//                    detectgamepeace=DetectGamePeace.ManualOveride;
-//                }
+                if ( colordetector.colordetected()){
+                    detectgamepeace=DetectGamePeace.RecordColor;
+                } else if(opmode.gamepad2.b) {
+                    detectgamepeace=DetectGamePeace.ManualOveride;
+                }
+
                 if(opmode.gamepad2.b) {
                     detectgamepeace=DetectGamePeace.ManualOveride;
                }
 
                 break;
             case ManualOveride:
-                colorPos.set(SpindexPos,DetColor.UNKNOWN);
+                colorPos.set(SpindexPos-1,DetColor.UNKNOWN);
                 detectgamepeace=DetectGamePeace.complete;
 
                 break;
             case RecordColor:
-                colorPos.set(SpindexPos,colordetector.GetColor());
+                colorPos.set(SpindexPos-1,colordetector.GetColor());
                 detectgamepeace=DetectGamePeace.complete;
 
                 break;
@@ -215,7 +219,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 break;
 
         }
-        opmode.telemetry.addData("detectgamepeace",detectgamepeace);
+//        opmode.telemetry.addData("detectgamepeace",detectgamepeace);
+//        opmode.telemetry.update();
     }
 
 
@@ -228,17 +233,15 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
     }
 
 
-    public KickerState kickerstate = KickerState.IDLE;
+    public static KickerState kickerstate = KickerState.IDLE;
     
-    public void ActuateFeedKicker(boolean start){
+    public void ActuateFeedKicker(){
         switch(kickerstate){
             case IDLE:
-                if(start){
-                    
+
                     KickerTimer.reset();
                     kickerstate = KickerState.KICK;
-                }
-                
+
                 break;
             case KICK:
                  actuators.FeedKicker.SetSecond();
@@ -253,7 +256,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                     actuators.FeedKicker.SetFirst();
                     if(KickerTimer.milliseconds()>=500){
                         KickerTimer.reset();
-                        kickerstate = KickerState.IDLE;
+                        kickerstate = KickerState.COMPLETE;
                 }
                 
                 break;
@@ -262,7 +265,8 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
                 break;
                            
         }
-        opmode.telemetry.addData("KickerState",kickerstate);
+//        opmode.telemetry.addData("KickerState",kickerstate);
+//        opmode.telemetry.update();
     }
     
 public enum FeedState{
@@ -273,14 +277,14 @@ public enum FeedState{
     COMPLETE
 }
     
-FeedState feedstate=FeedState.IDLE;
-    public void ActuateFeed(int SpindexPos,Boolean Start){
+public static FeedState feedstate=FeedState.IDLE;
+    public void ActuateFeed(int SpindexPos){
         switch(feedstate){
             case IDLE:
-                if(Start) {
+
                     ControlFeedTimer.reset();
                     feedstate = FeedState.STOPFEED;
-                }
+
                 break;
             case STOPFEED:
                 actuators.feedcontrol.StopFeed();
@@ -293,6 +297,7 @@ FeedState feedstate=FeedState.IDLE;
             case CHANGEPOSITION:
               
               actuators.spindexercontrol.setPosition(SpindexPos);
+
               if(ControlFeedTimer.milliseconds()>=500){
                     ControlFeedTimer.reset();
                     feedstate=FeedState.STARTFEED;
@@ -308,7 +313,8 @@ FeedState feedstate=FeedState.IDLE;
                 break;
                             
         }
-        opmode.telemetry.addData("FeedState",feedstate);
+//        opmode.telemetry.addData("FeedState",feedstate);
+//        opmode.telemetry.update();
     }
 
 

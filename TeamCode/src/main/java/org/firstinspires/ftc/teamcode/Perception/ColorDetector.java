@@ -124,7 +124,7 @@ public class ColorDetector{
          * Note that the reported distance is only useful at very close range, and is impacted by
          * ambient light and surface reflectivity. */
         if (colorSensor instanceof DistanceSensor) {
-            opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
+           // opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         }
         normRed = colors.red / colors.alpha;
         normGreen = colors.green / colors.alpha;
@@ -191,10 +191,10 @@ public class ColorDetector{
         } else {
             detected = false;
         }
-        opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
-        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
-        opmode.telemetry.addData("Detected Boolean: ", detected);
-        opmode.telemetry.update();
+//        opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
+//        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
+//        opmode.telemetry.addData("Detected Boolean: ", detected);
+        //opmode.telemetry.update();
         return detected;
     }
 

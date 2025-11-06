@@ -23,6 +23,8 @@ public ActuatorControl actuatorcontrol;
         while (opModeIsActive()) {
 
             actuatorcontrol.run();
+            telemetry.update();
+
 
         }
     }
