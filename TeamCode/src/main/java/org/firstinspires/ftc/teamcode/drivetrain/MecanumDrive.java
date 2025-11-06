@@ -416,7 +416,7 @@ public final class MecanumDrive {
 //---------------------------------------------------------------------------
 // Code to Align to goal
 
-    public static double kp=.08;
+    public static double kp=.1;
     public static double ki=0.0;
     public static double kd=0;
     PIDController controller = new PIDController(kp,ki,kd);

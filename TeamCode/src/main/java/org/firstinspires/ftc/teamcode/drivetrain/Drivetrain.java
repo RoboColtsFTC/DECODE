@@ -67,6 +67,13 @@ public class Drivetrain {
 
 
     }
+    boolean tagDetectedAtleastonce =false;
+
+    enum TurnToTagState{
+        START,
+        STOP
+    }
+    TurnToTagState turntotagstate=TurnToTagState.STOP;
 
     public void run(){
         ChassisSpeeds speeds;
@@ -84,6 +91,8 @@ public class Drivetrain {
         }else{
             AprilTagBearing = TagData.Blue.Bearing;
         }
+
+        if(TagData.detectionState.isAnyTagDetected){tagDetectedAtleastonce=true;};
         dashboard =  FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
 
@@ -103,12 +112,18 @@ public class Drivetrain {
        } else if(driver.b) {
            thetaPower = controller.calculate(headingAngle, -90);
 
-       } else if (driver.y &&  TagData.detectionState.isAnyTagDetected){
+       } else if ((driver.right_trigger>.5) &&  TagData.detectionState.isAnyTagDetected){
                 thetaPower=drive.RotateTwardsGoal();
 //               thetaPower = controller.calculate(headingAngle, AprilTagBearing) * ApirlTagRotationGain;
                opMode.telemetry.addData("IMU Reading", "%5.1f inches", AprilTagBearing);
 
        } else {
+
+
+
+
+
+
           thetaPower = -driver.right_stick_x * Math.PI;
        }
 
