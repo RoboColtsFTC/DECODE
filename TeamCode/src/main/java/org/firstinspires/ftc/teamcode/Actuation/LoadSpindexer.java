@@ -50,6 +50,7 @@ private static boolean auto;
     public void LoadSpindexer_auto(){
         auto=true;
     }
+
     public void run(){
 
         colordetector.run();
@@ -200,7 +201,7 @@ boolean rebounce = false;
                 if (Currentstate == State.LoadThree) {
                     colordetector.maxdist = 8;
                 }else{
-                    colordetector.maxdist = 4.5;
+                    colordetector.maxdist = 4.8;
                 }
                 if ( colordetector.colordetected()){
                     detectgamepeace=DetectGamePeace.RecordColor;

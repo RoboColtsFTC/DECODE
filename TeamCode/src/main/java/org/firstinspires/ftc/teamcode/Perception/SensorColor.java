@@ -52,7 +52,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class SensorColor extends LinearOpMode {
 
   /** The colorSensor field will contain a reference to our color sensor hardware object */
-  NormalizedColorSensor colorSensor, colorSensor2;
+  NormalizedColorSensor colorSensor, colorSensor2,colorSensor3;
   public enum DetColor {
     PURPLE,
     GREEN,
@@ -108,7 +108,7 @@ public class SensorColor extends LinearOpMode {
 
     colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color1");
     colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color2");
-
+    colorSensor3 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color3");
     // If possible, turn the light on in the beginning (it might already be on anyway,
     // we just make sure it is if we can).
     if (colorSensor instanceof SwitchableLight) {
@@ -119,10 +119,15 @@ public class SensorColor extends LinearOpMode {
       ((SwitchableLight)colorSensor2).enableLight(true);
     }
 
+    if (colorSensor2 instanceof SwitchableLight) {
+      ((SwitchableLight)colorSensor3).enableLight(true);
+    }
+
     // Wait for the start button to be pressed.
     waitForStart();
     colorSensor.setGain(gain);
     colorSensor2.setGain(gain);
+    colorSensor3.setGain(gain);
 
     // Loop until we are asked to stop
     while (opModeIsActive()) {
@@ -134,6 +139,7 @@ public class SensorColor extends LinearOpMode {
   public void DetectColor(){
     NormalizedRGBA colors = colorSensor.getNormalizedColors();
     NormalizedRGBA colors2 = colorSensor2.getNormalizedColors();
+    NormalizedRGBA colors3 = colorSensor3.getNormalizedColors();
 
     /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
      * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
@@ -150,8 +156,10 @@ public class SensorColor extends LinearOpMode {
 
     float normBlue, normGreen, normRed;
     float normBlue2, normGreen2, normRed2;
+    float normBlue3, normGreen3, normRed3;
     DetColor detectedColor1;
     DetColor detectedColor2;
+    DetColor detectedColor3;
     DetColor finalDetectedColor;
     /* If this color sensor also has a distance sensor, display the measured distance.
      * Note that the reported distance is only useful at very close range, and is impacted by
@@ -166,6 +174,10 @@ public class SensorColor extends LinearOpMode {
     normRed2 = colors2.red / colors2.alpha;
     normGreen2 = colors2.green / colors2.alpha;
     normBlue2 = colors2.blue / colors2.alpha;
+
+    normRed3 = colors3.red / colors3.alpha;
+    normGreen3 = colors3.green / colors3.alpha;
+    normBlue3 = colors3.blue / colors3.alpha;
 
     if (normRed < normGreen && normBlue > normGreen) {
       detectedColor1 = DetColor.PURPLE;
@@ -182,10 +194,21 @@ public class SensorColor extends LinearOpMode {
     } else {
       detectedColor2 = DetColor.UNKNOWN;
     }
-
+    if (normRed3< normGreen3 && normBlue3 > normGreen3) {
+      detectedColor3 = DetColor.PURPLE;
+    } else if (normGreen3 > normRed3 && normGreen3 > normBlue3 && normGreen3 > .06) {
+      detectedColor3 = DetColor.GREEN;
+    } else {
+      detectedColor3= DetColor.UNKNOWN;
+    }
     if (detectedColor1.equals(detectedColor2)) {
       finalDetectedColor = detectedColor1;
-    } else {
+    } else if (detectedColor1.equals(detectedColor3)) {
+      finalDetectedColor = detectedColor1;
+    }else if (detectedColor2.equals(detectedColor3)){
+      finalDetectedColor = detectedColor2;
+    }
+    else {
       finalDetectedColor = DetColor.UNKNOWN;
     }
 
