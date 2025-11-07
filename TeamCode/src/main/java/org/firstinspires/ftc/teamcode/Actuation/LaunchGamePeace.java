@@ -62,7 +62,7 @@ public void Launch_Auto(){
             case IDLE:
                 if (autoLaunch){
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.73);
+                    actuators.LauncherMotor.SetPower(.68);
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -74,7 +74,7 @@ public void Launch_Auto(){
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.73);
+                    actuators.LauncherMotor.SetPower(.60);
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);

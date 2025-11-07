@@ -200,7 +200,7 @@ boolean rebounce = false;
                 if (Currentstate == State.LoadThree) {
                     colordetector.maxdist = 8;
                 }else{
-                    colordetector.maxdist = 4.8;
+                    colordetector.maxdist = 4.5;
                 }
                 if ( colordetector.colordetected()){
                     detectgamepeace=DetectGamePeace.RecordColor;
