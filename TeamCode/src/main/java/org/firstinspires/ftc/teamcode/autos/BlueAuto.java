@@ -27,9 +27,11 @@ public final class BlueAuto extends LinearOpMode {
         //beginPose = new Pose2d(0, 0, Math.toRadians(0.00));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(5 ,5), Math.toRadians(250))
+                .strafeToLinearHeading(new Vector2d(-5 ,-5), Math.toRadians(-90))
+                .turn(-60)
                 .afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())
-                .turn(250)
+                .strafeToLinearHeading(new Vector2d(-5 ,-28), Math.toRadians(0))
+
                 .build());
 
 
