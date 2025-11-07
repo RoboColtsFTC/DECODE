@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.autos;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -27,8 +29,10 @@ public final class RedAuto extends LinearOpMode {
        // beginPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(30, 30), Math.toRadians(110))
-               // .afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())
+                .strafeToLinearHeading(new Vector2d(0,0), Math.toRadians(250))
+                .afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())
+                .strafeToLinearHeading(new Vector2d(5 ,5), Math.toRadians(250), new TranslationalVelConstraint(10))
+
                 .build());
 
 

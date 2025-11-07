@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.Actuation;
 
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
@@ -47,11 +51,33 @@ private static boolean auto;
     }
 
     //entry function for autononmous mode;
-    public void LoadSpindexer_auto(){
-        auto=true;
+//    public void LoadSpindexer_auto(){
+//        auto=true;
+//    }
+
+    public Action  LoadSpindexer_auto(){
+        return new Action(){
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+
+                auto=true;
+                load_spindexer_run();
+
+
+                return Currentstate==State.Loaded;
+            }
+
+
+
+        };
     }
 
-    public void run(){
+    public void run()
+    {
+        load_spindexer_run();
+    }
+
+    public void load_spindexer_run(){
 
         colordetector.run();
         // State machine to load Spindexer

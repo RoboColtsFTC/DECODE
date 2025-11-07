@@ -434,7 +434,7 @@ public final class MecanumDrive {
             TagBearing=Robot.TagData.Blue.Bearing;
         }
 
-        thetaPower = controller.calculate( headingAngle+180,  (headingAngle+180)+TagBearing+2) ;
+        thetaPower = controller.calculate( headingAngle+180,  (headingAngle+180)+TagBearing) ;
      return thetaPower;
     }
 

@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.Actuation;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -48,14 +52,28 @@ public class LaunchGamePeace {
     public LauncherState launcherstate = LauncherState.IDLE;
     public List<Integer> LaunchOrder = Arrays.asList(6, 5, 4);  // Defalt sequnce
 public boolean autoLaunch =false;
+    public Action Launch_Auto(){
+        return new Action(){
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
 
-public void Launch_Auto(){
+                autoLaunch=true;
+                LoadSpindexer_run();
 
-    autoLaunch=true;
 
-}
+                return  launcherstate == LauncherState.IDLE;
+            }
 
-    public void run() {
+
+
+        };
+    }
+
+    public void run(){
+        LoadSpindexer_run();
+    }
+
+    public void LoadSpindexer_run() {
 
         switch (launcherstate) {
 
