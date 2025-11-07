@@ -11,9 +11,8 @@ import org.firstinspires.ftc.teamcode.Actuation.LoadSpindexer;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
-
-@Autonomous(name="TestAuto", group="Robot")
-public final class TestAuto extends LinearOpMode {
+@Autonomous(name="BlueAuto", group="Robot")
+public final class BlueAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
