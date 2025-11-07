@@ -67,8 +67,7 @@ public class AprilTagData {
         public long timestamp;
         public double Bearing;
         public double Range;
-        public int windowsize=3;
-        public goal(){
+        public int windowsize=3;public goal(){
 
 
 

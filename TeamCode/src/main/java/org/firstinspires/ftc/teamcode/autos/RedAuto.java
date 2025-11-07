@@ -18,22 +18,20 @@ public final class RedAuto extends LinearOpMode {
         Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        Robot robot = new Robot(this,true);
+       Robot robot = new Robot(this,true);
 
         waitForStart();
 
         /* -------------------------------------------------------------------------------------- */
 
-        beginPose = new Pose2d(0, 0, Math.toRadians(0.00));
+       // beginPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(0, 0), Math.toRadians(110))
-                .afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_auto())
-                .strafeToLinearHeading(new Vector2d(0, 24), Math.toRadians(0))
-
-
+                .strafeToLinearHeading(new Vector2d(30, 30), Math.toRadians(110))
+               // .afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())
                 .build());
 
 
     }
 }
+//.afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())

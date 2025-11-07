@@ -44,7 +44,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-@Config
+
 public final class MecanumDrive {
     public static class Params {
         // IMU orientation
@@ -434,7 +434,7 @@ public final class MecanumDrive {
             TagBearing=Robot.TagData.Blue.Bearing;
         }
 
-        thetaPower = controller.calculate( headingAngle+180,  (headingAngle+180)+TagBearing) ;
+        thetaPower = controller.calculate( headingAngle+180,  (headingAngle+180)+TagBearing+2) ;
      return thetaPower;
     }
 

@@ -18,20 +18,18 @@ public final class BlueAuto extends LinearOpMode {
         Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        Robot robot = new Robot(this,true);
+        //Robot robot = new Robot(this,true);
 
         waitForStart();
 
         /* -------------------------------------------------------------------------------------- */
 
-        beginPose = new Pose2d(0, 0, Math.toRadians(0.00));
+        //beginPose = new Pose2d(0, 0, Math.toRadians(0.00));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(0, 0), Math.toRadians(250))
-                .afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_auto())
-                .strafeToLinearHeading(new Vector2d(0, 24), Math.toRadians(0))
-
-
+                .strafeToLinearHeading(new Vector2d(5 ,5), Math.toRadians(250))
+                //.afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())
+                .strafeToLinearHeading(new Vector2d(5, 5), Math.toRadians(0))
                 .build());
 
 

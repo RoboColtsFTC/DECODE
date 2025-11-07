@@ -93,13 +93,21 @@ public class Drivetrain {
             AprilTagBearing = TagData.Blue.Bearing;
         }
 
-        if(TagData.detectionState.isAnyTagDetected){
+        if(TagData.detectionState.isBlueGoalAprilTagDetected && !TagData.red) {
             ActuatorControl.LockIndicator.SetColor(.5);
-            tagDetectedAtleastonce=true;
+        }else if (TagData.detectionState.isRedGoalAprilTagDetected && TagData.red){
+            ActuatorControl.LockIndicator.SetColor(.5);
         }else{
             ActuatorControl.LockIndicator.SetColor(0);
         }
 
+//        if(TagData.detectionState.isAnyTagDetected){
+//            ActuatorControl.LockIndicator.SetColor(.5);
+//            tagDetectedAtleastonce=true;
+//        }else{
+//            ActuatorControl.LockIndicator.SetColor(0);
+//        }
+//
         dashboard =  FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
 

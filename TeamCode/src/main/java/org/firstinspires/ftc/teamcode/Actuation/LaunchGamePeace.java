@@ -60,21 +60,21 @@ public void Launch_Auto(){
         switch (launcherstate) {
 
             case IDLE:
-                if (autoLaunch){
-                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.68);
-                    actuators.LauncherMotor.StartMotor();
-                    LauncherMotorTimer.reset();
-                    LaunchOrder = Arrays.asList(6, 5, 4);
-                    launcherstate = LauncherState.MOTORSTARTUP;
-                    autoLaunch=false;
-
-                }
+//                if (autoLaunch){
+//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+//                    actuators.LauncherMotor.SetPower(.68);
+//                    actuators.LauncherMotor.StartMotor();
+//                    LauncherMotorTimer.reset();
+//                    LaunchOrder = Arrays.asList(6, 5, 4);
+//                    launcherstate = LauncherState.MOTORSTARTUP;
+//                    autoLaunch=false;
+//
+//                }
                 // Far Launching
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.60);
+                    actuators.LauncherMotor.SetPower(.65); //120.7 12.53v
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -88,7 +88,17 @@ public void Launch_Auto(){
                 if (opmode.gamepad2.y && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.67);
+                    actuators.LauncherMotor.SetPower(.53); //60.4 inch 12.59v works at 45.9
+                    actuators.LauncherMotor.StartMotor();
+                    LauncherMotorTimer.reset();
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    launcherstate = LauncherState.MOTORSTARTUP;
+
+                }
+                if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetPower(.50); //to close for apiril tags
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -96,31 +106,30 @@ public void Launch_Auto(){
 
                 }
 
-
-                // Far Launching by code  todo test code
-                if (opmode.gamepad2.dpad_left && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
-
-                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.73);
-                    actuators.LauncherMotor.StartMotor();
-                    LauncherMotorTimer.reset();
-                    LaunchOrder = GetLaunchOrderFromCode();
-                    launcherstate = LauncherState.MOTORSTARTUP;
-
-                }
-
-
-                // Close Launching by code todo test code
-                if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
-
-                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.67);
-                    actuators.LauncherMotor.StartMotor();
-                    LauncherMotorTimer.reset();
-                    LaunchOrder = GetLaunchOrderFromCode();
-                    launcherstate = LauncherState.MOTORSTARTUP;
-
-                }
+//                // Far Launching by code  todo test code
+//                if (opmode.gamepad2.dpad_left && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+//
+//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+//                    actuators.LauncherMotor.SetPower(.73);
+//                    actuators.LauncherMotor.StartMotor();
+//                    LauncherMotorTimer.reset();
+//                    LaunchOrder = GetLaunchOrderFromCode();
+//                    launcherstate = LauncherState.MOTORSTARTUP;
+//
+//                }
+//
+//
+//                // Close Launching by code todo test code
+//                if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+//
+//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+//                    actuators.LauncherMotor.SetPower(.67);
+//                    actuators.LauncherMotor.StartMotor();
+//                    LauncherMotorTimer.reset();
+//                    LaunchOrder = GetLaunchOrderFromCode();
+//                    launcherstate = LauncherState.MOTORSTARTUP;
+//
+//                }
 
                 break;
             case MOTORSTARTUP:

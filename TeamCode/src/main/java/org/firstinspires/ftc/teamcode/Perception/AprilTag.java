@@ -193,6 +193,8 @@ public class AprilTag {
 
        }else{
             detectionState.isAnyTagDetected = true;
+            detectionState.isBlueGoalAprilTagDetected=false;
+            detectionState.isRedGoalAprilTagDetected=false;
             for (AprilTagDetection detection : currentDetections) {
                 ProcessDetections(detection, Data);
                 telemetryAprilTag(detection);
