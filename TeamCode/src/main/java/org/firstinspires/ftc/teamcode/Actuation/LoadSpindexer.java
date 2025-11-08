@@ -186,6 +186,7 @@ private static boolean auto;
                 ActuateFeedKicker();
 
                 if (kickerstate == KickerState.COMPLETE){
+                    kickerstate = KickerState.IDLE;
                     gamepeaceloadingstate=GamePeaceLoadingState.Complete;
                 }
 
