@@ -6,35 +6,31 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Actuation.LaunchGamePeace;
-import org.firstinspires.ftc.teamcode.Actuation.LoadSpindexer;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
-import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
 
-@Autonomous(name="TestAuto", group="Robot")
-public final class TestAuto extends LinearOpMode {
+@Autonomous(name="BlueAutoNear", group="Robot")
+public final class BlueAutoNear extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
+        Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(-45));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        Robot robot = new Robot(this,true);
+       Robot robot = new Robot(this,false);
 
         waitForStart();
-
         /* -------------------------------------------------------------------------------------- */
 
-        beginPose = new Pose2d(0, 0, Math.toRadians(0.00));
+       // beginPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(0, 0), Math.toRadians(250))
-                //.afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())
-                .strafeToLinearHeading(new Vector2d(0, 24), Math.toRadians(0))
-
-
+                .strafeToLinearHeading(new Vector2d(-20,20), Math.toRadians(-45))
+                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(.50))
+                .strafeToLinearHeading(new Vector2d(-30 ,5), Math.toRadians(0))// new TranslationalVelConstraint(10)
                 .build());
+
 
 
     }
 }
+//.afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())

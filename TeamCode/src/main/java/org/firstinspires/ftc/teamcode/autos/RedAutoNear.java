@@ -1,23 +1,19 @@
 package org.firstinspires.ftc.teamcode.autos;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Actuation.LaunchGamePeace;
-import org.firstinspires.ftc.teamcode.Actuation.LoadSpindexer;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
-import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
-@Autonomous(name="RedAuto", group="Robot")
-public final class RedAuto extends LinearOpMode {
+
+@Autonomous(name="RedAutoNear", group="Robot")
+public final class RedAutoNear extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(90));
+        Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(45));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
        Robot robot = new Robot(this,true);
@@ -28,10 +24,9 @@ public final class RedAuto extends LinearOpMode {
        // beginPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(0,10), Math.toRadians(90))
-                .turn(Math.toRadians(-25))
-                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto())
-                .strafeToLinearHeading(new Vector2d(0 ,28), Math.toRadians(0))// new TranslationalVelConstraint(10)
+                .strafeToLinearHeading(new Vector2d(-20,-20), Math.toRadians(45))
+                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(.50))
+                .strafeToLinearHeading(new Vector2d(-20 ,5), Math.toRadians(0))// new TranslationalVelConstraint(10)
 
                 .build());
 

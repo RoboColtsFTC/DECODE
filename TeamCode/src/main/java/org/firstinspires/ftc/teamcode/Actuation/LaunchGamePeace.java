@@ -54,12 +54,12 @@ public class LaunchGamePeace {
     public List<Integer> LaunchOrder = Arrays.asList(6, 5, 4);  // Defalt sequnce
 public boolean autoLaunch =false;
 
-
-    public Action Launch_Auto(){
+public double autoPower=0;
+    public Action Launch_Auto(double Power){
         return new Action(){
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
+                autoPower=Power;
                 autoLaunch=true;
                 LoadSpindexer_run();
 
@@ -103,7 +103,7 @@ public boolean autoLaunch =false;
 
                 }else if(autoLaunch){
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.65); //120.7 12.53v
+                    actuators.LauncherMotor.SetPower(autoPower); //120.7 12.53v.63
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);

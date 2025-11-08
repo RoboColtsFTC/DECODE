@@ -6,32 +6,33 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Actuation.LaunchGamePeace;
-import org.firstinspires.ftc.teamcode.Actuation.LoadSpindexer;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
-import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
-@Autonomous(name="BlueAuto", group="Robot")
-public final class BlueAuto extends LinearOpMode {
+
+@Autonomous(name="RedAutoFar", group="Robot")
+public final class RedAutoFar extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(0));
+        Pose2d beginPose = new Pose2d(0, 0, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        Robot robot = new Robot(this,false);
+       Robot robot = new Robot(this,true);
 
         waitForStart();
-
         /* -------------------------------------------------------------------------------------- */
 
-        //beginPose = new Pose2d(0, 0, Math.toRadians(0.00));
+       // beginPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                //.strafeToLinearHeading(new Vector2d(5 ,5), Math.toRadians(250))
-                .afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())
-                //.turn(250)
+                .strafeToLinearHeading(new Vector2d(0,10), Math.toRadians(90))
+                .turn(Math.toRadians(-25))
+                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(.63))
+                .strafeToLinearHeading(new Vector2d(0 ,28), Math.toRadians(0))// new TranslationalVelConstraint(10)
+
                 .build());
+
 
 
     }
 }
+//.afterTime(0, robot.actuatorcontrol.launchgamepeace.Launch_Auto())
