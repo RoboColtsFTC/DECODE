@@ -108,6 +108,7 @@ public class ColorDetector{
     public DetColor GetColor() {
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
         NormalizedRGBA colors2 = colorSensor2.getNormalizedColors();
+        NormalizedRGBA colors3 = colorSensor3.getNormalizedColors();
 
         /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
          * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
@@ -124,8 +125,10 @@ public class ColorDetector{
 
         float normBlue, normGreen, normRed;
         float normBlue2, normGreen2, normRed2;
+        float normBlue3, normGreen3, normRed3;
         DetColor detectedColor1;
         DetColor detectedColor2;
+        DetColor detectedColor3;
         /* If this color sensor also has a distance sensor, display the measured distance.
          * Note that the reported distance is only useful at very close range, and is impacted by
          * ambient light and surface reflectivity. */
@@ -139,6 +142,10 @@ public class ColorDetector{
         normRed2 = colors2.red / colors2.alpha;
         normGreen2 = colors2.green / colors2.alpha;
         normBlue2 = colors2.blue / colors2.alpha;
+
+        normRed3 = colors3.red / colors3.alpha;
+        normGreen3 = colors3.green / colors3.alpha;
+        normBlue3 = colors3.blue / colors3.alpha;
 
         if (normRed < normGreen && normBlue > normGreen) {
             detectedColor1 = DetColor.PURPLE;
@@ -156,9 +163,17 @@ public class ColorDetector{
             detectedColor2 = DetColor.UNKNOWN;
         }
 
-        if ((detectedColor1 == DetColor.GREEN) || (detectedColor2 == DetColor.GREEN)) {
+        if (normRed3< normGreen3 && normBlue3 > normGreen3) {
+            detectedColor3 = DetColor.PURPLE;
+        } else if (normGreen3 > normRed3 && normGreen3 > normBlue3 && normGreen3 > .06) {
+            detectedColor3 = DetColor.GREEN;
+        } else {
+            detectedColor3 = DetColor.UNKNOWN;
+        }
+
+        if ((detectedColor1 == DetColor.GREEN) || (detectedColor2 == DetColor.GREEN)|| (detectedColor3 == DetColor.GREEN)) {
             finalDetectedColor = DetColor.GREEN;
-        } else if ((detectedColor1 == DetColor.PURPLE) || (detectedColor2 == DetColor.PURPLE)) {
+        } else if ((detectedColor1 == DetColor.PURPLE) || (detectedColor2 == DetColor.PURPLE) || (detectedColor3 == DetColor.PURPLE)) {
             finalDetectedColor = DetColor.PURPLE;
         } else {
             finalDetectedColor = DetColor.UNKNOWN;
@@ -182,7 +197,14 @@ public class ColorDetector{
 
     public boolean colordetected() {
         boolean detected =false;
-        if (((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) > 1.35 && ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) < maxdist) {
+        if (
+                ((((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) > 1.35) ||
+                        (((DistanceSensor) colorSensor2).getDistance(DistanceUnit.CM) > 1.35) ||
+                        (((DistanceSensor) colorSensor3).getDistance(DistanceUnit.CM) > 1.35))
+                && ((((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) < maxdist) ||
+                        (((DistanceSensor) colorSensor2).getDistance(DistanceUnit.CM) < maxdist)||
+                        (((DistanceSensor) colorSensor3).getDistance(DistanceUnit.CM) < maxdist)))
+        {
             switch(finalDetectedColor){
                 case GREEN:
                     detected =true;
