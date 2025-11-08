@@ -43,14 +43,14 @@ public class Robot {
           else{
             TagData.red=false;
         }
-          if(!auto && useAprilTags) {
+          if(useAprilTags) {
               AprilTagPro = new AprilTag(this.opMode, TagData);
           }
         if(!auto && useDrive){
             drivetrain = new Drivetrain(this.opMode,TagData);
         }
 
-        if(!auto && useBallLauncher) {
+        if(useBallLauncher) {
             actuatorcontrol=new ActuatorControl(this.opMode);
 
         }
@@ -60,13 +60,13 @@ public class Robot {
     }
 
     public Robot(LinearOpMode opMode, boolean red){
-        this(opMode, true, red, false,false,false);
+        this(opMode, true, red, false,true,true);
     }
 
     public void runRobot() {
         if (!auto && useDrive) drivetrain.run();
-        if (!auto && useBallLauncher)  actuatorcontrol.run();
-        if (!auto && useAprilTags) AprilTagPro.run();
+        if (useBallLauncher)  actuatorcontrol.run();
+        if (useAprilTags) AprilTagPro.run();
 
     }
 }

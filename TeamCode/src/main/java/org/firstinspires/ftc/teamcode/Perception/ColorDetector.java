@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 public class ColorDetector{
-    public NormalizedColorSensor colorSensor, colorSensor2;
+    public NormalizedColorSensor colorSensor, colorSensor2,colorSensor3;
     public enum DetColor {
         PURPLE,
         GREEN,
@@ -51,6 +51,7 @@ public class ColorDetector{
         relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color1");
         colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color2");
+        colorSensor3 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color3");
 //
 //        try {
 //            runSample(); // actually execute the sample
@@ -87,10 +88,15 @@ public class ColorDetector{
             ((SwitchableLight)colorSensor2).enableLight(true);
         }
 
+        if (colorSensor3 instanceof SwitchableLight) {
+            ((SwitchableLight)colorSensor3).enableLight(true);
+        }
+
         // Wait for the start button to be pressed.
 
         colorSensor.setGain(gain);
         colorSensor2.setGain(gain);
+        colorSensor3.setGain(gain);
 
         // Loop until we are asked to stop
 

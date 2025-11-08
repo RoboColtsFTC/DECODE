@@ -45,13 +45,16 @@ public class LaunchGamePeace {
     public enum LauncherState {
         IDLE,
         MOTORSTARTUP,
-        ACTIVELAUNCH
+        ACTIVELAUNCH,
+
 
     }
 
     public LauncherState launcherstate = LauncherState.IDLE;
     public List<Integer> LaunchOrder = Arrays.asList(6, 5, 4);  // Defalt sequnce
 public boolean autoLaunch =false;
+
+
     public Action Launch_Auto(){
         return new Action(){
             @Override
@@ -60,8 +63,7 @@ public boolean autoLaunch =false;
                 autoLaunch=true;
                 LoadSpindexer_run();
 
-
-                return  launcherstate == LauncherState.IDLE;
+                return autoLaunch;
             }
 
 
@@ -99,6 +101,14 @@ public boolean autoLaunch =false;
                     launcherstate = LauncherState.MOTORSTARTUP;
 
 
+                }else if(autoLaunch){
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetPower(.65); //120.7 12.53v
+                    actuators.LauncherMotor.StartMotor();
+                    LauncherMotorTimer.reset();
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    launcherstate = LauncherState.MOTORSTARTUP;
+                    opmode.telemetry.addLine("autoLaunch");
                 }
                 // Close Launching
 
@@ -161,6 +171,7 @@ public boolean autoLaunch =false;
                 launchall();
                 if (launchsequence == LaunchSequence.IDLE) {
                     launcherstate = LauncherState.IDLE;
+                    autoLaunch=false;
 
                 }
 
