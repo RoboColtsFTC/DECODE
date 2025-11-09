@@ -4,10 +4,15 @@ package org.firstinspires.ftc.teamcode.Actuation.Actuators;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import java.util.Objects;
+
 public class ContinuousMotor {
+    private double velocity=0;
     private double Power = 0;
     private DcMotorEx motor;
     private boolean isrunning = false;
+
 
     public ContinuousMotor(HardwareMap hardwareMap, String MotorName, double power) {
 
@@ -15,7 +20,26 @@ public class ContinuousMotor {
         motor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.Power = norm(power);
     }
+    // overloading constructor for velocity input as an option.
+    public ContinuousMotor(HardwareMap hardwareMap, String MotorName ,double velocity, String inputmode) {
 
+        if(Objects.equals(inputmode, "velocity")) {
+            motor = hardwareMap.get(DcMotorEx.class, MotorName);
+            motor.setDirection(DcMotorSimple.Direction.FORWARD);
+            this.velocity = norm(velocity);
+        }
+    }
+    public boolean isMotorAtVelocity(){
+        return motor.getVelocity()==velocity;
+
+    }
+    public void SetVelocity(double velocity){
+        this.velocity=velocity;
+        motor.setVelocity(velocity);
+    }
+    public double GetVelocity(){
+       return motor.getVelocity();
+    }
     public void StartMotor() {
         motor.setPower(Power);
         isrunning = true;

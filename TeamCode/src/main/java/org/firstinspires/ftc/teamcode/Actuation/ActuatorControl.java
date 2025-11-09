@@ -50,7 +50,7 @@ public class ActuatorControl {
 
         // Intake Motor Parameters
         public double IntakeMotor_Power=1;
-        public double Launchmmotor_Power=.73;
+        public double Launchmmotor_velocity=.73;  // ticks per second
 
         // Feed control Parameters
         public double FeedControl_Power=.5;
@@ -68,7 +68,7 @@ public class ActuatorControl {
         actuators.FeedKicker= new AngleServo(hardwaremap,"FeedKicker",param.FeedKicker_First,param.FeedKicker_Second,param.FeedKicker_MaxAngle);
         actuators.LaunchKicker=new AngleServo(hardwaremap,"LaunchKicker",param.LaunchKicker_First,param.LaunchKicker_Second,param.LaunchKicker_MaxAngle);
         actuators.IntakeMotor = new ContinuousMotor(hardwaremap,"IntakeMotor",param.IntakeMotor_Power);
-        actuators.LauncherMotor= new DualMotor(hardwaremap,"LauncherMotor1","LauncherMotor2",param.Launchmmotor_Power);
+        actuators.LauncherMotor= new DualMotor(hardwaremap,"LauncherMotor1","LauncherMotor2",param.Launchmmotor_velocity);
         actuators.spindexercontrol=new SpindexerControl(hardwaremap,"Spindexer");
         loadSpindexer=new LoadSpindexer(this.opmode,actuators,colorPos);
         launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos);

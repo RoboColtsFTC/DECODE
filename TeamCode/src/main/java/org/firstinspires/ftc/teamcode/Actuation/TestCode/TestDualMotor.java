@@ -12,9 +12,9 @@ import org.firstinspires.ftc.teamcode.Actuation.Actuators.DualMotor;
 public class TestDualMotor extends LinearOpMode {
 
     DcMotor motor;
-    double Power = 0 ;
+    double velocity = 0 ;
     double Increment = .01;
-    double MaxPower = 1;
+    double Maxvelocity = 1;
 
 
 public DualMotor continousmotor;
@@ -40,31 +40,31 @@ public DualMotor continousmotor;
 
             if (gamepad2.dpad_up & !dpad_up_Debounce) {
 
-                Power += Increment;
+                velocity += Increment;
             }
             dpad_up_Debounce=gamepad2.dpad_up; // Debouncing Game Controller
 
             if (gamepad2.dpad_down & !dpad_down_Debounce  ) {
 
-                Power -= Increment;
+                velocity -= Increment;
             }
             dpad_down_Debounce=gamepad2.dpad_down; // Debouncing Game Controller
 
-            if (Math.abs(Power)>MaxPower){
-                if (Power>0) {
-                    Power = MaxPower;
+            if (Math.abs(velocity)>Maxvelocity){
+                if (velocity>0) {
+                    velocity = Maxvelocity;
                 }
                 else {
-                    Power=-MaxPower;
+                    velocity=-Maxvelocity;
                 }
 
             }
 
-            continousmotor.SetPower(Power);
+            continousmotor.SetVelocity(velocity);
             continousmotor.StartMotor();
 
             telemetry.addData(">", "Press DPadUp to Increase Press DPadDown to Degrease.");
-            telemetry.addData("Motor Power", "%5.2f",Power);
+            telemetry.addData("Motor Power", "%5.2f",velocity);
             //telemetry.addData("Motor Power Measured", "%5.2f",motor.getPower());
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();

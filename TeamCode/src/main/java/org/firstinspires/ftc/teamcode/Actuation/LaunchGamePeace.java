@@ -27,7 +27,7 @@ public class LaunchGamePeace {
     public Actuators actuators;
     public LinearOpMode opmode;
 
-
+    public double MaxLauncherVelocity=28*5800*60;  // pulses per second max rpm of 5800
     public AprilTagData TagData;
     List<ColorDetector.DetColor> colorPos;
 
@@ -54,12 +54,12 @@ public class LaunchGamePeace {
     public List<Integer> LaunchOrder = Arrays.asList(6, 5, 4);  // Defalt sequnce
 public boolean autoLaunch =false;
 
-public double autoPower=0;
-    public Action Launch_Auto(double Power){
+public double autoVelocity=0;
+    public Action Launch_Auto(double velocity){
         return new Action(){
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                autoPower=Power;
+                autoVelocity=velocity;
                 autoLaunch=true;
                 LoadSpindexer_run();
 
@@ -94,7 +94,7 @@ public double autoPower=0;
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.65); //120.7 12.53v
+                    actuators.LauncherMotor.SetVelocity(.65*MaxLauncherVelocity); //120.7 12.53v
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -103,7 +103,7 @@ public double autoPower=0;
 
                 }else if(autoLaunch){
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(autoPower); //120.7 12.53v.63
+                    actuators.LauncherMotor.SetVelocity(autoVelocity); //120.7 12.53v.63
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -116,7 +116,7 @@ public double autoPower=0;
                 if (opmode.gamepad2.y && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.53); //60.4 inch 12.59v works at 45.9
+                    actuators.LauncherMotor.SetVelocity(.53*MaxLauncherVelocity); //60.4 inch 12.59v works at 45.9
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -126,7 +126,7 @@ public double autoPower=0;
                 if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetPower(.50); //to close for apiril tags
+                    actuators.LauncherMotor.SetVelocity(.50*MaxLauncherVelocity); //to close for apiril tags
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -161,7 +161,7 @@ public double autoPower=0;
 
                 break;
             case MOTORSTARTUP:
-                if (LauncherMotorTimer.milliseconds() >= 4000) {
+                if (actuators.LauncherMotor.isMotorAtVelocity()) {
 
                     launcherstate = LauncherState.ACTIVELAUNCH;
                 }

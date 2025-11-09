@@ -6,11 +6,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class DualMotor {
 
-    private double Power = 0;
+    //private double Power = 0;
+    private double velocity;
+    private double maxvelocity;
     private DcMotorEx motor1,motor2;
     private boolean isrunning = false;
 
-    public DualMotor(HardwareMap hardwareMap, String MotorName1,String MotorName2, double power) {
+    public DualMotor(HardwareMap hardwareMap, String MotorName1,String MotorName2, double velocity) {
 
         motor1 = hardwareMap.get(DcMotorEx.class, MotorName1);
         motor1.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -18,31 +20,39 @@ public class DualMotor {
         motor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-        this.Power = norm(power);
+        this.velocity = norm(velocity);
+    }
+
+
+    public boolean isMotorAtVelocity(){
+        double upper = velocity+.5;
+        double lower= velocity-.5;
+
+
+
+        return ((motor2.getVelocity()>=lower && motor2.getVelocity()<=upper )
+                && (motor1.getVelocity()>=lower && motor1.getVelocity()<=upper ));
+
+
+    }
+    public void SetVelocity(double velocity){
+        this.velocity=velocity;
+        motor1.setVelocity(velocity);
+        motor2.setVelocity(velocity);
     }
 
     public void StartMotor() {
-        motor1.setPower(Power);
-        motor2.setPower(Power);
+        motor1.setVelocity(velocity);
+        motor2.setVelocity(velocity);
         isrunning = true;
     }
 
     public void StopMotor() {
-        motor1.setPower(0);
-        motor2.setPower(0);
+        motor1.setVelocity(0);
+        motor2.setVelocity(0);
         isrunning = false;
     }
 
-    public void SetPower(double power) {
-        if (isrunning) {
-            this.Power = norm(power);
-            motor1.setPower(norm(power));
-
-        } else {
-            this.Power = norm(power);
-        }
-
-    }
 
     public void SetForward(){
         motor1.setDirection(DcMotorSimple.Direction.FORWARD);
