@@ -38,6 +38,7 @@ public class LaunchGamePeace {
         this.colorPos = colorPos;
         this.opmode = opmode;
         this.actuators = actuators;
+        actuators.LauncherMotor.SetVelocity(.65*MaxLauncherVelocity);
         LauncherMotorTimer.reset();
 
     }
