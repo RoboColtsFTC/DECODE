@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Actuation.TiltRobot;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.ThreePositionServo;
 
 @Config
-@TeleOp(name="TestThreePositionServo", group="Test")
+@TeleOp(name="TestTiltServo", group="Test")
 public class TestTiltServo extends LinearOpMode {
     public double Position1;
 

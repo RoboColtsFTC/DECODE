@@ -38,7 +38,7 @@ public class LaunchGamePeace {
         this.colorPos = colorPos;
         this.opmode = opmode;
         this.actuators = actuators;
-        actuators.LauncherMotor.SetVelocity(.65*MaxLauncherVelocity);
+
         LauncherMotorTimer.reset();
 
     }
@@ -81,6 +81,7 @@ public double autoVelocity=0;
         switch (launcherstate) {
 
             case IDLE:
+                actuators.LauncherMotor.SetVelocity(1400);
 //                if (autoLaunch){
 //                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
 //                    actuators.LauncherMotor.SetPower(.68);
@@ -95,7 +96,7 @@ public double autoVelocity=0;
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetVelocity(.65*MaxLauncherVelocity); //120.7 12.53v
+                    actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -117,7 +118,7 @@ public double autoVelocity=0;
                 if (opmode.gamepad2.y && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetVelocity(.53*MaxLauncherVelocity); //60.4 inch 12.59v works at 45.9
+                    actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -127,7 +128,7 @@ public double autoVelocity=0;
                 if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetVelocity(.50*MaxLauncherVelocity); //to close for apiril tags
+                    actuators.LauncherMotor.SetVelocity(1400); //to close for apiril tags
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
                     LaunchOrder = Arrays.asList(6, 5, 4);
@@ -217,8 +218,8 @@ public double autoVelocity=0;
                 launch(LaunchOrder.get(2));
                 if (loadgamepeace == LoadGamePeace.IDLE) {
                     launchsequence = LaunchSequence.IDLE;
-                    actuators.LauncherMotor.StopMotor();
-
+                    //actuators.LauncherMotor.StopMotor();
+                    actuators.LauncherMotor.SetVelocity(1400);
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
                     LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
 
@@ -250,7 +251,7 @@ public double autoVelocity=0;
                 break;
 
             case SETPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 500) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.spindexercontrol.setPosition(pos);
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.ACTUATEKICKER;
@@ -260,14 +261,14 @@ public double autoVelocity=0;
 
                 break;
             case ACTUATEKICKER:
-                if (LoadGamePeaceTimer.milliseconds() >= 500) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.LaunchKicker.SetSecond();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.RETURNKICKERPOSITION;
                 }
                 break;
             case RETURNKICKERPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 500) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.LaunchKicker.SetFirst();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.IDLE;

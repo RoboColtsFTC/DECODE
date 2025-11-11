@@ -292,7 +292,7 @@ boolean rebounce = false;
                 break;
             case RETURNTOPOSITION:
                     actuators.FeedKicker.SetFirst();
-                    if(KickerTimer.milliseconds()>=500){
+                    if(KickerTimer.milliseconds()>=300){
                         KickerTimer.reset();
                         kickerstate = KickerState.COMPLETE;
                 }
@@ -336,7 +336,7 @@ public static FeedState feedstate=FeedState.IDLE;
               
               actuators.spindexercontrol.setPosition(SpindexPos);
 
-              if(ControlFeedTimer.milliseconds()>=500){
+              if(ControlFeedTimer.milliseconds()>=10){
                     ControlFeedTimer.reset();
                     feedstate=FeedState.STARTFEED;
               }

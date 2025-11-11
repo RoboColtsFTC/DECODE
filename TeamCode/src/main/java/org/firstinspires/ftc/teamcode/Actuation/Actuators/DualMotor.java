@@ -12,6 +12,7 @@ public class DualMotor {
     private DcMotorEx motor1,motor2;
     private boolean isrunning = false;
 
+
     public DualMotor(HardwareMap hardwareMap, String MotorName1,String MotorName2, double velocity) {
 
         motor1 = hardwareMap.get(DcMotorEx.class, MotorName1);
@@ -25,13 +26,12 @@ public class DualMotor {
 
 
     public boolean isMotorAtVelocity(){
-        double upper = velocity+5;
-        double lower= velocity-5;
+        double upper = velocity-100;
 
 
 
-        return ((motor2.getVelocity()>=lower && motor2.getVelocity()<=upper )
-                && (motor1.getVelocity()>=lower && motor1.getVelocity()<=upper ));
+
+        return ((motor1.getVelocity()>=upper && motor1.getVelocity()>=upper ));
 
 
     }
@@ -47,6 +47,17 @@ public class DualMotor {
         isrunning = true;
     }
 
+    public double GetVelocitym1(){
+
+
+        return motor1.getVelocity();
+    }
+
+    public double GetVelocitym2(){
+
+
+        return motor2.getVelocity();
+    }
     public void StopMotor() {
         motor1.setVelocity(0);
         motor2.setVelocity(0);

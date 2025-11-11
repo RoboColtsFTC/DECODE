@@ -13,8 +13,8 @@ public class TestDualMotor extends LinearOpMode {
 
     DcMotor motor;
     double velocity = 0 ;
-    double Increment = .01;
-    double Maxvelocity = 1;
+    double Increment = 10;
+    double Maxvelocity = 28*5800*60;
 
 
 public DualMotor continousmotor;
@@ -65,7 +65,8 @@ public DualMotor continousmotor;
 
             telemetry.addData(">", "Press DPadUp to Increase Press DPadDown to Degrease.");
             telemetry.addData("Motor Power", "%5.2f",velocity);
-            //telemetry.addData("Motor Power Measured", "%5.2f",motor.getPower());
+            telemetry.addData("Motor Power Velocitym1", "%5.2f",continousmotor.GetVelocitym1());
+            telemetry.addData("Motor Power Velocitym2", "%5.2f",continousmotor.GetVelocitym2());
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
         }
