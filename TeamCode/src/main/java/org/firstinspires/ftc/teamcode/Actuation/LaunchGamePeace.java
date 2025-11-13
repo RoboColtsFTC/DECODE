@@ -83,16 +83,16 @@ public double autoVelocity=0;
 
             case IDLE:
 
-                if (autoLaunch){
-                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetVelocity(1400);
-                    actuators.LauncherMotor.StartMotor();
-                    LauncherMotorTimer.reset();
-                    LaunchOrder = Arrays.asList(6, 5, 4);
-                    launcherstate = LauncherState.MOTORSTARTUP;
-                    autoLaunch=false;
-
-                }
+//                if (autoLaunch){
+//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+//                    actuators.LauncherMotor.SetVelocity(autoVelocity);
+//                    actuators.LauncherMotor.StartMotor();
+//                    LauncherMotorTimer.reset();
+//                    LaunchOrder = Arrays.asList(6, 5, 4);
+//                    launcherstate = LauncherState.MOTORSTARTUP;
+//                    autoLaunch=false;
+//
+//                }
                 // Far Launching
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
