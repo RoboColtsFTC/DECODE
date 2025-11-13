@@ -78,6 +78,7 @@ public double autoVelocity=0;
 
     public void LoadSpindexer_run() {
 
+
         switch (launcherstate) {
 
             case IDLE:
@@ -99,7 +100,8 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    LaunchOrder=GetLaunchOrderFromCode();
+                    //LaunchOrder = Arrays.asList(6, 5, 4);
                     launcherstate = LauncherState.MOTORSTARTUP;
 
 
@@ -108,7 +110,7 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(autoVelocity); //120.7 12.53v.63
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    LaunchOrder = GetLaunchOrderFromCode();
                     launcherstate = LauncherState.MOTORSTARTUP;
                     opmode.telemetry.addLine("autoLaunch");
                 }
@@ -331,36 +333,39 @@ public double autoVelocity=0;
     }
 
 // Method used to determien fire order
-    public static List<Integer> MarchLists(List<DetColor> ListA, List<DetColor> ListB) {
+public static List<Integer> MarchLists( List<DetColor> ListA,List<DetColor> ListB) {
+
+    List<Integer> IDList = Arrays.asList(3, 3, 3);
+    Boolean[] FlagA = {true, true, true,};
+    Boolean[] FlagB = {true, true, true};
+
+    for (int n = 0; n < ListA.size(); n++) {
 
 
-
-        List<Integer> IDList= Arrays.asList(0, 0, 0);
-        Boolean[] FlagA={true,true,true};
-        Boolean[] FlagB={true,true,true};
-
-        for(int n =0;n<ListA.size();n++){
+        for (int m = 0; m < ListB.size(); m++) {
 
 
-            for(int m =0;m<ListB.size();m++){
+            if (ListA.get(n).equals(ListB.get(m)) & FlagA[n] && FlagB[m]) {
 
-
-                if(ListA.get(n).equals(ListB.get(m))&FlagA[n]&&FlagB[m]){
-
-                    IDList.set(n,m+1+3);
-                    FlagA[n] = false;
-                    FlagB[m] = false;
-
-
-                }
-
-
-
+                IDList.set(n, m);
+                FlagA[n] = false;
+                FlagB[m] = false;
 
 
             }
+
+
         }
-        return IDList;
+
+
     }
 
+
+    if (IDList.contains(3)) {
+        IDList = Arrays.asList(0, 1, 2);
+
+
+    }
+    return IDList;
+}
 }
