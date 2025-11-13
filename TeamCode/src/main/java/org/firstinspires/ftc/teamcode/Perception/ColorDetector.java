@@ -149,7 +149,8 @@ public class ColorDetector{
 
         if (normRed < normGreen && normBlue > normGreen) {
             detectedColor1 = DetColor.PURPLE;
-        } else if (normGreen > normRed && normGreen > normBlue && normGreen > .06) {
+        /* updated from (normGreen > normRed && normGreen > normBlue && normGreen > .06) */
+        } else if (normRed > .04 && normGreen > .11 && normBlue > .09) {
             detectedColor1 = DetColor.GREEN;
         } else {
             detectedColor1 = DetColor.UNKNOWN;
@@ -157,7 +158,8 @@ public class ColorDetector{
 
         if (normRed2 < normGreen2 && normBlue2 > normGreen2) {
             detectedColor2 = DetColor.PURPLE;
-        } else if (normGreen2 > normRed2 && normGreen2 > normBlue2 && normGreen2 > .06) {
+        /* updated from normGreen2 > normRed2 && normGreen2 > normBlue2 && normGreen2 > .06 */
+        } else if (normRed2 > .04 && normGreen > .11 && normBlue2 > .09) {
             detectedColor2 = DetColor.GREEN;
         } else {
             detectedColor2 = DetColor.UNKNOWN;
@@ -165,15 +167,16 @@ public class ColorDetector{
 
         if (normRed3< normGreen3 && normBlue3 > normGreen3) {
             detectedColor3 = DetColor.PURPLE;
-        } else if (normGreen3 > normRed3 && normGreen3 > normBlue3 && normGreen3 > .06) {
+        /* normGreen3 > normRed3 && normGreen3 > normBlue3 && normGreen3 > .06 */
+        } else if (normRed3 > .04 && normGreen3 > .11 && normBlue3 > .09) {
             detectedColor3 = DetColor.GREEN;
         } else {
             detectedColor3 = DetColor.UNKNOWN;
         }
 
-        if ((detectedColor1 == DetColor.GREEN) || (detectedColor2 == DetColor.GREEN)|| (detectedColor3 == DetColor.GREEN)) {
+        if (((detectedColor1 == DetColor.GREEN) && (detectedColor2 == DetColor.GREEN)) || ((detectedColor2 == DetColor.GREEN) && (detectedColor3 == DetColor.GREEN)) || ((detectedColor1 == DetColor.GREEN) && (detectedColor3 == DetColor.GREEN))) {
             finalDetectedColor = DetColor.GREEN;
-        } else if ((detectedColor1 == DetColor.PURPLE) || (detectedColor2 == DetColor.PURPLE) || (detectedColor3 == DetColor.PURPLE)) {
+        } else if (((detectedColor1 == DetColor.PURPLE) && (detectedColor2 == DetColor.PURPLE)) || ((detectedColor2 == DetColor.PURPLE) && (detectedColor3 == DetColor.PURPLE)) || ((detectedColor1 == DetColor.PURPLE) && (detectedColor3 == DetColor.PURPLE))) {
             finalDetectedColor = DetColor.PURPLE;
         } else {
             finalDetectedColor = DetColor.UNKNOWN;
