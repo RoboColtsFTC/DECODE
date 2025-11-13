@@ -25,12 +25,12 @@ public final class BlueAutoNearReload extends LinearOpMode {
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
                 .strafeToLinearHeading(new Vector2d(-20,20), Math.toRadians(-45))  //move to launch
-                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(.50))  //launch
+                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1400))  //launch
                 .strafeToLinearHeading(new Vector2d(-36,36), Math.toRadians(-180))  //move to intake position
                 .stopAndAdd(robot.actuatorcontrol.loadSpindexer.LoadSpindexer_auto())  //start intake action
                 .strafeToLinearHeading(new Vector2d(0,36), Math.toRadians(-180))  //intake
                 .strafeToLinearHeading(new Vector2d(-20,20), Math.toRadians(-45))  //back to launch position
-                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(.50))  //launch
+                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1400))  //launch
                 .strafeToLinearHeading(new Vector2d(-30 ,5), Math.toRadians(0))  //end position
 
                 // new TranslationalVelConstraint(10)
