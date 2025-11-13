@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Perception;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -182,17 +183,17 @@ public class ColorDetector{
             finalDetectedColor = DetColor.UNKNOWN;
         }
 
-        //telemetry.addData("NormRed", normRed);
-        //telemetry.addData("NormGreen", normGreen);
-        //telemetry.addData("NormBlue", normBlue);
-        //telemetry.addData("NormRed2", normRed2);
-        //telemetry.addData("NormGreen2", normGreen2);
-        //telemetry.addData("NormBlue2", normBlue2);
-        //telemetry.addData("gain", gain);
-        //telemetry.addLine("Detected Color1: " + detectedColor1);
-        //telemetry.addLine("Detected Color2: " + detectedColor2);
-        //opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
-        //opmode.telemetry.update();
+//        opMode.telemetry.addData("NormRed", normRed);
+//        opMode.addData("NormGreen", normGreen);
+//        opMode.addData("NormBlue", normBlue);
+//        opMode.addData("NormRed2", normRed2);
+//        telemetry.addData("NormGreen2", normGreen2);
+//        telemetry.addData("NormBlue2", normBlue2);
+//        telemetry.addData("gain", gain);
+//        telemetry.addLine("Detected Color1: " + detectedColor1);
+//        telemetry.addLine("Detected Color2: " + detectedColor2);
+//        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
+//        opmode.telemetry.update();
         return finalDetectedColor;
     }
 
@@ -222,10 +223,10 @@ public class ColorDetector{
         } else {
             detected = false;
         }
-//        opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
-//        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
-//        opmode.telemetry.addData("Detected Boolean: ", detected);
-        //opmode.telemetry.update();
+        opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
+        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
+        opmode.telemetry.addData("Detected Boolean: ", detected);
+        opmode.telemetry.update();
         return detected;
     }
 
