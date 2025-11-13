@@ -100,8 +100,12 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-                    LaunchOrder=GetLaunchOrderFromCode();
-                    //LaunchOrder = Arrays.asList(6, 5, 4);
+
+//                    if(TagData.DetectedCode.IsDetected) {
+//                        LaunchOrder = GetLaunchOrderFromCode();
+//                    }else {
+                        LaunchOrder = Arrays.asList(6, 5, 4);
+                    //}
                     launcherstate = LauncherState.MOTORSTARTUP;
 
 
@@ -110,7 +114,11 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(autoVelocity); //120.7 12.53v.63
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-                    LaunchOrder = GetLaunchOrderFromCode();
+//                    if(TagData.DetectedCode.IsDetected) {
+//                        LaunchOrder = GetLaunchOrderFromCode();
+//                    }else {
+                        LaunchOrder = Arrays.asList(6, 5, 4);
+//                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
                     opmode.telemetry.addLine("autoLaunch");
                 }
@@ -123,20 +131,24 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    if(TagData.DetectedCode.IsDetected) {
+                        LaunchOrder = GetLaunchOrderFromCode();
+                    }else {
+                        LaunchOrder = Arrays.asList(6, 5, 4);
+                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
 
                 }
-                if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
-
-                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetVelocity(1400); //to close for apiril tags
-                    actuators.LauncherMotor.StartMotor();
-                    LauncherMotorTimer.reset();
-                    LaunchOrder = Arrays.asList(6, 5, 4);
-                    launcherstate = LauncherState.MOTORSTARTUP;
-
-                }
+//                if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+//
+//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+//                    actuators.LauncherMotor.SetVelocity(1400); //to close for apiril tags
+//                    actuators.LauncherMotor.StartMotor();
+//                    LauncherMotorTimer.reset();
+//                    LaunchOrder = Arrays.asList(6, 5, 4);
+//                    launcherstate = LauncherState.MOTORSTARTUP;
+//
+//                }
 
 //                // Far Launching by code  todo test code
 //                if (opmode.gamepad2.dpad_left && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
@@ -362,9 +374,13 @@ public static List<Integer> MarchLists( List<DetColor> ListA,List<DetColor> List
 
 
     if (IDList.contains(3)) {
-        IDList = Arrays.asList(0, 1, 2);
+        IDList = Arrays.asList(6, 5, 4);
 
 
+    } else{
+        for (int k = 0; k < ListB.size(); k++){
+            IDList.set(k,IDList.get(k)+3);
+        }
     }
     return IDList;
 }
