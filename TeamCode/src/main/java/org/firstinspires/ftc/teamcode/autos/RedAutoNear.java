@@ -25,7 +25,7 @@ public final class RedAutoNear extends LinearOpMode {
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
                 .strafeToLinearHeading(new Vector2d(-20,-20), Math.toRadians(45))
-                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(.50))
+                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1400))
                 .strafeToLinearHeading(new Vector2d(-20 ,5), Math.toRadians(0))// new TranslationalVelConstraint(10)
 
                 .build());

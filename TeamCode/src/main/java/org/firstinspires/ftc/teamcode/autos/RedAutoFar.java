@@ -26,7 +26,7 @@ public final class RedAutoFar extends LinearOpMode {
         Actions.runBlocking(drive.actionBuilder(beginPose)
                 .strafeToLinearHeading(new Vector2d(0,10), Math.toRadians(90))
                 .turn(Math.toRadians(-25))
-                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(.63))
+                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650))
                 .strafeToLinearHeading(new Vector2d(0 ,28), Math.toRadians(0))// new TranslationalVelConstraint(10)
 
                 .build());
