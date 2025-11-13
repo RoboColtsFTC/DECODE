@@ -75,6 +75,8 @@ private static boolean auto;
     public void run()
     {
         load_spindexer_run();
+        opmode.telemetry.addData("ColorPosition",colorPos);
+        opmode.telemetry.update();
     }
 
     public void load_spindexer_run(){
@@ -336,7 +338,7 @@ public static FeedState feedstate=FeedState.IDLE;
               
               actuators.spindexercontrol.setPosition(SpindexPos);
 
-              if(ControlFeedTimer.milliseconds()>=10){
+              if(ControlFeedTimer.milliseconds()>=120){
                     ControlFeedTimer.reset();
                     feedstate=FeedState.STARTFEED;
               }

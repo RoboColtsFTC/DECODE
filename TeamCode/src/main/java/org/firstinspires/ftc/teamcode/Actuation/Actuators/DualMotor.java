@@ -26,7 +26,7 @@ public class DualMotor {
 
 
     public boolean isMotorAtVelocity(){
-        double upper = velocity-100;
+        double upper = velocity;
 
 
 

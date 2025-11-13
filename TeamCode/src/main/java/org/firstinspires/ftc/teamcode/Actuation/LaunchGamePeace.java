@@ -251,7 +251,7 @@ public double autoVelocity=0;
                 break;
 
             case SETPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 100) {
                     actuators.spindexercontrol.setPosition(pos);
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.ACTUATEKICKER;
@@ -261,14 +261,14 @@ public double autoVelocity=0;
 
                 break;
             case ACTUATEKICKER:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 100) {
                     actuators.LaunchKicker.SetSecond();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.RETURNKICKERPOSITION;
                 }
                 break;
             case RETURNKICKERPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 100) {
                     actuators.LaunchKicker.SetFirst();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.IDLE;
@@ -332,6 +332,8 @@ public double autoVelocity=0;
 
 // Method used to determien fire order
     public static List<Integer> MarchLists(List<DetColor> ListA, List<DetColor> ListB) {
+
+
 
         List<Integer> IDList= Arrays.asList(0, 0, 0);
         Boolean[] FlagA={true,true,true};
