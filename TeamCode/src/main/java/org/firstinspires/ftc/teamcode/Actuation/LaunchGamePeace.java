@@ -29,7 +29,7 @@ public class LaunchGamePeace {
 
     public double MaxLauncherVelocity=28*5800*60;  // pulses per second max rpm of 5800
     public AprilTagData TagData;
-    List<ColorDetector.DetColor> colorPos;
+    List<ColorDetector.DetColor> colorPos = Arrays.asList(DetColor.UNKNOWN, DetColor.UNKNOWN, DetColor.UNKNOWN);
 
     private final ElapsedTime LauncherMotorTimer = new ElapsedTime();
     private final ElapsedTime LoadGamePeaceTimer = new ElapsedTime();
@@ -101,11 +101,11 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
 
-//                    if(TagData.DetectedCode.IsDetected) {
-//                        LaunchOrder = GetLaunchOrderFromCode();
-//                    }else {
+                    if(TagData.DetectedCode.IsDetected) {
+                        LaunchOrder = GetLaunchOrderFromCode();
+                    }else {
                         LaunchOrder = Arrays.asList(6, 5, 4);
-                    //}
+                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
 
 
@@ -114,11 +114,11 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(autoVelocity); //120.7 12.53v.63
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-//                    if(TagData.DetectedCode.IsDetected) {
-//                        LaunchOrder = GetLaunchOrderFromCode();
-//                    }else {
+                    if(TagData.DetectedCode.IsDetected) {
+                        LaunchOrder = GetLaunchOrderFromCode();
+                    }else {
                         LaunchOrder = Arrays.asList(6, 5, 4);
-//                    }
+                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
                     opmode.telemetry.addLine("autoLaunch");
                 }
@@ -131,11 +131,11 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-//                    if(TagData.DetectedCode.IsDetected) {
-//                        LaunchOrder = GetLaunchOrderFromCode();
-//                    }else {
+                    if(TagData.DetectedCode.IsDetected) {
+                        LaunchOrder = GetLaunchOrderFromCode();
+                    }else {
                         LaunchOrder = Arrays.asList(6, 5, 4);
-//                    }
+                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
 
                 }

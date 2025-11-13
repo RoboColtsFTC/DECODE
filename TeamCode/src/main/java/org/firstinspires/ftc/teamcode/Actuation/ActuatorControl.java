@@ -56,7 +56,7 @@ public class ActuatorControl {
         public double FeedControl_Power=.5;
     }
 
-    public static GoBuildaPWMLight LockIndicator;
+    public static GoBuildaPWMLight LockIndicator1,LockIndicator2, SpindexerStateIndicator2;
 
     public List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
     Params param=new Params();
@@ -76,7 +76,10 @@ public class ActuatorControl {
         // Tuning
         actuators.IntakeMotor.SetReverse();
         actuators.feedcontrol.Reverse();
-        LockIndicator= new GoBuildaPWMLight(hardwaremap,"light");
+
+        LockIndicator1= new GoBuildaPWMLight(hardwaremap,"light1");
+        LockIndicator2= new GoBuildaPWMLight(hardwaremap,"light2");
+        SpindexerStateIndicator2= new GoBuildaPWMLight(hardwaremap,"light3");
     }
 
     public static enum ControlState{

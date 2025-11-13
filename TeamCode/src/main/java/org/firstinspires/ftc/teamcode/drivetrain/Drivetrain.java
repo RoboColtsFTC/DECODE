@@ -94,11 +94,14 @@ public class Drivetrain {
         }
 
         if(TagData.detectionState.isBlueGoalAprilTagDetected && !TagData.red) {
-            ActuatorControl.LockIndicator.SetColor(.5);
+            ActuatorControl.LockIndicator1.SetColor(.5);
+            ActuatorControl.LockIndicator2.SetColor(.5);
         }else if (TagData.detectionState.isRedGoalAprilTagDetected && TagData.red){
-            ActuatorControl.LockIndicator.SetColor(.5);
+            ActuatorControl.LockIndicator1.SetColor(.5);
+            ActuatorControl.LockIndicator2.SetColor(.5);
         }else{
-            ActuatorControl.LockIndicator.SetColor(0);
+            ActuatorControl.LockIndicator1.SetColor(0);
+            ActuatorControl.LockIndicator2.SetColor(0);
         }
 
 //        if(TagData.detectionState.isAnyTagDetected){

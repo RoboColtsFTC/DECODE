@@ -83,7 +83,9 @@ private static boolean auto;
 
         colordetector.run();
         // State machine to load Spindexer
-
+        if(Currentstate==State.Loaded){
+            ActuatorControl.SpindexerStateIndicator2.SetColor(.5);
+        }
         switch(Currentstate) {
             case Empty:
                 if(opmode.gamepad2.a && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
@@ -94,6 +96,9 @@ private static boolean auto;
                     Currentstate = State.LoadOne;
                 }
 
+
+                    ActuatorControl.SpindexerStateIndicator2.SetColor(0);
+
                 break;
             case LoadOne:
                 LoadGamePeace( 1);
@@ -102,7 +107,7 @@ private static boolean auto;
                     gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
                     Currentstate=State.LoadTwo;
                 }
-
+                ActuatorControl.SpindexerStateIndicator2.SetColor(.338);  //yellow
                 break;
             case LoadTwo:
                 LoadGamePeace( 2);
@@ -111,7 +116,7 @@ private static boolean auto;
                     gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
                     Currentstate=State.LoadThree;
                 }
-
+                ActuatorControl.SpindexerStateIndicator2.SetColor(.28);  //yellow
                 break;
             case LoadThree:
                 LoadGamePeace( 3);
