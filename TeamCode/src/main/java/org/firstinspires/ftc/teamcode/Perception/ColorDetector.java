@@ -149,6 +149,7 @@ public class ColorDetector{
 
         if (normRed < normGreen && normBlue > normGreen) {
             detectedColor1 = DetColor.PURPLE;
+        /* updated from (normGreen > normRed && normGreen > normBlue && normGreen > .06) */
         } else if (normRed > .04 && normGreen > .11 && normBlue > .09) {
             detectedColor1 = DetColor.GREEN;
         } else {
