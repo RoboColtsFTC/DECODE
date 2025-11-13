@@ -131,11 +131,11 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-                    if(TagData.DetectedCode.IsDetected) {
-                        LaunchOrder = GetLaunchOrderFromCode();
-                    }else {
+//                    if(TagData.DetectedCode.IsDetected) {
+//                        LaunchOrder = GetLaunchOrderFromCode();
+//                    }else {
                         LaunchOrder = Arrays.asList(6, 5, 4);
-                    }
+//                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
 
                 }
