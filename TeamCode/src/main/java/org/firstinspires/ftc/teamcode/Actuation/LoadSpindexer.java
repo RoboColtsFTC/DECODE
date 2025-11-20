@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
-
+import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ public ColorDetector colordetector;
 
 public Actuators actuators;
 
-public static List<DetColor> colorPos = Arrays.asList(DetColor.UNKNOWN, DetColor.UNKNOWN, DetColor.UNKNOWN);
+public  List<DetColor> colorPos;
 
 public static State Currentstate=State.Empty;
 
@@ -43,7 +43,7 @@ private final ElapsedTime KickerTimer = new ElapsedTime();
 private static boolean auto;
     public LoadSpindexer(LinearOpMode opmode,Actuators actuators,List<DetColor> colorPos){ // Cunstructor
        colordetector=new ColorDetector(opmode);
-        LoadSpindexer.colorPos =colorPos;
+        this.colorPos =colorPos;
         Currentstate=State.Empty;
         this.opmode=opmode;
         this.actuators=actuators;

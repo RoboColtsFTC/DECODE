@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Actuation.Actuators.DualMotor;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.FeedControl;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl;
 import org.firstinspires.ftc.teamcode.LightsandIndicators.GoBuildaPWMLight;
+import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 
 import java.util.Arrays;
@@ -20,7 +21,7 @@ import java.util.List;
 // It allows them to be initialized once and shared between different classes
 @Config
 public class ActuatorControl {
-
+    AprilTagData TagData;
     public static class Actuators{
         public FeedControl feedcontrol;
         public AngleServo FeedKicker;
@@ -58,9 +59,9 @@ public class ActuatorControl {
 
     public static GoBuildaPWMLight LockIndicator1,LockIndicator2, SpindexerStateIndicator2;
 
-    public List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
+    public static List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
     Params param=new Params();
-    public ActuatorControl(LinearOpMode opmode) {
+    public ActuatorControl(LinearOpMode opmode, AprilTagData TagData) {
 
         this.opmode=opmode;
         this.hardwaremap= opmode.hardwareMap;
@@ -71,7 +72,7 @@ public class ActuatorControl {
         actuators.LauncherMotor= new DualMotor(hardwaremap,"LauncherMotor1","LauncherMotor2",param.Launchmmotor_velocity);
         actuators.spindexercontrol=new SpindexerControl(hardwaremap,"Spindexer");
         loadSpindexer=new LoadSpindexer(this.opmode,actuators,colorPos);
-        launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos);
+        launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos,TagData);
 
         // Tuning
         actuators.IntakeMotor.SetReverse();

@@ -51,7 +51,7 @@ public class Robot {
         }
 
         if(useBallLauncher) {
-            actuatorcontrol=new ActuatorControl(this.opMode);
+            actuatorcontrol=new ActuatorControl(this.opMode,TagData);
 
         }
 

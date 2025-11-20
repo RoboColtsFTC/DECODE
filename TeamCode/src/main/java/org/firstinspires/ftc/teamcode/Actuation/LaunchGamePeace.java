@@ -30,16 +30,16 @@ public class LaunchGamePeace {
 
     public double MaxLauncherVelocity=28*5800*60;  // pulses per second max rpm of 5800
     public AprilTagData TagData;
-    List<ColorDetector.DetColor> colorPos = Arrays.asList(DetColor.UNKNOWN, DetColor.UNKNOWN, DetColor.UNKNOWN);
+    List<ColorDetector.DetColor> colorPos;
 
     private final ElapsedTime LauncherMotorTimer = new ElapsedTime();
     private final ElapsedTime LoadGamePeaceTimer = new ElapsedTime();
 
-    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos) {
+    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos,AprilTagData TagData) {
         this.colorPos = colorPos;
         this.opmode = opmode;
         this.actuators = actuators;
-
+        this.TagData=TagData;
         LauncherMotorTimer.reset();
 
     }
@@ -266,7 +266,7 @@ public double autoVelocity=0;
                 break;
 
             case SETPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 100) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.spindexercontrol.setPosition(pos);
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.ACTUATEKICKER;
@@ -276,14 +276,14 @@ public double autoVelocity=0;
 
                 break;
             case ACTUATEKICKER:
-                if (LoadGamePeaceTimer.milliseconds() >= 100) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.LaunchKicker.SetSecond();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.RETURNKICKERPOSITION;
                 }
                 break;
             case RETURNKICKERPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 100) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.LaunchKicker.SetFirst();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.IDLE;
