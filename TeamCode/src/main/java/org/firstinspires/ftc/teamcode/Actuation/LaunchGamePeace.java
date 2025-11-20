@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+import org.firstinspires.ftc.teamcode.Perception.AprilTag;
 import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
@@ -384,4 +385,20 @@ public static List<Integer> MarchLists( List<DetColor> ListA,List<DetColor> List
     }
     return IDList;
 }
+
+public  double EstimateRange(){
+        double velocity = 1650;
+        double range=120.7;
+        if(TagData.red) {
+            range=TagData.Red.Range;
+        }else{
+            range=TagData.Blue.Range;
+        }
+
+        
+
+
+        return velocity;
+}
+
 }

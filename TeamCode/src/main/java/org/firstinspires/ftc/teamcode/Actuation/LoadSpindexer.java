@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
 
 
+import java.util.Arrays;
 import java.util.List;
 @Config
 public class LoadSpindexer {
@@ -31,7 +32,7 @@ public ColorDetector colordetector;
 
 public Actuators actuators;
 
-public static List<DetColor> colorPos;
+public static List<DetColor> colorPos = Arrays.asList(DetColor.UNKNOWN, DetColor.UNKNOWN, DetColor.UNKNOWN);
 
 public static State Currentstate=State.Empty;
 

@@ -10,16 +10,16 @@ import org.firstinspires.ftc.teamcode.Actuation.Actuators.ThreePositionServo;
 @Config
 @TeleOp(name="TestTiltServo", group="Test")
 public class TestTiltServo extends LinearOpMode {
-    public double Position1;
+    public double Position1=.375;
 
-    public double Position2;
+    public double Position2=.25;
 
-    public double StartingAngle;
+    public double StartingAngle=.5;
     public TiltRobot servo;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        servo= new TiltRobot(hardwareMap,"Test",StartingAngle,Position1 ,Position2 );
+        servo= new TiltRobot(hardwareMap,"TiltServo",StartingAngle,Position1 ,Position2 );
         TelemetryPacket packet = new TelemetryPacket();
 
 

@@ -9,16 +9,17 @@ public class TiltRobot {
 
     public ServoImplEx servo;
 
-    public double incrementangle;
+    public double incrementangle=1;
 
     public double Position1;
 
     public double Position2;
 
-    public double StartingAngle;
-    public double MaxAngle= 360*1.7;
+    public double StartingAngle=.5;
+    public double MaxAngle= 360;
 
     public double currentangle;
+
 
 
     public TiltRobot(HardwareMap hardwareMap, String ServoName,double StartingAngle, double Position1, double Position2){
@@ -31,37 +32,19 @@ public class TiltRobot {
 
         }
 
-        public boolean tiltPosition1(){
-        boolean iscomplete=false;
+        public void tiltPosition1(){
+            servo.setPosition(Position1);
 
-        if(currentangle>=Position1){
-
-       iscomplete=true;
-
-
-        }else{
-            currentangle=+incrementangle;
-            servo.setPosition(currentangle);
         }
-        return iscomplete;
-        }
-        public boolean tiltPosition2(){
-            boolean iscomplete=false;
-            if(currentangle>=Position2){
+        public void tiltPosition2(){
+            servo.setPosition(Position2);
 
-                iscomplete=true;
-            }else{
-                currentangle=+incrementangle;
-                servo.setPosition(currentangle);
+        }
+            public void ReturntoZero () {
+
+                servo.setPosition(StartingAngle);
+
+
             }
-            return iscomplete;
+            // todo add robot tilting code
         }
-
-        public void ReturntoZero(){
-
-            servo.setPosition(StartingAngle);
-
-
-        }
-    // todo add robot tilting code
-}
