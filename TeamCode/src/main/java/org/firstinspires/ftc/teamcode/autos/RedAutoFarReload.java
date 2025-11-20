@@ -26,14 +26,14 @@ public final class RedAutoFarReload extends LinearOpMode {
         Actions.runBlocking(drive.actionBuilder(beginPose)
                 .strafeToLinearHeading(new Vector2d(0,10), Math.toRadians(90))
                 .turn(Math.toRadians(-25))
-                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650))
-                .strafeToLinearHeading(new Vector2d(10,27), Math.toRadians(180))  //position for intake- bottom row
-                .stopAndAdd(robot.actuatorcontrol.loadSpindexer.LoadSpindexer_auto())  //start intake action
-                .strafeToLinearHeading(new Vector2d(34,27), Math.toRadians(180))  //intake
+               // .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650))
+                .strafeToLinearHeading(new Vector2d(6,31), Math.toRadians(180))  //position for intake- bottom row
+               // .stopAndAdd(robot.actuatorcontrol.loadSpindexer.LoadSpindexer_auto())  //start intake action
+                .strafeToLinearHeading(new Vector2d(25,31), Math.toRadians(180))  //intake
                     .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(0,-10), Math.toRadians(90))  //back to launch position
+                .strafeToLinearHeading(new Vector2d(0,10), Math.toRadians(90))  //back to launch position
                 .turn(Math.toRadians(-25))
-                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650)) //launch
+               // .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650)) //launch
                 .strafeToLinearHeading(new Vector2d(0 ,38), Math.toRadians(0))  //end position
 
                 // new TranslationalVelConstraint(10)
