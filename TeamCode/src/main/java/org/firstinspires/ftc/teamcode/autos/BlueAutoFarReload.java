@@ -27,9 +27,10 @@ public final class BlueAutoFarReload extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(0,-10), Math.toRadians(-90))  //move to launch position
                 .turn(Math.toRadians(25))
                 .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650))  //launch
-                .strafeToLinearHeading(new Vector2d(10,-27), Math.toRadians(180))  //position for intake- bottom row
+                .strafeToLinearHeading(new Vector2d(10,-27), Math.toRadians(-180))  //position for intake- bottom row
                 .stopAndAdd(robot.actuatorcontrol.loadSpindexer.LoadSpindexer_auto())  //start intake action
-                .strafeToLinearHeading(new Vector2d(34,-27), Math.toRadians(180))  //intake
+                .strafeToLinearHeading(new Vector2d(34,-27), Math.toRadians(-180))  //intake
+                        .waitSeconds(1)
                 .strafeToLinearHeading(new Vector2d(0,-10), Math.toRadians(-90))  //back to launch position
                 .turn(Math.toRadians(25))
                 .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650)) //launch
