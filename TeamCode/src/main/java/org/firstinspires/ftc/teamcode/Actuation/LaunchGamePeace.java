@@ -75,6 +75,9 @@ public double autoVelocity=0;
 
     public void run(){
         LoadSpindexer_run();
+        opmode.telemetry.addData("LaunchOrder",LaunchOrder);
+        opmode.telemetry.addData("code",TagData.DetectedCode.CodeID);
+        opmode.telemetry.addData("IsDetected",TagData.DetectedCode.IsDetected);
     }
 
     public void LoadSpindexer_run() {
@@ -237,6 +240,7 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(1400);
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
                     LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
+                    colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
 
                 }
 
@@ -266,7 +270,7 @@ public double autoVelocity=0;
                 break;
 
             case SETPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 200) {
                     actuators.spindexercontrol.setPosition(pos);
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.ACTUATEKICKER;
@@ -276,14 +280,14 @@ public double autoVelocity=0;
 
                 break;
             case ACTUATEKICKER:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 200) {
                     actuators.LaunchKicker.SetSecond();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.RETURNKICKERPOSITION;
                 }
                 break;
             case RETURNKICKERPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 200) {
                     actuators.LaunchKicker.SetFirst();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.IDLE;
@@ -313,7 +317,11 @@ public double autoVelocity=0;
                 break;
         }
         // launch inorder
+        opmode.telemetry.addData("ColorPosinside ColorPos",colorPos);
+        opmode.telemetry.addData("ColorPosinside code",Code);
+        opmode.telemetry.addData("ColorPosinside code id",TagData.DetectedCode.CodeID);
        return  MarchLists(colorPos, Code);
+
 
     }
 

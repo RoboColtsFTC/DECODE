@@ -10,11 +10,11 @@ import org.firstinspires.ftc.teamcode.Actuation.Actuators.ThreePositionServo;
 @Config
 @TeleOp(name="TestTiltServo", group="Test")
 public class TestTiltServo extends LinearOpMode {
-    public double Position1=.375;
+    public double Position1=90;
 
-    public double Position2=.25;
+    public double Position2=45;
 
-    public double StartingAngle=.5;
+    public double StartingAngle=0;
     public TiltRobot servo;
 
     @Override

@@ -55,7 +55,7 @@ public class AprilTag {
     public void run() {
             ProcessAprilTags();
             // Push telemetry to the Driver Station.
-             opMode.telemetry.update();
+             //opMode.telemetry.update();
 
     }
 

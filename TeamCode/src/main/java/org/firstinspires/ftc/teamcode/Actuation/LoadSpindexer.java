@@ -77,7 +77,7 @@ private static boolean auto;
     {
         load_spindexer_run();
         opmode.telemetry.addData("ColorPosition",colorPos);
-        opmode.telemetry.update();
+        //opmode.telemetry.update();
     }
 
     public void load_spindexer_run(){

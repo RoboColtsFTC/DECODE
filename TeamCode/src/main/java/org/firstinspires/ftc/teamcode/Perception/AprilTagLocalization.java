@@ -118,7 +118,7 @@ public class AprilTagLocalization extends LinearOpMode {
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch START to start OpMode");
-        telemetry.update();
+        //telemetry.update();
         waitForStart();
 
         while (opModeIsActive()) {
@@ -126,7 +126,7 @@ public class AprilTagLocalization extends LinearOpMode {
             telemetryAprilTag();
 
             // Push telemetry to the Driver Station.
-            telemetry.update();
+            //telemetry.update();
 
             // Save CPU resources; can resume streaming when needed.
 

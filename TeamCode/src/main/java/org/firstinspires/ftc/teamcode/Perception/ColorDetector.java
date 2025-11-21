@@ -226,7 +226,7 @@ public class ColorDetector{
         opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
         opmode.telemetry.addData("Detected Boolean: ", detected);
-        opmode.telemetry.update();
+        //opmode.telemetry.update();
         return detected;
     }
 
