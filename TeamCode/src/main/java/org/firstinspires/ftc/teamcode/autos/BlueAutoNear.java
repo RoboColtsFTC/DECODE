@@ -24,8 +24,8 @@ public final class BlueAutoNear extends LinearOpMode {
        // beginPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(-20,20), Math.toRadians(-45))
-                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1400))
+                .strafeToLinearHeading(new Vector2d(-30,30), Math.toRadians(-45))
+                .stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1380))
                 .strafeToLinearHeading(new Vector2d(-30 ,5), Math.toRadians(0))// new TranslationalVelConstraint(10)
                 .build());
 

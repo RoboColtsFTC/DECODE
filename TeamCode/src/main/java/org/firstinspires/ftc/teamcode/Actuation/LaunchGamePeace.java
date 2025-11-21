@@ -83,6 +83,26 @@ public double autoVelocity=0;
     public void LoadSpindexer_run() {
 
 
+
+
+        if(TagData.detectionState.isBlueGoalAprilTagDetected && !TagData.red&&!autoLaunch) {
+
+            if(TagData.Blue.Range >= 110) {
+                actuators.LauncherMotor.SetVelocity(1680);
+            } else{
+                actuators.LauncherMotor.SetVelocity(1400);
+            }
+
+        }else if (TagData.detectionState.isRedGoalAprilTagDetected && TagData.red&&!autoLaunch){
+            if(TagData.Red.Range >= 110) {
+                actuators.LauncherMotor.SetVelocity(1680);
+            } else{
+                actuators.LauncherMotor.SetVelocity(1400);
+            }
+        } else if(!autoLaunch){
+
+            actuators.LauncherMotor.SetVelocity(1400);
+        }
         switch (launcherstate) {
 
             case IDLE:
@@ -101,15 +121,15 @@ public double autoVelocity=0;
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
+                    //actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
 
-                    if(TagData.DetectedCode.IsDetected) {
-                        LaunchOrder = GetLaunchOrderFromCode();
-                    }else {
+//                    if(TagData.DetectedCode.IsDetected) {
+//                        LaunchOrder = GetLaunchOrderFromCode();
+//                    }else {
                         LaunchOrder = Arrays.asList(6, 5, 4);
-                    }
+//                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
 
 
@@ -118,11 +138,11 @@ public double autoVelocity=0;
                     actuators.LauncherMotor.SetVelocity(autoVelocity); //120.7 12.53v.63
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-                    if(TagData.DetectedCode.IsDetected) {
-                        LaunchOrder = GetLaunchOrderFromCode();
-                    }else {
+//                    if(TagData.DetectedCode.IsDetected) {
+//                        LaunchOrder = GetLaunchOrderFromCode();
+//                    }else {
                         LaunchOrder = Arrays.asList(6, 5, 4);
-                    }
+//                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
                     opmode.telemetry.addLine("autoLaunch");
                 }
@@ -132,14 +152,14 @@ public double autoVelocity=0;
                 if (opmode.gamepad2.y && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
+                    //actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
                     actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
-                    if(TagData.DetectedCode.IsDetected) {
-                        LaunchOrder = GetLaunchOrderFromCode();
-                    }else {
+//                    if(TagData.DetectedCode.IsDetected) {
+//                        LaunchOrder = GetLaunchOrderFromCode();
+//                    }else {
                         LaunchOrder = Arrays.asList(6, 5, 4);
-                    }
+//                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
 
                 }
@@ -270,7 +290,7 @@ public double autoVelocity=0;
                 break;
 
             case SETPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 200) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.spindexercontrol.setPosition(pos);
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.ACTUATEKICKER;
@@ -280,14 +300,14 @@ public double autoVelocity=0;
 
                 break;
             case ACTUATEKICKER:
-                if (LoadGamePeaceTimer.milliseconds() >= 200) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.LaunchKicker.SetSecond();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.RETURNKICKERPOSITION;
                 }
                 break;
             case RETURNKICKERPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 200) {
+                if (LoadGamePeaceTimer.milliseconds() >= 150) {
                     actuators.LaunchKicker.SetFirst();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.IDLE;

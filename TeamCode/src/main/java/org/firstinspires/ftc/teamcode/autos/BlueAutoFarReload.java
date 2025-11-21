@@ -4,11 +4,12 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
-
+@Disabled
 @Autonomous(name="BlueAutoFarReload", group="Robot")
 public final class BlueAutoFarReload extends LinearOpMode {
     @Override
@@ -24,17 +25,17 @@ public final class BlueAutoFarReload extends LinearOpMode {
        // beginPose = new Pose2d(0, 0, Math.toRadians(0));
         drive.localizer.setPose(beginPose);
         Actions.runBlocking(drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(0,-10), Math.toRadians(-90))  //move to launch position
-                .turn(Math.toRadians(25))
+//                .strafeToLinearHeading(new Vector2d(0,-10), Math.toRadians(-90))  //move to launch position
+//                .turn(Math.toRadians(25))
                 //.stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650))  //launch
-                .strafeToLinearHeading(new Vector2d(10,-19), Math.toRadians(-180))  //position for intake- bottom row
+//                .strafeToLinearHeading(new Vector2d(10,-19), Math.toRadians(-180))  //position for intake- bottom row
                 .stopAndAdd(robot.actuatorcontrol.loadSpindexer.LoadSpindexer_auto())  //start intake action
-                .strafeToLinearHeading(new Vector2d(34,-19), Math.toRadians(-180))  //intake
-                        .waitSeconds(1)
-                .strafeToLinearHeading(new Vector2d(0,-10), Math.toRadians(-90))  //back to launch position
-                .turn(Math.toRadians(25))
+//                .strafeToLinearHeading(new Vector2d(34,-19), Math.toRadians(-180))  //intake
+//                        .waitSeconds(1)
+//                .strafeToLinearHeading(new Vector2d(0,-10), Math.toRadians(-90))  //back to launch position
+//                .turn(Math.toRadians(25))
                 //.stopAndAdd(robot.actuatorcontrol.launchgamepeace.Launch_Auto(1650)) //launch
-                .strafeToLinearHeading(new Vector2d(5 ,-38), Math.toRadians(0))  //end position
+//                .strafeToLinearHeading(new Vector2d(5 ,-38), Math.toRadians(0))  //end position
 
                 // new TranslationalVelConstraint(10)
 

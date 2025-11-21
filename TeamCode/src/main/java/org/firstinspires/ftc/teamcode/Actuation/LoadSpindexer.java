@@ -36,6 +36,7 @@ public  List<DetColor> colorPos;
 
 public static State Currentstate=State.Empty;
 
+public boolean autoload=false;
 
 public LinearOpMode opmode;
 private final ElapsedTime ControlFeedTimer = new ElapsedTime();
@@ -60,12 +61,12 @@ private static boolean auto;
         return new Action(){
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-
+                //autoload=true;
                 auto=true;
                 load_spindexer_run();
 
 
-                return Currentstate==State.Loaded;
+                return auto;
             }
 
 
@@ -300,7 +301,7 @@ boolean rebounce = false;
                 break;
             case RETURNTOPOSITION:
                     actuators.FeedKicker.SetFirst();
-                    if(KickerTimer.milliseconds()>=300){
+                    if(KickerTimer.milliseconds()>=500){
                         KickerTimer.reset();
                         kickerstate = KickerState.COMPLETE;
                 }
