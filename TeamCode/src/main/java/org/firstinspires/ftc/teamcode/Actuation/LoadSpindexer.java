@@ -50,6 +50,10 @@ private static boolean auto;
         this.actuators=actuators;
         ControlFeedTimer.reset();
         KickerTimer.reset();
+        gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
+        Currentstate=State.Empty;
+        detectgamepeace=DetectGamePeace.IDLE;
+        kickerstate = KickerState.IDLE;
     }
 
     //entry function for autononmous mode;

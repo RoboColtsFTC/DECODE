@@ -41,6 +41,9 @@ public class LaunchGamePeace {
         this.actuators = actuators;
         this.TagData=TagData;
         LauncherMotorTimer.reset();
+        loadgamepeace = LoadGamePeace.IDLE;
+        launcherstate = LauncherState.IDLE;
+        launchsequence = LaunchSequence.IDLE;
 
     }
 
@@ -94,25 +97,25 @@ public double autoVelocity=0;
 
 
 
-
-        if(TagData.detectionState.isBlueGoalAprilTagDetected && !TagData.red&&!autoLaunch) {
-
-            if(TagData.Blue.Range >= 99) {
-                actuators.LauncherMotor.SetVelocity(1680);
-            } else{
-                actuators.LauncherMotor.SetVelocity(1400);
-            }
-
-        }else if (TagData.detectionState.isRedGoalAprilTagDetected && TagData.red&&!autoLaunch){
-            if(TagData.Red.Range >= 99) {
-                actuators.LauncherMotor.SetVelocity(1680);
-            } else{
-                actuators.LauncherMotor.SetVelocity(1400);
-            }
-        } else if(!autoLaunch){
-
-            actuators.LauncherMotor.SetVelocity(1400);
-        }
+//
+//        if(TagData.detectionState.isBlueGoalAprilTagDetected && !TagData.red&&!autoLaunch) {
+//
+//            if(TagData.Blue.Range >= 99) {
+//                actuators.LauncherMotor.SetVelocity(1680);
+//            } else{
+//                actuators.LauncherMotor.SetVelocity(1400);
+//            }
+//
+//        }else if (TagData.detectionState.isRedGoalAprilTagDetected && TagData.red&&!autoLaunch){
+//            if(TagData.Red.Range >= 99) {
+//                actuators.LauncherMotor.SetVelocity(1680);
+//            } else{
+//                actuators.LauncherMotor.SetVelocity(1400);
+//            }
+//        } else if(!autoLaunch){
+//
+//            actuators.LauncherMotor.SetVelocity(1400);
+//        }
         switch (launcherstate) {
 
             case IDLE:
@@ -131,7 +134,7 @@ public double autoVelocity=0;
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    //actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
+                    actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
                     //actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
 
@@ -163,7 +166,7 @@ public double autoVelocity=0;
                 if (opmode.gamepad2.y && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-                    //actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
+                    actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
                    // actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
 //                    if(TagData.DetectedCode.IsDetected) {
@@ -256,9 +259,9 @@ public double autoVelocity=0;
             case LAUNCHPOSITION1:
                 //opmode.telemetry.addData("Speedshot1",actuators.LauncherMotor.GetVelocitym1());
                 launchVeloc[0]=actuators.LauncherMotor.GetVelocitym1();
-                if(actuators.LauncherMotor.isMotorAtVelocity()) {
+
                     launch(LaunchOrder.get(0));
-                }
+
                 if (loadgamepeace == LoadGamePeace.IDLE ) {
                     launchsequence = LaunchSequence.LAUNCHPOSITION2;
                 }
@@ -266,9 +269,9 @@ public double autoVelocity=0;
             case LAUNCHPOSITION2:
                 launchVeloc[1]=actuators.LauncherMotor.GetVelocitym1();
                 //opmode.telemetry.addData("Speedshot2",actuators.LauncherMotor.GetVelocitym1());
-                if(actuators.LauncherMotor.isMotorAtVelocity()) {
+
                     launch(LaunchOrder.get(1));
-                }
+
                 if (loadgamepeace == LoadGamePeace.IDLE ) {
                     launchsequence = LaunchSequence.LAUNCHPOSITION3;
                 }
@@ -276,9 +279,9 @@ public double autoVelocity=0;
             case LAUNCHPOSITION3:
                 launchVeloc[2]=actuators.LauncherMotor.GetVelocitym1();
                 //opmode.telemetry.addData("Speedshot3",actuators.LauncherMotor.GetVelocitym1());
-                if(actuators.LauncherMotor.isMotorAtVelocity()) {
+
                     launch(LaunchOrder.get(2));
-                }
+
                 if (loadgamepeace == LoadGamePeace.IDLE) {
                     launchsequence = LaunchSequence.IDLE;
                     //actuators.LauncherMotor.StopMotor();
@@ -315,7 +318,7 @@ public double autoVelocity=0;
                 break;
 
             case SETPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 120) {
                     actuators.spindexercontrol.setPosition(pos);
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.ACTUATEKICKER;
@@ -325,14 +328,14 @@ public double autoVelocity=0;
 
                 break;
             case ACTUATEKICKER:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 120) {
                     actuators.LaunchKicker.SetSecond();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.RETURNKICKERPOSITION;
                 }
                 break;
             case RETURNKICKERPOSITION:
-                if (LoadGamePeaceTimer.milliseconds() >= 150) {
+                if (LoadGamePeaceTimer.milliseconds() >= 120) {
                     actuators.LaunchKicker.SetFirst();
                     LoadGamePeaceTimer.reset();
                     loadgamepeace = LoadGamePeace.IDLE;

@@ -61,8 +61,9 @@ public class ActuatorControl {
 
     public static List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
     Params param=new Params();
+    public static ControlState controlstate = ControlState.ready;
     public ActuatorControl(LinearOpMode opmode, AprilTagData TagData) {
-
+        ControlState controlstate = ControlState.ready;
         this.opmode=opmode;
         this.hardwaremap= opmode.hardwareMap;
         actuators.feedcontrol=new FeedControl(hardwaremap, param.FeedControl_Power);
@@ -89,7 +90,7 @@ public class ActuatorControl {
         launching,
         tilting
     }
-public static ControlState controlstate = ControlState.ready;
+
 
 public void run() {
 
