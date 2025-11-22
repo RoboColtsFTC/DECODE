@@ -16,7 +16,7 @@ public ActuatorControl actuatorcontrol;
 public AprilTagData TagData;
     @Override
     public void runOpMode() throws InterruptedException {
-        actuatorcontrol =new ActuatorControl(this,  TagData);
+        actuatorcontrol =new ActuatorControl(this);
         telemetry.addLine("FeedControl Test Ready");
         telemetry.update();
 

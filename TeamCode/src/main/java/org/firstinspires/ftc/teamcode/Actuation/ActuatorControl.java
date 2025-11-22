@@ -21,7 +21,7 @@ import java.util.List;
 // It allows them to be initialized once and shared between different classes
 @Config
 public class ActuatorControl {
-    AprilTagData TagData;
+
     public static class Actuators{
         public FeedControl feedcontrol;
         public AngleServo FeedKicker;
@@ -62,7 +62,7 @@ public class ActuatorControl {
     public static List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
     Params param=new Params();
     public static ControlState controlstate = ControlState.ready;
-    public ActuatorControl(LinearOpMode opmode, AprilTagData TagData) {
+    public ActuatorControl(LinearOpMode opmode) {
         ControlState controlstate = ControlState.ready;
         this.opmode=opmode;
         this.hardwaremap= opmode.hardwareMap;
@@ -73,7 +73,7 @@ public class ActuatorControl {
         actuators.LauncherMotor= new DualMotor(hardwaremap,"LauncherMotor1","LauncherMotor2",param.Launchmmotor_velocity);
         actuators.spindexercontrol=new SpindexerControl(hardwaremap,"Spindexer");
         loadSpindexer=new LoadSpindexer(this.opmode,actuators,colorPos);
-        launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos,TagData);
+        launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos);
 
         // Tuning
         actuators.IntakeMotor.SetReverse();

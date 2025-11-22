@@ -11,9 +11,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
-import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 
-import java.util.Arrays;
+
+
 import java.util.List;
 @Config
 public class LoadSpindexer {
@@ -36,7 +36,7 @@ public  List<DetColor> colorPos;
 
 public static State Currentstate=State.Empty;
 
-public boolean autoload=false;
+
 
 public LinearOpMode opmode;
 private final ElapsedTime ControlFeedTimer = new ElapsedTime();
@@ -50,16 +50,10 @@ private static boolean auto;
         this.actuators=actuators;
         ControlFeedTimer.reset();
         KickerTimer.reset();
-        gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
-        Currentstate=State.Empty;
-        detectgamepeace=DetectGamePeace.IDLE;
-        kickerstate = KickerState.IDLE;
+
     }
 
-    //entry function for autononmous mode;
-//    public void LoadSpindexer_auto(){
-//        auto=true;
-//    }
+
 
     public Action  LoadSpindexer_auto(){
         return new Action(){
@@ -82,7 +76,7 @@ private static boolean auto;
     {
         load_spindexer_run();
         opmode.telemetry.addData("ColorPosition",colorPos);
-        //opmode.telemetry.update();
+
     }
 
     public void load_spindexer_run(){
@@ -140,8 +134,7 @@ private static boolean auto;
 
                 break;
             }
-//        opmode.telemetry.addData("Currentstate",Currentstate);
-//        opmode.telemetry.update();
+
     }
     public enum GamePeaceLoadingState{
         IDLE,
@@ -211,8 +204,7 @@ private static boolean auto;
 
 
         }
-//        opmode.telemetry.addData("gamepeaceloadingstate",gamepeaceloadingstate);
-//        opmode.telemetry.update();
+
     }
 
 
@@ -227,7 +219,7 @@ private static boolean auto;
     }
     public static DetectGamePeace detectgamepeace=DetectGamePeace.IDLE;
 
-boolean rebounce = false;
+
     public void DetectGamePeace(int SpindexPos){
 
         switch(detectgamepeace){
@@ -270,8 +262,7 @@ boolean rebounce = false;
                 break;
 
         }
-//        opmode.telemetry.addData("detectgamepeace",detectgamepeace);
-//        opmode.telemetry.update();
+
     }
 
 
@@ -316,8 +307,7 @@ boolean rebounce = false;
                 break;
                            
         }
-//        opmode.telemetry.addData("KickerState",kickerstate);
-//        opmode.telemetry.update();
+
     }
     
 public enum FeedState{
@@ -364,8 +354,7 @@ public static FeedState feedstate=FeedState.IDLE;
                 break;
                             
         }
-//        opmode.telemetry.addData("FeedState",feedstate);
-//        opmode.telemetry.update();
+
     }
 
 

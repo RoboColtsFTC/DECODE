@@ -12,10 +12,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-import org.firstinspires.ftc.teamcode.Perception.AprilTag;
-import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
+
+
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
-import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
+
 
 
 
@@ -27,23 +27,19 @@ public class LaunchGamePeace {
 
     public Actuators actuators;
     public LinearOpMode opmode;
-    public double[] launchVeloc={0,0,0};
-    public double MaxLauncherVelocity=28*5800*60;  // pulses per second max rpm of 5800
-    public AprilTagData TagData;
+
+
     List<ColorDetector.DetColor> colorPos;
 
     private final ElapsedTime LauncherMotorTimer = new ElapsedTime();
     private final ElapsedTime LoadGamePeaceTimer = new ElapsedTime();
 
-    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos,AprilTagData TagData) {
+    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos) {
         this.colorPos = colorPos;
         this.opmode = opmode;
         this.actuators = actuators;
-        this.TagData=TagData;
+
         LauncherMotorTimer.reset();
-        loadgamepeace = LoadGamePeace.IDLE;
-        launcherstate = LauncherState.IDLE;
-        launchsequence = LaunchSequence.IDLE;
 
     }
 
@@ -57,108 +53,59 @@ public class LaunchGamePeace {
 
     public LauncherState launcherstate = LauncherState.IDLE;
     public List<Integer> LaunchOrder = Arrays.asList(6, 5, 4);  // Defalt sequnce
-public boolean autoLaunch =false;
+    public boolean autoLaunch = false;
 
-public double autoVelocity=0;
-    public Action Launch_Auto(double velocity){
-        return new Action(){
+    public double autoVelocity = 0;
+
+    public Action Launch_Auto(double velocity) {
+        return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                autoVelocity=velocity;
-                autoLaunch=true;
+                autoVelocity = velocity;
+                autoLaunch = true;
                 LoadSpindexer_run();
 
                 return autoLaunch;
             }
 
 
-
         };
     }
 
-    public void run(){
+    public void run() {
         LoadSpindexer_run();
-        opmode.telemetry.addData("LaunchOrder",LaunchOrder);
-        opmode.telemetry.addData("code",TagData.DetectedCode.CodeID);
-        opmode.telemetry.addData("IsDetected",TagData.DetectedCode.IsDetected);
-        opmode.telemetry.addData("Speeds1:",launchVeloc[0]);
-        opmode.telemetry.addData("Speeds2:",launchVeloc[1]);
-        opmode.telemetry.addData("Speeds3:",launchVeloc[2]);
-        opmode.telemetry.addData("current Speeds1:",actuators.LauncherMotor.GetVelocitym1());
-        opmode.telemetry.addData("current Speeds2:",actuators.LauncherMotor.GetVelocitym2());
-        opmode.telemetry.addData("LauncherState",launcherstate);
-        opmode.telemetry.addData("launchsequence",launchsequence);
-        opmode.telemetry.addData("actuatorControlState",ActuatorControl.controlstate);
-
-
     }
 
     public void LoadSpindexer_run() {
 
 
-
-//
-//        if(TagData.detectionState.isBlueGoalAprilTagDetected && !TagData.red&&!autoLaunch) {
-//
-//            if(TagData.Blue.Range >= 99) {
-//                actuators.LauncherMotor.SetVelocity(1680);
-//            } else{
-//                actuators.LauncherMotor.SetVelocity(1400);
-//            }
-//
-//        }else if (TagData.detectionState.isRedGoalAprilTagDetected && TagData.red&&!autoLaunch){
-//            if(TagData.Red.Range >= 99) {
-//                actuators.LauncherMotor.SetVelocity(1680);
-//            } else{
-//                actuators.LauncherMotor.SetVelocity(1400);
-//            }
-//        } else if(!autoLaunch){
-//
-//            actuators.LauncherMotor.SetVelocity(1400);
-//        }
         switch (launcherstate) {
 
             case IDLE:
 
-//                if (autoLaunch){
-//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-//                    actuators.LauncherMotor.SetVelocity(autoVelocity);
-//                    actuators.LauncherMotor.StartMotor();
-//                    LauncherMotorTimer.reset();
-//                    LaunchOrder = Arrays.asList(6, 5, 4);
-//                    launcherstate = LauncherState.MOTORSTARTUP;
-//                    autoLaunch=false;
-//
-//                }
-                // Far Launching
+
                 if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
                     actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
-                    //actuators.LauncherMotor.StartMotor();
+
                     LauncherMotorTimer.reset();
 
-//                    if(TagData.DetectedCode.IsDetected) {
-//                        LaunchOrder = GetLaunchOrderFromCode();
-//                    }else {
-                        LaunchOrder = Arrays.asList(6, 5, 4);
-//                    }
+
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+
                     launcherstate = LauncherState.MOTORSTARTUP;
 
 
-                }else if(autoLaunch){
+                } else if (autoLaunch) {
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
                     actuators.LauncherMotor.SetVelocity(autoVelocity); //120.7 12.53v.63
-                   // actuators.LauncherMotor.StartMotor();
+
                     LauncherMotorTimer.reset();
-//                    if(TagData.DetectedCode.IsDetected) {
-//                        LaunchOrder = GetLaunchOrderFromCode();
-//                    }else {
-                        LaunchOrder = Arrays.asList(6, 5, 4);
-//                    }
+                    LaunchOrder = Arrays.asList(6, 5, 4);
                     launcherstate = LauncherState.MOTORSTARTUP;
 
-                    opmode.telemetry.addLine("autoLaunch");
+
                 }
                 // Close Launching
 
@@ -167,51 +114,15 @@ public double autoVelocity=0;
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
                     actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
-                   // actuators.LauncherMotor.StartMotor();
+
                     LauncherMotorTimer.reset();
-//                    if(TagData.DetectedCode.IsDetected) {
-//                        LaunchOrder = GetLaunchOrderFromCode();
-//                    }else {
-                        LaunchOrder = Arrays.asList(6, 5, 4);
-//                    }
+
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+
                     launcherstate = LauncherState.MOTORSTARTUP;
 
                 }
-//                if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
-//
-//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-//                    actuators.LauncherMotor.SetVelocity(1400); //to close for apiril tags
-//                    actuators.LauncherMotor.StartMotor();
-//                    LauncherMotorTimer.reset();
-//                    LaunchOrder = Arrays.asList(6, 5, 4);
-//                    launcherstate = LauncherState.MOTORSTARTUP;
-//
-//                }
 
-//                // Far Launching by code  todo test code
-//                if (opmode.gamepad2.dpad_left && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
-//
-//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-//                    actuators.LauncherMotor.SetPower(.73);
-//                    actuators.LauncherMotor.StartMotor();
-//                    LauncherMotorTimer.reset();
-//                    LaunchOrder = GetLaunchOrderFromCode();
-//                    launcherstate = LauncherState.MOTORSTARTUP;
-//
-//                }
-//
-//
-//                // Close Launching by code todo test code
-//                if (opmode.gamepad2.dpad_right && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
-//
-//                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
-//                    actuators.LauncherMotor.SetPower(.67);
-//                    actuators.LauncherMotor.StartMotor();
-//                    LauncherMotorTimer.reset();
-//                    LaunchOrder = GetLaunchOrderFromCode();
-//                    launcherstate = LauncherState.MOTORSTARTUP;
-//
-//                }
 
                 break;
             case MOTORSTARTUP:
@@ -225,7 +136,7 @@ public double autoVelocity=0;
                 launchall();
                 if (launchsequence == LaunchSequence.IDLE) {
                     launcherstate = LauncherState.IDLE;
-                    autoLaunch=false;
+                    autoLaunch = false;
 
                 }
 
@@ -251,44 +162,40 @@ public double autoVelocity=0;
 
         switch (launchsequence) {
             case IDLE:
-                if(actuators.LauncherMotor.isMotorAtVelocity()) {
-                launchsequence = LaunchSequence.LAUNCHPOSITION1;
-                 }
+                if (actuators.LauncherMotor.isMotorAtVelocity()) {
+                    launchsequence = LaunchSequence.LAUNCHPOSITION1;
+                }
 
                 break;
             case LAUNCHPOSITION1:
-                //opmode.telemetry.addData("Speedshot1",actuators.LauncherMotor.GetVelocitym1());
-                launchVeloc[0]=actuators.LauncherMotor.GetVelocitym1();
 
-                    launch(LaunchOrder.get(0));
 
-                if (loadgamepeace == LoadGamePeace.IDLE ) {
+                launch(LaunchOrder.get(0));
+
+                if (loadgamepeace == LoadGamePeace.IDLE) {
                     launchsequence = LaunchSequence.LAUNCHPOSITION2;
                 }
                 break;
             case LAUNCHPOSITION2:
-                launchVeloc[1]=actuators.LauncherMotor.GetVelocitym1();
-                //opmode.telemetry.addData("Speedshot2",actuators.LauncherMotor.GetVelocitym1());
 
-                    launch(LaunchOrder.get(1));
 
-                if (loadgamepeace == LoadGamePeace.IDLE ) {
+                launch(LaunchOrder.get(1));
+
+                if (loadgamepeace == LoadGamePeace.IDLE) {
                     launchsequence = LaunchSequence.LAUNCHPOSITION3;
                 }
                 break;
             case LAUNCHPOSITION3:
-                launchVeloc[2]=actuators.LauncherMotor.GetVelocitym1();
-                //opmode.telemetry.addData("Speedshot3",actuators.LauncherMotor.GetVelocitym1());
 
-                    launch(LaunchOrder.get(2));
+
+                launch(LaunchOrder.get(2));
 
                 if (loadgamepeace == LoadGamePeace.IDLE) {
                     launchsequence = LaunchSequence.IDLE;
-                    //actuators.LauncherMotor.StopMotor();
-                    //actuators.LauncherMotor.SetVelocity(1400);
+
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
                     LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
-                    colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
+                    colorPos = Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
 
                 }
 
@@ -347,114 +254,13 @@ public double autoVelocity=0;
 
     }
 
-    public List<Integer> GetLaunchOrderFromCode() {
-        List<DetColor> Code = Arrays.asList(DetColor.UNKNOWN, DetColor.UNKNOWN, DetColor.UNKNOWN);
-        switch (TagData.DetectedCode.CodeID) {
-            case GPP:
-
-                Code = Arrays.asList(DetColor.GREEN, DetColor.PURPLE, DetColor.PURPLE);
-
-                break;
-            case PGP:
-                Code = Arrays.asList(DetColor.PURPLE, DetColor.GREEN, DetColor.PURPLE);
-
-                break;
-            case PPG:
-                Code = Arrays.asList(DetColor.PURPLE, DetColor.PURPLE, DetColor.GREEN);
-
-                break;
-        }
-        // launch inorder
-        opmode.telemetry.addData("ColorPosinside ColorPos",colorPos);
-        opmode.telemetry.addData("ColorPosinside code",Code);
-        opmode.telemetry.addData("ColorPosinside code id",TagData.DetectedCode.CodeID);
-       return  MarchLists(colorPos, Code);
-
-
-    }
-
-    public void launchByCode(){  // used for autonomous mode
-        List<DetColor> Code=Arrays.asList(DetColor.UNKNOWN,DetColor.UNKNOWN, DetColor.UNKNOWN);
-       switch(TagData.DetectedCode.CodeID) {
-           case GPP:
-
-                Code= Arrays.asList(DetColor.GREEN, DetColor.PURPLE, DetColor.PURPLE);
-
-                break;
-           case PGP:
-                Code= Arrays.asList(DetColor.PURPLE, DetColor.GREEN, DetColor.PURPLE);
-
-               break;
-           case PPG:
-               Code= Arrays.asList(DetColor.PURPLE, DetColor.PURPLE, DetColor.GREEN);
-
-               break;
-       }
-        // launch inorder
-        List<Integer> order =MarchLists(colorPos,Code);
-
-        //lanchorder(Lorder);
-
-
 
 
 
     }
 
-// Method used to determien fire order
-public static List<Integer> MarchLists( List<DetColor> ListA,List<DetColor> ListB) {
-
-    List<Integer> IDList = Arrays.asList(3, 3, 3);
-    Boolean[] FlagA = {true, true, true,};
-    Boolean[] FlagB = {true, true, true};
-
-    for (int n = 0; n < ListA.size(); n++) {
 
 
-        for (int m = 0; m < ListB.size(); m++) {
 
 
-            if (ListA.get(n).equals(ListB.get(m)) & FlagA[n] && FlagB[m]) {
 
-                IDList.set(n, m);
-                FlagA[n] = false;
-                FlagB[m] = false;
-
-
-            }
-
-
-        }
-
-
-    }
-
-
-    if (IDList.contains(3)) {
-        IDList = Arrays.asList(6, 5, 4);
-
-
-    } else{
-        for (int k = 0; k < ListB.size(); k++){
-            IDList.set(k,IDList.get(k)+3);
-        }
-    }
-    return IDList;
-}
-
-public  double EstimateRange(){
-        double velocity = 1650;
-        double range=120.7;
-        if(TagData.red) {
-            range=TagData.Red.Range;
-        }else{
-            range=TagData.Blue.Range;
-        }
-
-        
-
-
-        return velocity;
-}
-
-}
