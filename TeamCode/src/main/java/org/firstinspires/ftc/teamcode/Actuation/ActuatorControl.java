@@ -42,7 +42,7 @@ public class ActuatorControl {
     public static class Params{
         // Feed Kicker parameters
         public double FeedKicker_First=20;  //Calibrated to Robot 0
-        public double FeedKicker_Second=140;  //Calibrated to Robot 115
+        public double FeedKicker_Second=160;  //Calibrated to Robot 115
         public double FeedKicker_MaxAngle=300;
         // LaunchKicker parameters
         public double LaunchKicker_First=103;  //calibrated to robot  103

@@ -27,7 +27,7 @@ public class LaunchGamePeace {
 
     public Actuators actuators;
     public LinearOpMode opmode;
-
+    public double[] launchVeloc={0,0,0};
     public double MaxLauncherVelocity=28*5800*60;  // pulses per second max rpm of 5800
     public AprilTagData TagData;
     List<ColorDetector.DetColor> colorPos;
@@ -78,6 +78,16 @@ public double autoVelocity=0;
         opmode.telemetry.addData("LaunchOrder",LaunchOrder);
         opmode.telemetry.addData("code",TagData.DetectedCode.CodeID);
         opmode.telemetry.addData("IsDetected",TagData.DetectedCode.IsDetected);
+        opmode.telemetry.addData("Speeds1:",launchVeloc[0]);
+        opmode.telemetry.addData("Speeds2:",launchVeloc[1]);
+        opmode.telemetry.addData("Speeds3:",launchVeloc[2]);
+        opmode.telemetry.addData("current Speeds1:",actuators.LauncherMotor.GetVelocitym1());
+        opmode.telemetry.addData("current Speeds2:",actuators.LauncherMotor.GetVelocitym2());
+        opmode.telemetry.addData("LauncherState",launcherstate);
+        opmode.telemetry.addData("launchsequence",launchsequence);
+        opmode.telemetry.addData("actuatorControlState",ActuatorControl.controlstate);
+
+
     }
 
     public void LoadSpindexer_run() {
@@ -87,14 +97,14 @@ public double autoVelocity=0;
 
         if(TagData.detectionState.isBlueGoalAprilTagDetected && !TagData.red&&!autoLaunch) {
 
-            if(TagData.Blue.Range >= 110) {
+            if(TagData.Blue.Range >= 99) {
                 actuators.LauncherMotor.SetVelocity(1680);
             } else{
                 actuators.LauncherMotor.SetVelocity(1400);
             }
 
         }else if (TagData.detectionState.isRedGoalAprilTagDetected && TagData.red&&!autoLaunch){
-            if(TagData.Red.Range >= 110) {
+            if(TagData.Red.Range >= 99) {
                 actuators.LauncherMotor.SetVelocity(1680);
             } else{
                 actuators.LauncherMotor.SetVelocity(1400);
@@ -122,7 +132,7 @@ public double autoVelocity=0;
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
                     //actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
-                    actuators.LauncherMotor.StartMotor();
+                    //actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
 
 //                    if(TagData.DetectedCode.IsDetected) {
@@ -136,7 +146,7 @@ public double autoVelocity=0;
                 }else if(autoLaunch){
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
                     actuators.LauncherMotor.SetVelocity(autoVelocity); //120.7 12.53v.63
-                    actuators.LauncherMotor.StartMotor();
+                   // actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
 //                    if(TagData.DetectedCode.IsDetected) {
 //                        LaunchOrder = GetLaunchOrderFromCode();
@@ -144,6 +154,7 @@ public double autoVelocity=0;
                         LaunchOrder = Arrays.asList(6, 5, 4);
 //                    }
                     launcherstate = LauncherState.MOTORSTARTUP;
+
                     opmode.telemetry.addLine("autoLaunch");
                 }
                 // Close Launching
@@ -153,7 +164,7 @@ public double autoVelocity=0;
 
                     ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
                     //actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
-                    actuators.LauncherMotor.StartMotor();
+                   // actuators.LauncherMotor.StartMotor();
                     LauncherMotorTimer.reset();
 //                    if(TagData.DetectedCode.IsDetected) {
 //                        LaunchOrder = GetLaunchOrderFromCode();
@@ -237,27 +248,41 @@ public double autoVelocity=0;
 
         switch (launchsequence) {
             case IDLE:
-
+                if(actuators.LauncherMotor.isMotorAtVelocity()) {
                 launchsequence = LaunchSequence.LAUNCHPOSITION1;
+                 }
+
                 break;
             case LAUNCHPOSITION1:
-                launch(LaunchOrder.get(0));
-                if (loadgamepeace == LoadGamePeace.IDLE) {
+                //opmode.telemetry.addData("Speedshot1",actuators.LauncherMotor.GetVelocitym1());
+                launchVeloc[0]=actuators.LauncherMotor.GetVelocitym1();
+                if(actuators.LauncherMotor.isMotorAtVelocity()) {
+                    launch(LaunchOrder.get(0));
+                }
+                if (loadgamepeace == LoadGamePeace.IDLE ) {
                     launchsequence = LaunchSequence.LAUNCHPOSITION2;
                 }
                 break;
             case LAUNCHPOSITION2:
-                launch(LaunchOrder.get(1));
-                if (loadgamepeace == LoadGamePeace.IDLE) {
+                launchVeloc[1]=actuators.LauncherMotor.GetVelocitym1();
+                //opmode.telemetry.addData("Speedshot2",actuators.LauncherMotor.GetVelocitym1());
+                if(actuators.LauncherMotor.isMotorAtVelocity()) {
+                    launch(LaunchOrder.get(1));
+                }
+                if (loadgamepeace == LoadGamePeace.IDLE ) {
                     launchsequence = LaunchSequence.LAUNCHPOSITION3;
                 }
                 break;
             case LAUNCHPOSITION3:
-                launch(LaunchOrder.get(2));
+                launchVeloc[2]=actuators.LauncherMotor.GetVelocitym1();
+                //opmode.telemetry.addData("Speedshot3",actuators.LauncherMotor.GetVelocitym1());
+                if(actuators.LauncherMotor.isMotorAtVelocity()) {
+                    launch(LaunchOrder.get(2));
+                }
                 if (loadgamepeace == LoadGamePeace.IDLE) {
                     launchsequence = LaunchSequence.IDLE;
                     //actuators.LauncherMotor.StopMotor();
-                    actuators.LauncherMotor.SetVelocity(1400);
+                    //actuators.LauncherMotor.SetVelocity(1400);
                     ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
                     LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
                     colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);

@@ -187,7 +187,7 @@ public class Drivetrain {
        if(driver.back){
 
            drive.localizer.resetPinpointIMU();
-           drive.localizer.setPose(new Pose2d(0,0,90));
+           drive.localizer.setPose(new Pose2d(0,0,0));
 
        }
     }

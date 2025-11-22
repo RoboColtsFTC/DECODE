@@ -21,7 +21,7 @@ public class DualMotor {
         motor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-        this.velocity = norm(velocity);
+        this.velocity = velocity;
     }
 
 
@@ -31,7 +31,9 @@ public class DualMotor {
 
 
 
-        return ((motor1.getVelocity()>=upper && motor1.getVelocity()>=upper ));
+
+
+        return ((motor1.getVelocity()>=upper || motor2.getVelocity()>=upper ));
 
 
     }
