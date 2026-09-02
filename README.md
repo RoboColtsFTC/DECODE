@@ -2,6 +2,33 @@
 
 This repository contains the public FTC SDK for the DECODE (2025-2026) competition season.
 
+## RoboColts Team Code
+
+This is the **RoboColts FTC** team fork for the **DECODE (2025-2026)** season. All team
+work lives in [`TeamCode/src/main/java/org/firstinspires/ftc/teamcode`](TeamCode/src/main/java/org/firstinspires/ftc/teamcode);
+everything else is the unmodified *FIRST* Tech Challenge SDK.
+
+The robot intakes GREEN/PURPLE *artifacts*, stores three in a rotating **spindexer**,
+identifies each one with a triad of color sensors, and fires them from a dual-flywheel
+**launcher**. AprilTags on the goals drive auto-aim and read the randomized Obelisk code.
+
+Code overview:
+
+* A single `Robot` object owns three subsystems — `Drivetrain` (field-centric mecanum +
+  AprilTag auto-aim), `ActuatorControl` (intake / spindexer / feed / launcher state
+  machines), and `AprilTag` (VisionPortal goal + Obelisk detection).
+* Localization uses a goBILDA Pinpoint odometry computer through a Road Runner 1.0
+  `PinpointLocalizer`; autonomous routines are Road Runner trajectories in
+  [`teamcode/autos`](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/autos).
+* Competition OpModes: **Blue Teleop**, **Red Teleop**, and the `*AutoNear` / `*AutoFar`
+  autonomous routines.
+
+**Full documentation — architecture, package map, OpMode index, hardware-map
+configuration, and tuning notes — is in
+[`TeamCode/.../teamcode/README.md`](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/README.md).**
+
+The remainder of this file is the stock FTC SDK readme and release notes.
+
 ## Welcome!
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
 
