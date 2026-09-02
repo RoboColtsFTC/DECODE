@@ -7,8 +7,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.AngleServo;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.ContinuousMotor;
+import org.firstinspires.ftc.teamcode.Actuation.Actuators.DualMotor;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.FeedControl;
 import org.firstinspires.ftc.teamcode.Actuation.Actuators.SpindexerControl;
+import org.firstinspires.ftc.teamcode.LightsandIndicators.GoBuildaPWMLight;
+import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 
 import java.util.Arrays;
@@ -24,7 +27,7 @@ public class ActuatorControl {
         public AngleServo FeedKicker;
         public AngleServo LaunchKicker;
         public ContinuousMotor IntakeMotor;
-        public ContinuousMotor LauncherMotor;
+        public DualMotor LauncherMotor;
         public SpindexerControl spindexercontrol;
 
             }
@@ -38,8 +41,8 @@ public class ActuatorControl {
 
     public static class Params{
         // Feed Kicker parameters
-        public double FeedKicker_First=4;  //Calibrated to Robot 0
-        public double FeedKicker_Second=150;  //Calibrated to Robot 115
+        public double FeedKicker_First=20;  //Calibrated to Robot 0
+        public double FeedKicker_Second=160;  //Calibrated to Robot 115
         public double FeedKicker_MaxAngle=300;
         // LaunchKicker parameters
         public double LaunchKicker_First=103;  //calibrated to robot  103
@@ -48,23 +51,26 @@ public class ActuatorControl {
 
         // Intake Motor Parameters
         public double IntakeMotor_Power=1;
-        public double Launchmmotor_Power=.73;
+        public double Launchmmotor_velocity=.73;  // ticks per second
 
         // Feed control Parameters
-        public double FeedControl_Power=1;
+        public double FeedControl_Power=.5;
     }
 
-    public List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
-    Params param=new Params();
-    public ActuatorControl(LinearOpMode opmode) {
+    public static GoBuildaPWMLight LockIndicator1,LockIndicator2, SpindexerStateIndicator2;
 
+    public static List<ColorDetector.DetColor> colorPos= Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
+    Params param=new Params();
+    public static ControlState controlstate = ControlState.ready;
+    public ActuatorControl(LinearOpMode opmode) {
+        ControlState controlstate = ControlState.ready;
         this.opmode=opmode;
         this.hardwaremap= opmode.hardwareMap;
         actuators.feedcontrol=new FeedControl(hardwaremap, param.FeedControl_Power);
         actuators.FeedKicker= new AngleServo(hardwaremap,"FeedKicker",param.FeedKicker_First,param.FeedKicker_Second,param.FeedKicker_MaxAngle);
         actuators.LaunchKicker=new AngleServo(hardwaremap,"LaunchKicker",param.LaunchKicker_First,param.LaunchKicker_Second,param.LaunchKicker_MaxAngle);
         actuators.IntakeMotor = new ContinuousMotor(hardwaremap,"IntakeMotor",param.IntakeMotor_Power);
-        actuators.LauncherMotor= new ContinuousMotor(hardwaremap,"LauncherMotor",param.Launchmmotor_Power);
+        actuators.LauncherMotor= new DualMotor(hardwaremap,"LauncherMotor1","LauncherMotor2",param.Launchmmotor_velocity);
         actuators.spindexercontrol=new SpindexerControl(hardwaremap,"Spindexer");
         loadSpindexer=new LoadSpindexer(this.opmode,actuators,colorPos);
         launchgamepeace=new LaunchGamePeace(this.opmode,actuators,colorPos);
@@ -73,6 +79,9 @@ public class ActuatorControl {
         actuators.IntakeMotor.SetReverse();
         actuators.feedcontrol.Reverse();
 
+        LockIndicator1= new GoBuildaPWMLight(hardwaremap,"light1");
+        LockIndicator2= new GoBuildaPWMLight(hardwaremap,"light2");
+        SpindexerStateIndicator2= new GoBuildaPWMLight(hardwaremap,"light3");
     }
 
     public static enum ControlState{
@@ -81,12 +90,13 @@ public class ActuatorControl {
         launching,
         tilting
     }
-public static ControlState controlstate = ControlState.ready;
+
 
 public void run() {
 
     loadSpindexer.run();
     launchgamepeace.run();
+
 
 
 }

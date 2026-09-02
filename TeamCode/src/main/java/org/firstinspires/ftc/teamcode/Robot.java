@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
+import org.firstinspires.ftc.teamcode.Actuation.LaunchGamePeace;
 import org.firstinspires.ftc.teamcode.Perception.AprilTag;
 import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
@@ -42,14 +43,14 @@ public class Robot {
           else{
             TagData.red=false;
         }
-          if(!auto && useAprilTags) {
+          if(useAprilTags) {
               AprilTagPro = new AprilTag(this.opMode, TagData);
           }
         if(!auto && useDrive){
             drivetrain = new Drivetrain(this.opMode,TagData);
         }
 
-        if(!auto && useBallLauncher) {
+        if(useBallLauncher) {
             actuatorcontrol=new ActuatorControl(this.opMode);
 
         }
@@ -59,13 +60,13 @@ public class Robot {
     }
 
     public Robot(LinearOpMode opMode, boolean red){
-        this(opMode, true, red, false,false,false);
+        this(opMode, true, red, false,true,true);
     }
 
     public void runRobot() {
         if (!auto && useDrive) drivetrain.run();
-        if (!auto && useBallLauncher)  actuatorcontrol.run();
-        if (!auto && useAprilTags) AprilTagPro.run();
+        if (useBallLauncher)  actuatorcontrol.run();
+        if (useAprilTags) AprilTagPro.run();
 
     }
 }

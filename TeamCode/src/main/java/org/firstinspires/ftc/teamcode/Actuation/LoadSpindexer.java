@@ -1,18 +1,23 @@
 package org.firstinspires.ftc.teamcode.Actuation;
 
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
 
-import java.util.Arrays;
+
+
 import java.util.List;
 @Config
 public class LoadSpindexer {
-public static enum State {
+public enum State {
     Empty,
     LoadOne,
     LoadTwo,
@@ -21,164 +26,334 @@ public static enum State {
 
 }
 
-public static boolean Start = false;
-public static boolean exit = false;
 
 
 public ColorDetector colordetector;
 
 public Actuators actuators;
 
-public static List<DetColor> colorPos;
+public  List<DetColor> colorPos;
 
 public static State Currentstate=State.Empty;
 
 
-public  static long CycleTime=2000;
-public  static long CycleTimeFeed=5000;
 
 public LinearOpMode opmode;
-
-
-
+private final ElapsedTime ControlFeedTimer = new ElapsedTime();
+private final ElapsedTime KickerTimer = new ElapsedTime();
+private static boolean auto;
     public LoadSpindexer(LinearOpMode opmode,Actuators actuators,List<DetColor> colorPos){ // Cunstructor
        colordetector=new ColorDetector(opmode);
-        this.colorPos=colorPos;
+        this.colorPos =colorPos;
         Currentstate=State.Empty;
         this.opmode=opmode;
         this.actuators=actuators;
+        ControlFeedTimer.reset();
+        KickerTimer.reset();
+
     }
-    boolean rebounceb=false;
-
-    public void run(){
-        colordetector.run();
-
-        if(opmode.gamepad2.a && !rebounceb && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
-            ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
-            Start=true;
-        }
-        rebounceb=opmode.gamepad2.a;
 
 
 
-// State machine to load Spindexer
+    public Action  LoadSpindexer_auto(){
+        return new Action(){
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                //autoload=true;
+                auto=true;
+                load_spindexer_run();
 
-        switch(Currentstate) {
-            case Empty:
 
-                if (Start && !SpindexerLoaded) {
-
-                    Currentstate = State.LoadOne;
-
-                }
-                break;
-            case LoadOne:
-                LoadBall(colorPos, State.LoadTwo, 1);
-                break;
-            case LoadTwo:
-                LoadBall(colorPos, State.LoadThree, 2);
-                break;
-            case LoadThree:
-                LoadBall(colorPos, State.Loaded, 3);
-                ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
-                break;
-
+                return auto;
             }
 
 
+
+        };
     }
 
+    public void run()
+    {
+        load_spindexer_run();
+        opmode.telemetry.addData("ColorPosition",colorPos);
 
-    public enum ControlState{
-        Ready,
+    }
+
+    public void load_spindexer_run(){
+
+        colordetector.run();
+        // State machine to load Spindexer
+        if(Currentstate==State.Loaded){
+            ActuatorControl.SpindexerStateIndicator2.SetColor(.5);
+        }
+        switch(Currentstate) {
+            case Empty:
+                if(opmode.gamepad2.a && (ActuatorControl.controlstate==ActuatorControl.ControlState.ready)) {
+                    ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
+                    Currentstate = State.LoadOne;
+                }else if (auto){
+                    ActuatorControl.controlstate=ActuatorControl.ControlState.loading;
+                    Currentstate = State.LoadOne;
+                }
+
+
+                    ActuatorControl.SpindexerStateIndicator2.SetColor(0);
+
+                break;
+            case LoadOne:
+                LoadGamePeace( 1);
+
+                if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
+                    gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
+                    Currentstate=State.LoadTwo;
+                }
+                ActuatorControl.SpindexerStateIndicator2.SetColor(.338);  //yellow
+                break;
+            case LoadTwo:
+                LoadGamePeace( 2);
+
+                if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
+                    gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
+                    Currentstate=State.LoadThree;
+                }
+                ActuatorControl.SpindexerStateIndicator2.SetColor(.28);  //yellow
+                break;
+            case LoadThree:
+                LoadGamePeace( 3);
+
+                if(gamepeaceloadingstate==GamePeaceLoadingState.Complete){
+                    gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
+                    Currentstate=State.Loaded;
+                    actuators.feedcontrol.StopFeed();
+                    actuators.IntakeMotor.StopMotor();
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
+                    auto=false;
+                    opmode.telemetry.addData("colororder",colorPos);
+
+                }
+
+                break;
+            }
+
+    }
+    public enum GamePeaceLoadingState{
+        IDLE,
         StartIntake,
         Position,
         DetectColor,
-        kickball
+        kickball,
+        Complete
     }
 
-   public static ControlState controlstate=ControlState.Ready;
-    public Boolean rebounce = false;
-    public static Boolean SpindexerLoaded=false;
-
-public void LoadBall( List<DetColor> colorPos, State NextState,int SpindexPos)  {
+    public static GamePeaceLoadingState gamepeaceloadingstate=GamePeaceLoadingState.IDLE;
+    public void LoadGamePeace(int SpindexPos)  {
 
         // Cycle time controls t
-    switch(controlstate) {
-        case Ready:
-            if (!SpindexerLoaded && Start) {
-                controlstate = ControlState.StartIntake;
-            }
-            break;
-        case StartIntake:
-            actuators.IntakeMotor.StartMotor();
-            actuators.feedcontrol.startFeed();
-            controlstate = ControlState.Position;
-            break;
-        case Position:
-
-            if (SpindexPos == 1 ) {
-                actuators.spindexercontrol.setPosition(SpindexPos);
-                controlstate=ControlState.DetectColor;
-
-            } else {
-                actuators.feedcontrol.StopFeed();
-                opmode.sleep(500);
-                actuators.spindexercontrol.setPosition(SpindexPos);
-                opmode.sleep(500);
+        switch(gamepeaceloadingstate) {
+            case IDLE:
+                  gamepeaceloadingstate = GamePeaceLoadingState.StartIntake;
+                  break;
+            case StartIntake:
+                actuators.IntakeMotor.StartMotor();
                 actuators.feedcontrol.startFeed();
-                controlstate = ControlState.DetectColor;
+                gamepeaceloadingstate = GamePeaceLoadingState.Position;
+                break;
+            case Position:
+
+                if (SpindexPos == 1 ) {
+                    actuators.spindexercontrol.setPosition(SpindexPos);
+                    gamepeaceloadingstate=GamePeaceLoadingState.DetectColor;
+
+                } else {
+                    ActuateFeed(SpindexPos);
+
+                    if(feedstate==FeedState.COMPLETE) {
+                        feedstate=FeedState.IDLE;
+                        gamepeaceloadingstate = GamePeaceLoadingState.DetectColor;
+                    }
 
                 }
 
-            break;
-        case DetectColor:
-            if (Currentstate== State.LoadThree){
-                colordetector.maxdist=8;
-            }
+                break;
+            case DetectColor:
+                DetectGamePeace(SpindexPos);
 
-            if (opmode.gamepad2.b && !rebounce || colordetector.colordetected()){  //colordetector.colordetected()  check to see if the ball is in the spindexer using Gampad as backup
-                if (Currentstate== State.LoadThree) {                   // if third state use kicker to feed the last ball
-
-                    controlstate=ControlState.kickball;
-                }else {
-                                   // Stop feed
-                    colorPos.set(SpindexPos,colordetector.GetColor());              // Get Color Detected
-                    Currentstate = NextState;
-                    controlstate=ControlState.Ready;                  // Move to next state
+                if(detectgamepeace==DetectGamePeace.complete){
+                    detectgamepeace=DetectGamePeace.IDLE;
+                    if (Currentstate==State.LoadThree){
+                        gamepeaceloadingstate = GamePeaceLoadingState.kickball;
+                    }else{
+                        gamepeaceloadingstate=GamePeaceLoadingState.Complete;
+                    }
                 }
 
+                break;
+            case kickball:
+                ActuateFeedKicker();
 
-            }
-            rebounce=opmode.gamepad2.b;
-            break;
-        case kickball:
-            actuators.FeedKicker.SetSecond();
-            opmode.sleep(500);
-            actuators.FeedKicker.SetFirst();
-            actuators.feedcontrol.StopFeed();
-            actuators.IntakeMotor.StopMotor();
-            SpindexerLoaded=true;
-            controlstate= ControlState.Ready;
-            Start=false;
+                if (kickerstate == KickerState.COMPLETE){
+                    kickerstate = KickerState.IDLE;
+                    gamepeaceloadingstate=GamePeaceLoadingState.Complete;
+                }
 
-            break;
-    }
+                break;
+            case Complete:
+                // used to prevent circular states.
 
-    }
+                break;
 
-    public void StartLoading(){  //Starts Loading Sequence
-        Start=true;
+
+        }
 
     }
 
-    public void LoadOne(){
-        Currentstate=State.LoadThree;
+
+
+    public enum DetectGamePeace{
+        IDLE,
+
+        DetectGamePeace,
+        ManualOveride,
+        RecordColor,
+        complete
+    }
+    public static DetectGamePeace detectgamepeace=DetectGamePeace.IDLE;
+
+
+    public void DetectGamePeace(int SpindexPos){
+
+        switch(detectgamepeace){
+            case IDLE:
+
+
+                    detectgamepeace=DetectGamePeace.DetectGamePeace;
+
+                break;
+            case DetectGamePeace:
+                if (Currentstate == State.LoadThree) {
+                    colordetector.maxdist = 8;
+                }else{
+                    colordetector.maxdist = 4.8;
+                }
+                if ( colordetector.colordetected()){
+                    detectgamepeace=DetectGamePeace.RecordColor;
+                } else if(opmode.gamepad2.b) {
+                    detectgamepeace=DetectGamePeace.ManualOveride;
+                }
+
+                if(opmode.gamepad2.b) {
+                    detectgamepeace=DetectGamePeace.ManualOveride;
+               }
+
+                break;
+            case ManualOveride:
+                colorPos.set(SpindexPos-1,DetColor.UNKNOWN);
+                detectgamepeace=DetectGamePeace.complete;
+
+                break;
+            case RecordColor:
+                colorPos.set(SpindexPos-1,colordetector.GetColor());
+                detectgamepeace=DetectGamePeace.complete;
+
+                break;
+            case complete:
+
+                // state used to avoid circular logic
+                break;
+
+        }
+
     }
 
-    public void LoadTwo(){
 
-        Currentstate=State.LoadTwo;
+
+    public enum KickerState{
+        IDLE,
+        KICK,
+        RETURNTOPOSITION,
+        COMPLETE
+    }
+
+
+    public static KickerState kickerstate = KickerState.IDLE;
+    
+    public void ActuateFeedKicker(){
+        switch(kickerstate){
+            case IDLE:
+
+                    KickerTimer.reset();
+                    kickerstate = KickerState.KICK;
+
+                break;
+            case KICK:
+                 actuators.FeedKicker.SetSecond();
+            
+                if(KickerTimer.milliseconds()>=500){
+
+                    KickerTimer.reset();
+                    kickerstate = KickerState.RETURNTOPOSITION;
+                }
+                break;
+            case RETURNTOPOSITION:
+                    actuators.FeedKicker.SetFirst();
+                    if(KickerTimer.milliseconds()>=500){
+                        KickerTimer.reset();
+                        kickerstate = KickerState.COMPLETE;
+                }
+                
+                break;
+            case COMPLETE:
+                // state used to avoid circular state logic
+                break;
+                           
+        }
+
+    }
+    
+public enum FeedState{
+    IDLE,
+    STOPFEED,
+    CHANGEPOSITION,
+    STARTFEED,
+    COMPLETE
+}
+    
+public static FeedState feedstate=FeedState.IDLE;
+    public void ActuateFeed(int SpindexPos){
+        switch(feedstate){
+            case IDLE:
+
+                    ControlFeedTimer.reset();
+                    feedstate = FeedState.STOPFEED;
+
+                break;
+            case STOPFEED:
+                actuators.feedcontrol.StopFeed();
+                if(ControlFeedTimer.milliseconds()>=0){
+
+                    ControlFeedTimer.reset();
+                    feedstate=FeedState.CHANGEPOSITION;
+                }
+                break;
+            case CHANGEPOSITION:
+              
+              actuators.spindexercontrol.setPosition(SpindexPos);
+
+              if(ControlFeedTimer.milliseconds()>=120){
+                    ControlFeedTimer.reset();
+                    feedstate=FeedState.STARTFEED;
+              }
+                 break;
+            case STARTFEED:
+                 actuators.feedcontrol.startFeed();
+                 feedstate=FeedState.COMPLETE;
+
+                break;
+            case COMPLETE:
+                // state used to avoid circular state logic
+                break;
+                            
+        }
 
     }
 

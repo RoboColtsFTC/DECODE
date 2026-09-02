@@ -1,17 +1,21 @@
 package org.firstinspires.ftc.teamcode.Actuation;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl.Actuators;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
-import org.firstinspires.ftc.teamcode.Perception.AprilTag;
-import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
+
+
+
 import org.firstinspires.ftc.teamcode.Perception.ColorDetector;
-import org.firstinspires.ftc.teamcode.Perception.ColorDetector.DetColor;
+
 
 
 
@@ -20,173 +24,243 @@ import java.util.Arrays;
 import java.util.List;
 @Config
 public class LaunchGamePeace {
-    private boolean Rebounce1,Rebounce2,Rebounce3,Rebounce4 = false;
+
     public Actuators actuators;
     public LinearOpMode opmode;
-    public static long CycleTime;
 
-    public AprilTagData TagData;
+
     List<ColorDetector.DetColor> colorPos;
 
-    private final ElapsedTime timer = new ElapsedTime();
-    private final ElapsedTime timer2 = new ElapsedTime();
+    private final ElapsedTime LauncherMotorTimer = new ElapsedTime();
+    private final ElapsedTime LoadGamePeaceTimer = new ElapsedTime();
 
-    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos){
-        this.colorPos=colorPos;
-        this.opmode=opmode;
+    public LaunchGamePeace(LinearOpMode opmode, Actuators actuators, List<ColorDetector.DetColor> colorPos) {
+        this.colorPos = colorPos;
+        this.opmode = opmode;
         this.actuators = actuators;
 
-   }
-
-   public void run(){
-        // Far Launching
-       if(opmode.gamepad2.x && !Rebounce1 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-
-           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-           actuators.LauncherMotor.SetPower(.73);
-           actuators.LauncherMotor.StartMotor();
-           lanchall();
-
-       }
-       // Close Launching
-       Rebounce1=opmode.gamepad2.x;
-
-       if(opmode.gamepad2.y && !Rebounce2 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-
-           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-           actuators.LauncherMotor.SetPower(.67);
-           actuators.LauncherMotor.StartMotor();
-           lanchall();
-
-       }
-       Rebounce2=opmode.gamepad2.y;
-
-       // Far Launching by code  todo test code
-       if(opmode.gamepad2.dpad_up && !Rebounce3 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-
-           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-           actuators.LauncherMotor.SetPower(.73);
-           actuators.LauncherMotor.StartMotor();
-           launchByCode();
-
-       }
-       Rebounce3=opmode.gamepad2.dpad_up;
-
-        // Close Launching by code todo test code
-       if(opmode.gamepad2.dpad_down && !Rebounce4 && ActuatorControl.controlstate==ActuatorControl.ControlState.ready) {
-
-           ActuatorControl.controlstate=ActuatorControl.ControlState.launching;
-           actuators.LauncherMotor.SetPower(.67);
-           actuators.LauncherMotor.StartMotor();
-           launchByCode();
-
-       }
-       Rebounce4=opmode.gamepad2.dpad_down;
-
-
-
-   }
-
-
-   public void lanchall() {
-       opmode.sleep(3000);
-
-               launch(6);
-               launch(5);
-               launch(4);
-
-               actuators.LauncherMotor.StopMotor();
-               ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
-               LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
-               LoadSpindexer.SpindexerLoaded = false;
-
-
-
-   }
-
-    public void launch(int pos){
-
-        opmode.sleep(500);
-        actuators.spindexercontrol.setPosition(pos);  // increments betweeen all positions
-        opmode.sleep(500);
-        actuators.LaunchKicker.SetSecond();
-        opmode.sleep(500);
-        actuators.LaunchKicker.SetFirst();
-
+        LauncherMotorTimer.reset();
 
     }
-    public void lanchorder(List<Integer> order){
 
-        opmode.sleep(6000);
-        launch(order.get(1));
-        launch(order.get(2));
-        launch(order.get(3));
-        actuators.LauncherMotor.StopMotor();
-        ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
-        LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
-        LoadSpindexer.SpindexerLoaded = false;
+    public enum LauncherState {
+        IDLE,
+        MOTORSTARTUP,
+        ACTIVELAUNCH,
 
 
     }
 
+    public LauncherState launcherstate = LauncherState.IDLE;
+    public List<Integer> LaunchOrder = Arrays.asList(6, 5, 4);  // Defalt sequnce
+    public boolean autoLaunch = false;
 
-    public void launchByCode(){
-        List<DetColor> Code=Arrays.asList(DetColor.UNKNOWN,DetColor.UNKNOWN, DetColor.UNKNOWN);
-       switch(TagData.DetectedCode.CodeID) {
-           case GPP:
+    public double autoVelocity = 0;
 
-                Code= Arrays.asList(DetColor.GREEN, DetColor.PURPLE, DetColor.PURPLE);
+    public Action Launch_Auto(double velocity) {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                autoVelocity = velocity;
+                autoLaunch = true;
+                LoadSpindexer_run();
 
-                break;
-           case PGP:
-                Code= Arrays.asList(DetColor.PURPLE, DetColor.GREEN, DetColor.PURPLE);
-
-               break;
-           case PPG:
-               Code= Arrays.asList(DetColor.PURPLE, DetColor.PURPLE, DetColor.GREEN);
-
-               break;
-       }
-        // launch inorder
-        List<Integer> Lorder =MarchLists(colorPos,Code);
-
-        lanchorder(Lorder);
+                return autoLaunch;
+            }
 
 
-
-
-
+        };
     }
 
-// Method used to determien fire order
-    public static List<Integer> MarchLists(List<DetColor> ListA, List<DetColor> ListB) {
+    public void run() {
+        LoadSpindexer_run();
+    }
 
-        List<Integer> IDList= Arrays.asList(0, 0, 0);
-        Boolean[] FlagA={true,true,true};
-        Boolean[] FlagB={true,true,true};
-
-        for(int n =0;n<ListA.size();n++){
+    public void LoadSpindexer_run() {
 
 
-            for(int m =0;m<ListB.size();m++){
+        switch (launcherstate) {
+
+            case IDLE:
 
 
-                if(ListA.get(n).equals(ListB.get(m))&FlagA[n]&&FlagB[m]){
+                if (opmode.gamepad2.x && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
 
-                    IDList.set(n,m+1);
-                    FlagA[n] = false;
-                    FlagB[m] = false;
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetVelocity(1650); //120.7 12.53v
 
+                    LauncherMotorTimer.reset();
+
+
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+
+                    launcherstate = LauncherState.MOTORSTARTUP;
+
+
+                } else if (autoLaunch) {
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetVelocity(autoVelocity); //120.7 12.53v.63
+
+                    LauncherMotorTimer.reset();
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+                    launcherstate = LauncherState.MOTORSTARTUP;
+
+
+                }
+                // Close Launching
+
+
+                if (opmode.gamepad2.y && ActuatorControl.controlstate == ActuatorControl.ControlState.ready) {
+
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.launching;
+                    actuators.LauncherMotor.SetVelocity(1400); //60.4 inch 12.59v works at 45.9
+
+                    LauncherMotorTimer.reset();
+
+                    LaunchOrder = Arrays.asList(6, 5, 4);
+
+                    launcherstate = LauncherState.MOTORSTARTUP;
 
                 }
 
 
+                break;
+            case MOTORSTARTUP:
+                if (actuators.LauncherMotor.isMotorAtVelocity()) {
 
+                    launcherstate = LauncherState.ACTIVELAUNCH;
+                }
+                break;
+            case ACTIVELAUNCH:
 
+                launchall();
+                if (launchsequence == LaunchSequence.IDLE) {
+                    launcherstate = LauncherState.IDLE;
+                    autoLaunch = false;
 
-            }
+                }
+
+                break;
+
         }
-        return IDList;
+
+
     }
 
-}
+
+    public enum LaunchSequence {
+        IDLE,
+        LAUNCHPOSITION1,
+        LAUNCHPOSITION2,
+        LAUNCHPOSITION3
+
+    }
+
+    public LaunchSequence launchsequence = LaunchSequence.IDLE;
+
+    public void launchall() {
+
+        switch (launchsequence) {
+            case IDLE:
+                if (actuators.LauncherMotor.isMotorAtVelocity()) {
+                    launchsequence = LaunchSequence.LAUNCHPOSITION1;
+                }
+
+                break;
+            case LAUNCHPOSITION1:
+
+
+                launch(LaunchOrder.get(0));
+
+                if (loadgamepeace == LoadGamePeace.IDLE) {
+                    launchsequence = LaunchSequence.LAUNCHPOSITION2;
+                }
+                break;
+            case LAUNCHPOSITION2:
+
+
+                launch(LaunchOrder.get(1));
+
+                if (loadgamepeace == LoadGamePeace.IDLE) {
+                    launchsequence = LaunchSequence.LAUNCHPOSITION3;
+                }
+                break;
+            case LAUNCHPOSITION3:
+
+
+                launch(LaunchOrder.get(2));
+
+                if (loadgamepeace == LoadGamePeace.IDLE) {
+                    launchsequence = LaunchSequence.IDLE;
+
+                    ActuatorControl.controlstate = ActuatorControl.ControlState.ready;
+                    LoadSpindexer.Currentstate = LoadSpindexer.State.Empty;
+                    colorPos = Arrays.asList(ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN, ColorDetector.DetColor.UNKNOWN);
+
+                }
+
+                break;
+
+        }
+
+    }
+
+    public enum LoadGamePeace {
+        IDLE,
+        SETPOSITION,
+        ACTUATEKICKER,
+        RETURNKICKERPOSITION
+
+    }
+
+    LoadGamePeace loadgamepeace = LoadGamePeace.IDLE;
+
+    public void launch(int pos) {
+
+        switch (loadgamepeace) {
+
+            case IDLE:
+                LoadGamePeaceTimer.reset();
+                loadgamepeace = LoadGamePeace.SETPOSITION;
+                break;
+
+            case SETPOSITION:
+                if (LoadGamePeaceTimer.milliseconds() >= 120) {
+                    actuators.spindexercontrol.setPosition(pos);
+                    LoadGamePeaceTimer.reset();
+                    loadgamepeace = LoadGamePeace.ACTUATEKICKER;
+
+                }
+
+
+                break;
+            case ACTUATEKICKER:
+                if (LoadGamePeaceTimer.milliseconds() >= 120) {
+                    actuators.LaunchKicker.SetSecond();
+                    LoadGamePeaceTimer.reset();
+                    loadgamepeace = LoadGamePeace.RETURNKICKERPOSITION;
+                }
+                break;
+            case RETURNKICKERPOSITION:
+                if (LoadGamePeaceTimer.milliseconds() >= 120) {
+                    actuators.LaunchKicker.SetFirst();
+                    LoadGamePeaceTimer.reset();
+                    loadgamepeace = LoadGamePeace.IDLE;
+                }
+                break;
+
+
+        }
+
+    }
+
+
+
+
+    }
+
+
+
+
+
+

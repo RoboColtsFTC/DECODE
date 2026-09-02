@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 
+import org.firstinspires.ftc.teamcode.Actuation.ActuatorControl;
 import org.firstinspires.ftc.teamcode.Perception.AprilTagData;
 
 @Config
@@ -67,6 +68,13 @@ public class Drivetrain {
 
 
     }
+    boolean tagDetectedAtleastonce =false;
+
+    enum TurnToTagState{
+        START,
+        STOP
+    }
+    TurnToTagState turntotagstate=TurnToTagState.STOP;
 
     public void run(){
         ChassisSpeeds speeds;
@@ -84,6 +92,25 @@ public class Drivetrain {
         }else{
             AprilTagBearing = TagData.Blue.Bearing;
         }
+
+        if(TagData.detectionState.isBlueGoalAprilTagDetected && !TagData.red) {
+            ActuatorControl.LockIndicator1.SetColor(.5);
+            ActuatorControl.LockIndicator2.SetColor(.5);
+        }else if (TagData.detectionState.isRedGoalAprilTagDetected && TagData.red){
+            ActuatorControl.LockIndicator1.SetColor(.5);
+            ActuatorControl.LockIndicator2.SetColor(.5);
+        }else{
+            ActuatorControl.LockIndicator1.SetColor(0);
+            ActuatorControl.LockIndicator2.SetColor(0);
+        }
+
+//        if(TagData.detectionState.isAnyTagDetected){
+//            ActuatorControl.LockIndicator.SetColor(.5);
+//            tagDetectedAtleastonce=true;
+//        }else{
+//            ActuatorControl.LockIndicator.SetColor(0);
+//        }
+//
         dashboard =  FtcDashboard.getInstance();
         TelemetryPacket packet = new TelemetryPacket();
 
@@ -103,12 +130,18 @@ public class Drivetrain {
        } else if(driver.b) {
            thetaPower = controller.calculate(headingAngle, -90);
 
-       } else if (driver.y &&  TagData.detectionState.isAnyTagDetected){
+       } else if ((driver.right_trigger>.5) &&  TagData.detectionState.isAnyTagDetected){
                 thetaPower=drive.RotateTwardsGoal();
 //               thetaPower = controller.calculate(headingAngle, AprilTagBearing) * ApirlTagRotationGain;
                opMode.telemetry.addData("IMU Reading", "%5.1f inches", AprilTagBearing);
 
        } else {
+
+
+
+
+
+
           thetaPower = -driver.right_stick_x * Math.PI;
        }
 
@@ -154,7 +187,7 @@ public class Drivetrain {
        if(driver.back){
 
            drive.localizer.resetPinpointIMU();
-           drive.localizer.setPose(new Pose2d(0,0,90));
+           drive.localizer.setPose(new Pose2d(0,0,0));
 
        }
     }

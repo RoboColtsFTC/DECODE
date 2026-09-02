@@ -55,7 +55,7 @@ public class AprilTag {
     public void run() {
             ProcessAprilTags();
             // Push telemetry to the Driver Station.
-             opMode.telemetry.update();
+             //opMode.telemetry.update();
 
     }
 
@@ -125,6 +125,7 @@ public class AprilTag {
                 //.setCameraResolution(new Size(800, 600))
                 .setCameraResolution(new Size(640, 480)) // Setting resolution
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // Set stream format to MJPEG for higher FPS
+
                 .enableLiveView(true) // Enable live view on Robot Controller screen
                 .setAutoStopLiveView(true) // Automatically stop live view when OpMode is stopped
                 .addProcessor(aprilTag)    // Set and enable the processor.
@@ -192,6 +193,8 @@ public class AprilTag {
 
        }else{
             detectionState.isAnyTagDetected = true;
+            detectionState.isBlueGoalAprilTagDetected=false;
+            detectionState.isRedGoalAprilTagDetected=false;
             for (AprilTagDetection detection : currentDetections) {
                 ProcessDetections(detection, Data);
                 telemetryAprilTag(detection);

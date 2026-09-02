@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Perception;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -21,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 public class ColorDetector{
-    public NormalizedColorSensor colorSensor, colorSensor2;
+    public NormalizedColorSensor colorSensor, colorSensor2,colorSensor3;
     public enum DetColor {
         PURPLE,
         GREEN,
@@ -51,6 +52,7 @@ public class ColorDetector{
         relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color1");
         colorSensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color2");
+        colorSensor3 = hardwareMap.get(NormalizedColorSensor.class, "sensor_color3");
 //
 //        try {
 //            runSample(); // actually execute the sample
@@ -87,10 +89,15 @@ public class ColorDetector{
             ((SwitchableLight)colorSensor2).enableLight(true);
         }
 
+        if (colorSensor3 instanceof SwitchableLight) {
+            ((SwitchableLight)colorSensor3).enableLight(true);
+        }
+
         // Wait for the start button to be pressed.
 
         colorSensor.setGain(gain);
         colorSensor2.setGain(gain);
+        colorSensor3.setGain(gain);
 
         // Loop until we are asked to stop
 
@@ -102,6 +109,7 @@ public class ColorDetector{
     public DetColor GetColor() {
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
         NormalizedRGBA colors2 = colorSensor2.getNormalizedColors();
+        NormalizedRGBA colors3 = colorSensor3.getNormalizedColors();
 
         /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
          * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
@@ -118,13 +126,15 @@ public class ColorDetector{
 
         float normBlue, normGreen, normRed;
         float normBlue2, normGreen2, normRed2;
+        float normBlue3, normGreen3, normRed3;
         DetColor detectedColor1;
         DetColor detectedColor2;
+        DetColor detectedColor3;
         /* If this color sensor also has a distance sensor, display the measured distance.
          * Note that the reported distance is only useful at very close range, and is impacted by
          * ambient light and surface reflectivity. */
         if (colorSensor instanceof DistanceSensor) {
-            opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
+           // opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         }
         normRed = colors.red / colors.alpha;
         normGreen = colors.green / colors.alpha;
@@ -134,8 +144,13 @@ public class ColorDetector{
         normGreen2 = colors2.green / colors2.alpha;
         normBlue2 = colors2.blue / colors2.alpha;
 
+        normRed3 = colors3.red / colors3.alpha;
+        normGreen3 = colors3.green / colors3.alpha;
+        normBlue3 = colors3.blue / colors3.alpha;
+
         if (normRed < normGreen && normBlue > normGreen) {
             detectedColor1 = DetColor.PURPLE;
+        /* updated from (normRed > .04 && normGreen > .11 && normBlue > .09) */
         } else if (normGreen > normRed && normGreen > normBlue && normGreen > .06) {
             detectedColor1 = DetColor.GREEN;
         } else {
@@ -144,31 +159,41 @@ public class ColorDetector{
 
         if (normRed2 < normGreen2 && normBlue2 > normGreen2) {
             detectedColor2 = DetColor.PURPLE;
+        /* updated from normRed2 > .04 && normGreen > .11 && normBlue2 > .09 */
         } else if (normGreen2 > normRed2 && normGreen2 > normBlue2 && normGreen2 > .06) {
             detectedColor2 = DetColor.GREEN;
         } else {
             detectedColor2 = DetColor.UNKNOWN;
         }
 
-        if ((detectedColor1 == DetColor.GREEN) || (detectedColor2 == DetColor.GREEN)) {
+        if (normRed3< normGreen3 && normBlue3 > normGreen3) {
+            detectedColor3 = DetColor.PURPLE;
+        /* normRed3 > .04 && normGreen3 > .11 && normBlue3 > .09 */
+        } else if (normGreen3 > normRed3 && normGreen3 > normBlue3 && normGreen3 > .06) {
+            detectedColor3 = DetColor.GREEN;
+        } else {
+            detectedColor3 = DetColor.UNKNOWN;
+        }
+
+        if (((detectedColor1 == DetColor.GREEN) && (detectedColor2 == DetColor.GREEN)) || ((detectedColor2 == DetColor.GREEN) && (detectedColor3 == DetColor.GREEN)) || ((detectedColor1 == DetColor.GREEN) && (detectedColor3 == DetColor.GREEN))) {
             finalDetectedColor = DetColor.GREEN;
-        } else if ((detectedColor1 == DetColor.PURPLE) || (detectedColor2 == DetColor.PURPLE)) {
+        } else if (((detectedColor1 == DetColor.PURPLE) && (detectedColor2 == DetColor.PURPLE)) || ((detectedColor2 == DetColor.PURPLE) && (detectedColor3 == DetColor.PURPLE)) || ((detectedColor1 == DetColor.PURPLE) && (detectedColor3 == DetColor.PURPLE))) {
             finalDetectedColor = DetColor.PURPLE;
         } else {
             finalDetectedColor = DetColor.UNKNOWN;
         }
 
-        //telemetry.addData("NormRed", normRed);
-        //telemetry.addData("NormGreen", normGreen);
-        //telemetry.addData("NormBlue", normBlue);
-        //telemetry.addData("NormRed2", normRed2);
-        //telemetry.addData("NormGreen2", normGreen2);
-        //telemetry.addData("NormBlue2", normBlue2);
-        //telemetry.addData("gain", gain);
-        //telemetry.addLine("Detected Color1: " + detectedColor1);
-        //telemetry.addLine("Detected Color2: " + detectedColor2);
-        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
-        //opmode.telemetry.update();
+//        opMode.telemetry.addData("NormRed", normRed);
+//        opMode.addData("NormGreen", normGreen);
+//        opMode.addData("NormBlue", normBlue);
+//        opMode.addData("NormRed2", normRed2);
+//        telemetry.addData("NormGreen2", normGreen2);
+//        telemetry.addData("NormBlue2", normBlue2);
+//        telemetry.addData("gain", gain);
+//        telemetry.addLine("Detected Color1: " + detectedColor1);
+//        telemetry.addLine("Detected Color2: " + detectedColor2);
+//        opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
+//        opmode.telemetry.update();
         return finalDetectedColor;
     }
 
@@ -176,7 +201,14 @@ public class ColorDetector{
 
     public boolean colordetected() {
         boolean detected =false;
-        if (((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) > 1.35 && ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) < maxdist) {
+        if (
+                ((((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) > 1.35) ||
+                        (((DistanceSensor) colorSensor2).getDistance(DistanceUnit.CM) > 1.35) ||
+                        (((DistanceSensor) colorSensor3).getDistance(DistanceUnit.CM) > 1.35))
+                && ((((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM) < maxdist) ||
+                        (((DistanceSensor) colorSensor2).getDistance(DistanceUnit.CM) < maxdist)||
+                        (((DistanceSensor) colorSensor3).getDistance(DistanceUnit.CM) < maxdist)))
+        {
             switch(finalDetectedColor){
                 case GREEN:
                     detected =true;
@@ -194,7 +226,7 @@ public class ColorDetector{
         opmode.telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         opmode.telemetry.addLine("Final Detected Color: " + finalDetectedColor);
         opmode.telemetry.addData("Detected Boolean: ", detected);
-        opmode.telemetry.update();
+        //opmode.telemetry.update();
         return detected;
     }
 
